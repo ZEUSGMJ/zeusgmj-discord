@@ -6,7 +6,7 @@ export function ProfileCardSkeleton() {
 
 export function LinksCardSkeleton() {
   return (
-    <div className="h-full rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+    <div className="rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
       <div className="mb-2 flex items-center justify-between">
         <div className="h-3 w-12 rounded bg-zinc-800 animate-pulse" />
         <div className="h-4 w-4 rounded bg-zinc-800 animate-pulse" />
@@ -20,6 +20,12 @@ export function LinksCardSkeleton() {
         ))}
       </ul>
     </div>
+  )
+}
+
+export function AmbientShaderCardSkeleton() {
+  return (
+    <div className="h-full min-h-44 rounded-3xl border border-zinc-800/50 bg-zinc-900 animate-pulse" />
   )
 }
 
@@ -102,7 +108,12 @@ export function HomePageLoadingGrid() {
           <div className="sm:col-span-2">
             <ProfileCardSkeleton />
           </div>
-          <LinksCardSkeleton />
+          <div className="flex h-full flex-col gap-4">
+            <LinksCardSkeleton />
+            <div className="hidden min-h-44 flex-1 lg:block">
+              <AmbientShaderCardSkeleton />
+            </div>
+          </div>
           <SpotifyCardSkeleton />
           <SteamCardSkeleton />
           <MediaCardSkeleton />

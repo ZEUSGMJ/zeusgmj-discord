@@ -48,7 +48,7 @@ const LINKS: LinkItem[] = [
 
 export default function LinksCard() {
   return (
-    <div className="h-full rounded-3xl bg-zinc-900 border border-zinc-800/50 p-5 shine-edge">
+    <div className="rounded-3xl bg-zinc-900 border border-zinc-800/50 p-5 shine-edge">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
           Links
@@ -62,7 +62,7 @@ export default function LinksCard() {
               href={link.href}
               target={link.external ? '_blank' : undefined}
               rel={link.external ? 'noopener noreferrer' : undefined}
-              className="flex items-center justify-between rounded-xl py-2.5 hover:bg-zinc-800/70 transition-colors group"
+              className="flex items-center justify-between rounded-xl px-2 py-2.5 hover:bg-zinc-800/70 transition-colors group"
             >
               <span className="text-sm font-medium text-zinc-300 group-hover:text-zinc-100 transition-colors">
                 {link.label}
