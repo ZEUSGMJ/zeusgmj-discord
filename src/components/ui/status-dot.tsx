@@ -15,7 +15,7 @@ const sizeMap = {
   sm: 'w-2 h-2',
   md: 'w-2.5 h-2.5',
   lg: 'w-3.5 h-3.5',
-  xl: 'w-4.5 h-4.5',
+  xl: 'w-6 h-6',
 }
 
 const labelMap = {
@@ -28,7 +28,7 @@ const labelMap = {
 export default function StatusDot({ status, size = 'md', className = '' }: StatusDotProps) {
   return (
     <span
-      className={`inline-block rounded-full ring-2 ring-zinc-900 ring-offset-2 ring-offset-zinc-900 ${colorMap[status]} ${sizeMap[size]} ${className}`}
+      className={`inline-block rounded-full ring-4 ring-zinc-900 ring-offset-2 ring-offset-zinc-900 ${colorMap[status]} ${sizeMap[size]} ${className}`}
       title={labelMap[status]}
       aria-label={labelMap[status]}
     />

@@ -73,6 +73,7 @@ function normalizeSpotify(track: SpotifyTrack | SpotifyCurrentTrack | SpotifyRec
       artistLine: track.artist,
       artUrl: track.album_art_url,
       albumTitle: track.album,
+      timestamps: track.timestamps,
     }
   }
   return {
@@ -80,6 +81,7 @@ function normalizeSpotify(track: SpotifyTrack | SpotifyCurrentTrack | SpotifyRec
     artistLine: track.artists.join(', '),
     artUrl: track.albumArtUrl,
     albumTitle: track.albumName,
+    timestamps: null,
   }
 }
 
@@ -176,6 +178,10 @@ export default function ProfilePresenceCard() {
     document.documentElement.style.setProperty(
       '--theme-accent',
       themeColor2ForCss ?? 'rgba(255,255,255,0.06)'
+    )
+    document.documentElement.style.setProperty(
+      '--theme-page-accent',
+      themeColor1ForCss ?? 'var(--color-background)'
     )
   }, [themeColor1ForCss, themeColor2ForCss])
 
@@ -315,7 +321,7 @@ export default function ProfilePresenceCard() {
               alt={presence.user.displayName}
               width={512}
               height={512}
-              className="w-32 h-32 rounded-full ring-4 ring-black/50"
+              className="w-32 h-32 rounded-full ring-8 ring-zinc-900"
               preload
               unoptimized={presence.user.avatarUrl.includes('animated=true')}
             />

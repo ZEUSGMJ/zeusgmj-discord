@@ -1,9 +1,22 @@
 import Image from 'next/image'
+import { randomInt } from 'node:crypto'
 import { getRecentGames } from '@/lib/steam'
 import { Gamepad2 } from 'lucide-react'
 
+const EMPTY_GAME_MESSAGES = [
+  { ascii: '(>_>)', message: 'No games lately. The grass won.' },
+  { ascii: '(-_-)', message: "Steam says I've logged off and evolved." },
+  { ascii: '(._.)', message: 'No recent games. Character development arc?' },
+  { ascii: '[?]', message: 'No recent games. Suspiciously productive.' },
+  { ascii: '(x_x)', message: 'The backlog is safe. For now.' },
+]
+
 export default async function SteamCard() {
   const result = await getRecentGames()
+  const emptyMessage =
+    result.games.length === 0
+      ? EMPTY_GAME_MESSAGES[randomInt(EMPTY_GAME_MESSAGES.length)]
+      : null
 
   return (
     <div className="h-full rounded-3xl bg-zinc-900 border border-zinc-800/50 p-5 shine-edge">
@@ -14,8 +27,11 @@ export default async function SteamCard() {
         <Gamepad2 className='text-zinc-500 w-4 h-4'/>
       </div>
     
-      {result.games.length === 0 ? (
-        <p className="text-sm text-zinc-600 italic">No recent games</p>
+      {emptyMessage ? (
+        <div className="flex min-h-36 flex-col items-center justify-center gap-2 text-center">
+          <p className="font-mono text-lg text-zinc-500">{emptyMessage.ascii}</p>
+          <p className="text-sm text-zinc-600 italic">{emptyMessage.message}</p>
+        </div>
       ) : (
         <ul className="space-y-3">
           {result.games.map((game) => (
