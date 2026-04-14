@@ -13,13 +13,17 @@ function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('default', dateOptions)
 }
 
+function getPosterUrl(path: unknown): string | null {
+  return typeof path === 'string'
+    ? `https://image.tmdb.org/t/p/w342${path.startsWith('/') ? path : `/${path}`}`
+    : null
+}
+
 function mapMovie(m: Record<string, unknown>): TmdbMovie {
   return {
     id: m.id as number,
     title: (m.title ?? m.name) as string,
-    posterUrl: m.poster_path
-      ? `https://image.tmdb.org/t/p/w342/${m.poster_path}`
-      : null,
+    posterUrl: getPosterUrl(m.poster_path),
     releaseDate: formatDate(((m.release_date ?? m.first_air_date) as string) ?? ''),
     tmdbUrl: m.title
       ? `https://www.themoviedb.org/movie/${m.id}`

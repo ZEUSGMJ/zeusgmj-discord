@@ -165,6 +165,7 @@ export async function getCurrentlyPlaying(): Promise<SpotifyCurrentTrack | null>
     const data = await res.json()
 
     if (data.currently_playing_type !== 'track' || !data.item) return null
+    if (!data.is_playing) return null
 
     const item = data.item as Record<string, unknown>
     const album = item.album as Record<string, unknown>

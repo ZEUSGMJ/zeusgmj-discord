@@ -14,5 +14,5 @@ export interface DiscordProfileData {
 }
 
 export function intToHex(value: number): string {
-  return `#${value.toString(16).padStart(6, '0')}`
+  return `#${(value >>> 0).toString(16).padStart(6, '0')}`
 }
