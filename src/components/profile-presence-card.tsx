@@ -188,50 +188,75 @@ export default function ProfilePresenceCard() {
   useEffect(() => {
     if (!DISCORD_USER_ID) return
 
-    const ws = new WebSocket('wss://api.lanyard.rest/socket')
+    let destroyed = false
+    let attempt = 0
+    let retryTimer: ReturnType<typeof setTimeout>
     let heartbeat: ReturnType<typeof setInterval>
+    let activeWs: WebSocket
 
-    ws.onmessage = async (event) => {
-      const { op, d, t } = JSON.parse(event.data as string) as {
-        op: number
-        d: Record<string, unknown>
-        t?: string
+    function connect() {
+      const ws = new WebSocket('wss://api.lanyard.rest/socket')
+      activeWs = ws
+
+      ws.onmessage = async (event) => {
+        const { op, d, t } = JSON.parse(event.data as string) as {
+          op: number
+          d: Record<string, unknown>
+          t?: string
+        }
+
+        if (op === 1) {
+          heartbeat = setInterval(
+            () => ws.send(JSON.stringify({ op: 3 })),
+            (d as { heartbeat_interval: number }).heartbeat_interval,
+          )
+          ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_USER_ID } }))
+          attempt = 0
+        }
+
+        if (op === 0 && (t === 'INIT_STATE' || t === 'PRESENCE_UPDATE')) {
+          const presence = normalizeLanyard(d as unknown as Parameters<typeof normalizeLanyard>[0])
+
+          if (presence.listeningToSpotify) {
+            setState({ phase: 'loaded', presence, currentTrack: null, isRecentlyPlayed: false })
+            return
+          }
+
+          const fallback = await resolveSpotifyFallback()
+          setState({
+            phase: 'loaded',
+            presence,
+            currentTrack: fallback.track,
+            isRecentlyPlayed: fallback.isRecentlyPlayed,
+          })
+        }
       }
 
-      if (op === 1) {
-        heartbeat = setInterval(
-          () => ws.send(JSON.stringify({ op: 3 })),
-          (d as { heartbeat_interval: number }).heartbeat_interval,
-        )
-        ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_USER_ID } }))
-      }
+      ws.onerror = () => {}
 
-      if (op === 0 && (t === 'INIT_STATE' || t === 'PRESENCE_UPDATE')) {
-        const presence = normalizeLanyard(d as unknown as Parameters<typeof normalizeLanyard>[0])
+      ws.onclose = () => {
+        clearInterval(heartbeat)
+        if (destroyed) return
 
-        if (presence.listeningToSpotify) {
-          setState({ phase: 'loaded', presence, currentTrack: null, isRecentlyPlayed: false })
+        const MAX_RETRIES = 5
+        if (attempt >= MAX_RETRIES) {
+          setState({ phase: 'error', message: 'WebSocket error' })
           return
         }
 
-        const fallback = await resolveSpotifyFallback()
-        setState({
-          phase: 'loaded',
-          presence,
-          currentTrack: fallback.track,
-          isRecentlyPlayed: fallback.isRecentlyPlayed,
-        })
+        const delay = Math.min(1000 * Math.pow(2, attempt), 30_000)
+        attempt++
+        retryTimer = setTimeout(connect, delay)
       }
     }
 
-    ws.onerror = () => setState({ phase: 'error', message: 'WebSocket error' })
-    ws.onclose = () => {
-      clearInterval(heartbeat)
-    }
+    connect()
 
     return () => {
+      destroyed = true
+      clearTimeout(retryTimer)
       clearInterval(heartbeat)
-      ws.close()
+      activeWs?.close()
     }
   }, [])
 
@@ -410,7 +435,7 @@ export default function ProfilePresenceCard() {
                   <span>{presence.customStatus.emojiName}</span>
                 ) : null}
                 {presence.customStatus.text && (
-                  <span className="italic text-md">{presence.customStatus.text}</span>
+                  <span className="italic text-sm">{presence.customStatus.text}</span>
                 )}
               </p>
             </div>

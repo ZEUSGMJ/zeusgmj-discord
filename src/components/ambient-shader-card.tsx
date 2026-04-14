@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import type { MeshGradientProps } from '@paper-design/shaders-react'
 
 const FALLBACK_COLORS = ['#09090b', '#18181b', '#7f1d1d', '#dc2626']
@@ -23,36 +23,28 @@ function readThemeColors() {
     : FALLBACK_COLORS
 }
 
-function useReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+function createMediaQueryStore(query: string) {
+  const getSnapshot = () => window.matchMedia(query).matches
+  const getServerSnapshot = () => false
+  const subscribe = (callback: () => void) => {
+    const mediaQuery = window.matchMedia(query)
+    mediaQuery.addEventListener('change', callback)
 
-  useEffect(() => {
-    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setPrefersReducedMotion(query.matches)
+    return () => mediaQuery.removeEventListener('change', callback)
+  }
 
-    const onChange = () => setPrefersReducedMotion(query.matches)
-    query.addEventListener('change', onChange)
-
-    return () => query.removeEventListener('change', onChange)
-  }, [])
-
-  return prefersReducedMotion
+  return { getSnapshot, getServerSnapshot, subscribe }
 }
 
-function useDesktopViewport() {
-  const [isDesktop, setIsDesktop] = useState(false)
+const reducedMotionStore = createMediaQueryStore('(prefers-reduced-motion: reduce)')
+const desktopViewportStore = createMediaQueryStore('(min-width: 1024px)')
 
-  useEffect(() => {
-    const query = window.matchMedia('(min-width: 1024px)')
-    setIsDesktop(query.matches)
-
-    const onChange = () => setIsDesktop(query.matches)
-    query.addEventListener('change', onChange)
-
-    return () => query.removeEventListener('change', onChange)
-  }, [])
-
-  return isDesktop
+function useMediaQuery(store: ReturnType<typeof createMediaQueryStore>) {
+  return useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  )
 }
 
 function useShaderColors() {
@@ -75,8 +67,8 @@ function useShaderColors() {
 }
 
 export default function AmbientShaderCard() {
-  const prefersReducedMotion = useReducedMotion()
-  const isDesktop = useDesktopViewport()
+  const prefersReducedMotion = useMediaQuery(reducedMotionStore)
+  const isDesktop = useMediaQuery(desktopViewportStore)
   const colors = useShaderColors()
 
   return (
@@ -95,7 +87,7 @@ export default function AmbientShaderCard() {
           swirl={0.18}
           grainMixer={0.08}
           grainOverlay={0.12}
-          speed={prefersReducedMotion ? 0 : 0.08}
+          speed={prefersReducedMotion ? 0 : 0.4}
           frame={4200}
           fit="cover"
           scale={1.2}
