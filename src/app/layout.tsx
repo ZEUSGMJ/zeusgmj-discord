@@ -19,6 +19,8 @@ const siteUrl = getSiteUrl();
 const title = "zeusgmj";
 const description = "building (maybe) stuff, watching stuff, gaming stuff";
 
+export const dynamic = 'force-dynamic'
+
 export async function generateViewport(): Promise<Viewport> {
   const userId = process.env.DISCORD_USER_ID
   if (!userId) return {}
