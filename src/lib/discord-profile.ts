@@ -4,7 +4,7 @@ import type { DiscordProfileData } from '@/lib/discord-profile.shared'
 
 export async function fetchDiscordProfile(userId: string): Promise<DiscordProfileData> {
   const response = await fetch(`https://dcdn.dstn.to/profile/${userId}`, {
-    cache: 'no-store',
+    next: { revalidate: 3600 },
   })
 
   if (!response.ok) {

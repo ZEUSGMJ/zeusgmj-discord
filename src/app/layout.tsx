@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { getSiteUrl } from "@/lib/site";
+import { fetchDiscordProfile } from "@/lib/discord-profile";
+import { intToHex } from "@/lib/discord-profile.shared";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,7 +17,19 @@ const geistMono = Geist_Mono({
 
 const siteUrl = getSiteUrl();
 const title = "zeusgmj";
-const description = "Personal profile - building things on the internet";
+const description = "building (maybe) stuff, watching stuff, gaming stuff";
+
+export async function generateViewport(): Promise<Viewport> {
+  const userId = process.env.DISCORD_USER_ID
+  if (!userId) return {}
+  try {
+    const profile = await fetchDiscordProfile(userId)
+    if (!profile.themeColors) return {}
+    return { themeColor: intToHex(profile.themeColors[0]) }
+  } catch {
+    return {}
+  }
+}
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
