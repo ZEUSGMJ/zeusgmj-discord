@@ -21,12 +21,6 @@ const LINKS: LinkItem[] = [
     external: true,
   },
   {
-    label: 'Discord',
-    href: 'https://discord.com/users/438054607571386378',
-    description: 'Chat',
-    external: true,
-  },
-  {
     label: 'Spotify',
     href: 'https://open.spotify.com/user/zeusgmj',
     description: 'I have some playlists',

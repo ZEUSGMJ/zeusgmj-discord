@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { UserRoundSearch } from 'lucide-react'
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import type { DiscordProfileData } from '@/lib/discord-profile.shared'
 import { intToHex } from '@/lib/discord-profile.shared'
@@ -328,7 +329,7 @@ export default function ProfilePresenceCard() {
             alt="Discord banner"
             fill
             sizes="(max-width: 768px) 100vw, 400px"
-            className="object-contain object-center"
+            className="object-cover object-center"
             preload
             unoptimized={bannerUrl.includes('animated=true')}
           />
@@ -371,53 +372,67 @@ export default function ProfilePresenceCard() {
         </div>
 
         <div className="flex gap-1 flex-col">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-lg font-semibold text-zinc-50 leading-tight">
-              {presence.user.displayName}
-            </h2>
-            {presence.primaryGuild && (
-              <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-800/80 text-xs font-black text-zinc-400 tracking-widest mt-1">
-                {presence.primaryGuild.badgeUrl && (
-                  <Image
-                    src={presence.primaryGuild.badgeUrl}
-                    alt=""
-                    width={12}
-                    height={12}
-                    className="w-3 h-3 rounded-sm"
-                    aria-hidden
-                  />
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex gap-1 flex-col min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-lg font-semibold text-zinc-50 leading-tight">
+                  {presence.user.displayName}
+                </h2>
+                {presence.primaryGuild && (
+                  <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-800/80 text-xs font-black text-zinc-400 tracking-widest mt-1">
+                    {presence.primaryGuild.badgeUrl && (
+                      <Image
+                        src={presence.primaryGuild.badgeUrl}
+                        alt=""
+                        width={12}
+                        height={12}
+                        className="w-3 h-3 rounded-sm"
+                        aria-hidden
+                      />
+                    )}
+                    {presence.primaryGuild.tag}
+                  </span>
                 )}
-                {presence.primaryGuild.tag}
-              </span>
-            )}
-            {discordProfile?.badges && discordProfile.badges.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5 mt-1">
-                {discordProfile.badges.map((badge) => (
-                  <DiscordBadge key={badge.id} badge={badge} />
-                ))}
-              </div>
-            ) : (
-              (() => {
-                const textBadges = Object.entries(USER_FLAGS)
-                  .filter(([, bit]) => presence.user.publicFlags & bit)
-                  .map(([name]) => BADGE_LABEL[name])
-                  .filter(Boolean)
-                return textBadges.length > 0 ? (
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {textBadges.map((label) => (
-                      <span
-                        key={label}
-                        className="px-1.5 py-0.5 rounded bg-zinc-800/80 text-[10px] text-zinc-400 font-medium"
-                      >
-                        {label}
-                      </span>
+                {discordProfile?.badges && discordProfile.badges.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {discordProfile.badges.map((badge) => (
+                      <DiscordBadge key={badge.id} badge={badge} />
                     ))}
                   </div>
-                ) : null
-              })()
-            )}
+                ) : (
+                  (() => {
+                    const textBadges = Object.entries(USER_FLAGS)
+                      .filter(([, bit]) => presence.user.publicFlags & bit)
+                      .map(([name]) => BADGE_LABEL[name])
+                      .filter(Boolean)
+                    return textBadges.length > 0 ? (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {textBadges.map((label) => (
+                          <span
+                            key={label}
+                            className="px-1.5 py-0.5 rounded bg-zinc-800/80 text-[10px] text-zinc-400 font-medium"
+                          >
+                            {label}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null
+                  })()
+                )}
+              </div>
+              <p className="text-sm text-zinc-500">@{presence.user.username}</p>
+            </div>
+            <a
+              href={`https://discord.com/users/${DISCORD_USER_ID}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-80 mt-0.5"
+              style={{ backgroundColor: themeColor2ForCss ? `${themeColor2ForCss}99` : '#27272a' }}
+            >
+              <UserRoundSearch className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">View User</span>
+            </a>
           </div>
-          <p className="text-sm text-zinc-500">@{presence.user.username}</p>
           {presence.customStatus && (presence.customStatus.text ?? presence.customStatus.emojiName) && (
             <div className='bg-zinc-900 px-2 py-1 rounded-xl max-w-max shadow-lg my-1'>
               <p className="text-xs text-zinc-500 mt-0.5 flex items-center gap-2">
