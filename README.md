@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# zeusgmj.com
 
-## Getting Started
+Started as a small experiment with [Lanyard](https://github.com/phineas/lanyard) and got a bit out of hand. Personal profile site showing live data from my accounts across a few platforms.
 
-First, run the development server:
+![Preview](https://zeusgmj.com/api/og)
+
+## What it shows
+
+- **Discord:** live presence, status, activities, badges, and profile via [Lanyard](https://github.com/phineas/lanyard) and dcdn
+- **Spotify:** currently playing track, recently played, and top tracks
+- **Steam:** recently played games and playtime
+- **Movies / TV / Anime:** favorites and watched lists via TMDB
+
+## Built with
+
+- [Next.js 16](https://nextjs.org) + [React 19](https://react.dev)
+- [Tailwind CSS v4](https://tailwindcss.com)
+- TypeScript
+
+## Running locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ZEUSGMJ/zeusgmj-discord
+cd zeusgmj-discord
+pnpm install  # or npm install
+pnpm dev      # or npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copy `.env.example` to `.env.local` and fill in your credentials. All values are optional, any missing ones fall back to mock data.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Credentials
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Discord**
+No API key needed. Just your Discord user ID. Lanyard handles presence automatically if you are in the [Lanyard Discord server](https://discord.gg/lanyard).
 
-## Learn More
+**Spotify**
+Create an app at the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard). Note that as of early 2026, Spotify [updated their developer access requirements](https://developer.spotify.com/blog/2026-02-06-update-on-developer-access-and-platform-security), worth reading before setting up. You will also need a refresh token via an OAuth flow, see the [Spotify docs](https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens) for that.
 
-To learn more about Next.js, take a look at the following resources:
+**Steam**
+Get an API key at [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey). Find your Steam ID at [steamid.io](https://steamid.io/lookup/).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**TMDB**
+Follow the [TMDB getting started guide](https://developer.themoviedb.org/docs/getting-started) for a read access token and your account ID. The watched lists are hardcoded in `src/lib/tmdb.ts`, update those IDs to match your own TMDB lists.
