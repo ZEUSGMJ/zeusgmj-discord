@@ -15,8 +15,9 @@ import {
 
 export default function Home() {
   return (
-    <main className="relative isolate min-h-screen overflow-hidden bg-background flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <>
       <ThemeBackground />
+      <main className="relative isolate min-h-screen overflow-hidden flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="relative z-10 w-full max-w-4xl">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="sm:col-span-2">
@@ -56,6 +57,7 @@ export default function Home() {
           </CardErrorBoundary>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   )
 }
