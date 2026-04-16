@@ -22,7 +22,7 @@ const LINKS: LinkItem[] = [
   },
   {
     label: 'Spotify',
-    href: 'https://open.spotify.com/user/zeusgmj',
+    href: 'https://open.spotify.com/user/wvckgj74wvfnyyzl8vtg6pwrr',
     description: 'I have some playlists',
     external: true,
   },
