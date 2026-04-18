@@ -341,27 +341,29 @@ export default function ProfilePresenceCard() {
 
       <div className="px-6 pb-6 flex flex-col gap-4">
         <div className="-mt-16 flex items-end justify-between">
-          <div className="relative shrink-0">
+          <div className="relative size-32 shrink-0">
             <Image
               src={presence.user.avatarUrl}
               alt={presence.user.displayName}
               width={512}
               height={512}
-              className="w-32 h-32 rounded-full ring-8 ring-zinc-900"
+              className="relative z-10 size-32 rounded-full ring-8 ring-zinc-900"
               preload
               unoptimized={presence.user.avatarUrl.includes('animated=true')}
             />
             {presence.user.avatarDecorationUrl && (
-              <Image
-                src={presence.user.avatarDecorationUrl}
-                alt=""
-                fill
-                sizes="512px"
-                className="pointer-events-none"
-                aria-hidden={true}
-              />
+              <div className="pointer-events-none absolute -inset-4 z-20">
+                <Image
+                  src={presence.user.avatarDecorationUrl}
+                  alt=""
+                  fill
+                  sizes="160px"
+                  className="object-contain"
+                  aria-hidden={true}
+                />
+              </div>
             )}
-            <div className="absolute bottom-0.5 right-0.5">
+            <div className="absolute bottom-0.5 right-0.5 z-30">
               <StatusDot status={presence.status} size="xl" />
             </div>
           </div>
