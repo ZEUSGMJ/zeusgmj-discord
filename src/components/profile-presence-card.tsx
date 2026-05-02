@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { UserRoundSearch } from 'lucide-react'
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState, type CSSProperties } from 'react'
 import type { DiscordProfileData } from '@/lib/discord-profile.shared'
 import { intToHex } from '@/lib/discord-profile.shared'
 import type { NormalizedPresence, SpotifyTrack } from '@/lib/lanyard.shared'
@@ -65,6 +65,84 @@ const BADGE_LABEL: Record<string, string> = {
   BUG_HUNTER_LEVEL_2: 'Bug Hunter Gold',
   VERIFIED_DEVELOPER: 'Verified Developer',
   CERTIFIED_MODERATOR: 'Moderator Alumni',
+}
+
+type ContrastCandidate = { hex: string; L: number }
+type ForegroundDirection = 'light' | 'dark'
+
+const ZINC: ContrastCandidate[] = [
+  { hex: '#fafafa', L: 0.955 },
+  { hex: '#f4f4f5', L: 0.910 },
+  { hex: '#e4e4e7', L: 0.796 },
+  { hex: '#d4d4d8', L: 0.684 },
+  { hex: '#a1a1aa', L: 0.373 },
+  { hex: '#71717a', L: 0.193 },
+  { hex: '#52525b', L: 0.107 },
+  { hex: '#3f3f46', L: 0.066 },
+  { hex: '#27272a', L: 0.031 },
+  { hex: '#18181b', L: 0.014 },
+  { hex: '#09090b', L: 0.003 },
+]
+
+const WHITE: ContrastCandidate = { hex: '#ffffff', L: 1 }
+const BLACK: ContrastCandidate = { hex: '#000000', L: 0 }
+const FALLBACK_BACKGROUND_COLORS = ['#1e1b4b', '#09090b'] as const
+const HEX_COLOR = /^#[\da-f]{6}$/i
+
+function hexToLuminance(hex: string): number {
+  const r = parseInt(hex.slice(1, 3), 16) / 255
+  const g = parseInt(hex.slice(3, 5), 16) / 255
+  const b = parseInt(hex.slice(5, 7), 16) / 255
+  const lin = (c: number) => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+}
+
+function wcagContrast(La: number, Lb: number): number {
+  const [hi, lo] = La > Lb ? [La, Lb] : [Lb, La]
+  return (hi + 0.05) / (lo + 0.05)
+}
+
+function minContrastAgainst(candidate: ContrastCandidate, backgroundLs: number[]): number {
+  return Math.min(...backgroundLs.map((bgL) => wcagContrast(candidate.L, bgL)))
+}
+
+function bestForeground(backgroundLs: number[]): ContrastCandidate {
+  return [WHITE, BLACK, ...ZINC].reduce((best, candidate) =>
+    minContrastAgainst(candidate, backgroundLs) > minContrastAgainst(best, backgroundLs)
+      ? candidate
+      : best
+  )
+}
+
+function pickForeground(
+  backgroundLs: number[],
+  minRatio: number,
+  direction: ForegroundDirection,
+  strength: 'strong' | 'subtle',
+): string {
+  const ordered = direction === 'light' ? ZINC : [...ZINC].reverse()
+  const passing = ordered.filter((candidate) => minContrastAgainst(candidate, backgroundLs) >= minRatio)
+
+  if (passing.length > 0) {
+    return strength === 'strong' ? passing[0].hex : passing[passing.length - 1].hex
+  }
+
+  const fallback = direction === 'light' ? WHITE : BLACK
+  if (minContrastAgainst(fallback, backgroundLs) >= minRatio) {
+    return fallback.hex
+  }
+
+  return bestForeground(backgroundLs).hex
+}
+
+function getBackgroundColors(
+  themeColor1: string | null,
+  themeColor2: string | null,
+  bannerColor: string | null,
+): [string, string] {
+  if (themeColor1 && themeColor2) return [themeColor1, themeColor2]
+  if (bannerColor && HEX_COLOR.test(bannerColor)) return [bannerColor, '#09090b']
+  return [...FALLBACK_BACKGROUND_COLORS]
 }
 
 function normalizeSpotify(track: SpotifyTrack | SpotifyCurrentTrack | SpotifyRecentTrack): SpotifyDisplay {
@@ -300,13 +378,33 @@ export default function ProfilePresenceCard() {
       ? `https://cdn.discordapp.com/banners/${presence.user.id}/${dcdnBannerHash}.webp?size=2048${dcdnBannerHash.startsWith('a_') ? '&animated=true' : ''}`
       : null)
 
-  // Always applied as the card background — theme colors take priority, then banner color,
-  // then hardcoded fallback. Banner image renders on top; dcdn failure is handled by the fallback chain.
-  const cardBackground = themeColor1 && themeColor2
-    ? { background: `linear-gradient(to bottom, ${themeColor1}, ${themeColor2})` }
-    : presence.user.bannerColor
-      ? { background: `linear-gradient(to bottom, ${presence.user.bannerColor}, #09090b)` }
-      : { background: 'linear-gradient(to bottom, #1e1b4b, #09090b)' }
+  const backgroundColors = getBackgroundColors(themeColor1, themeColor2, presence.user.bannerColor)
+  const cardBackground = { background: `linear-gradient(to bottom, ${backgroundColors[0]}, ${backgroundColors[1]})` }
+
+  const backgroundLs = backgroundColors.map(hexToLuminance)
+  const textDir: ForegroundDirection =
+    minContrastAgainst(WHITE, backgroundLs) >= minContrastAgainst(BLACK, backgroundLs)
+      ? 'light'
+      : 'dark'
+  const cftHi = pickForeground(backgroundLs, 4.5, textDir, 'strong')
+  const cftMid = pickForeground(backgroundLs, 7.0, textDir, 'subtle')
+  const cftLo = pickForeground(backgroundLs, 4.5, textDir, 'subtle')
+  const cftDim = cftLo
+  const cftSurf = textDir === 'light'
+    ? {
+        badgeBg: 'rgba(39,39,42,0.8)',
+        statusBg: '#09090b',
+        separator: 'rgba(39,39,42,0.6)',
+        progTrack: 'rgba(39,39,42,0.8)',
+        imgFallBg: 'rgba(39,39,42,1)',
+      }
+    : {
+        badgeBg: 'rgba(255,255,255,0.6)',
+        statusBg: 'rgba(255,255,255,0.5)',
+        separator: 'rgba(212,212,216,0.6)',
+        progTrack: 'rgba(212,212,216,0.8)',
+        imgFallBg: 'rgba(255,255,255,0.4)',
+      }
 
   const bio = discordProfile?.bio ?? TAGLINE
 
@@ -318,7 +416,19 @@ export default function ProfilePresenceCard() {
   return (
     <div
       className="h-full rounded-3xl overflow-hidden relative"
-      style={cardBackground}
+      style={{
+        ...cardBackground,
+        '--cft-hi': cftHi,
+        '--cft-mid': cftMid,
+        '--cft-lo': cftLo,
+        '--cft-dim': cftDim,
+        '--cft-badge-bg': cftSurf.badgeBg,
+        '--cft-status-bg': cftSurf.statusBg,
+        '--cft-sep': cftSurf.separator,
+        '--cft-prog-trk': cftSurf.progTrack,
+        '--cft-img-fb': cftSurf.imgFallBg,
+        '--cft-dot-hover': cftMid,
+      } as CSSProperties}
     >
       <div
         className="pointer-events-none absolute inset-0 rounded-3xl border-r-2 border-b-2 border-transparent opacity-70" aria-hidden={true}/>
@@ -377,11 +487,11 @@ export default function ProfilePresenceCard() {
           <div className="flex items-start justify-between gap-3">
             <div className="flex gap-1 flex-col min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-lg font-semibold text-zinc-50 leading-tight">
+                <h2 className="text-lg font-semibold text-(--cft-hi) leading-tight">
                   {presence.user.displayName}
                 </h2>
                 {presence.primaryGuild && (
-                  <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-800/80 text-xs font-black text-zinc-400 tracking-widest mt-1">
+                  <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-(--cft-badge-bg) text-xs font-black text-(--cft-lo) tracking-widest mt-1">
                     {presence.primaryGuild.badgeUrl && (
                       <Image
                         src={presence.primaryGuild.badgeUrl}
@@ -412,7 +522,7 @@ export default function ProfilePresenceCard() {
                         {textBadges.map((label) => (
                           <span
                             key={label}
-                            className="px-1.5 py-0.5 rounded bg-zinc-800/80 text-[10px] text-zinc-400 font-medium"
+                            className="px-1.5 py-0.5 rounded bg-(--cft-badge-bg) text-[10px] text-(--cft-lo) font-medium"
                           >
                             {label}
                           </span>
@@ -422,7 +532,7 @@ export default function ProfilePresenceCard() {
                   })()
                 )}
               </div>
-              <p className="text-sm text-zinc-500">@{presence.user.username}</p>
+              <p className="text-sm text-(--cft-lo)">@{presence.user.username}</p>
             </div>
             <a
               href={`https://discord.com/users/${DISCORD_USER_ID}`}
@@ -436,8 +546,8 @@ export default function ProfilePresenceCard() {
             </a>
           </div>
           {presence.customStatus && (presence.customStatus.text ?? presence.customStatus.emojiName) && (
-            <div className='bg-zinc-900 px-2 py-1 rounded-xl max-w-max shadow-lg my-1'>
-              <p className="text-xs text-zinc-500 mt-0.5 flex items-center gap-2">
+            <div className='bg-(--cft-status-bg) px-2 py-1 rounded-xl max-w-max shadow-lg my-1'>
+              <p className="text-xs text-(--cft-lo) mt-0.5 flex items-center gap-2">
                 {presence.customStatus.emojiUrl ? (
                   <Image
                     src={presence.customStatus.emojiUrl}
@@ -458,13 +568,13 @@ export default function ProfilePresenceCard() {
             </div>
           )}
 
-          <p className="text-sm text-zinc-400 mt-1">{bio}</p>
+          <p className="text-sm text-(--cft-lo) mt-1">{bio}</p>
         </div>
 
-        <div className="border-t border-zinc-800/60" />
+        <div className="border-t border-(--cft-sep)" />
 
         {carouselItems.length === 0 ? (
-          <p className="text-sm text-zinc-600 italic">No active activity</p>
+          <p className="text-sm text-(--cft-dim) italic">No active activity</p>
         ) : (
           <ActivityCarousel items={carouselItems} />
         )}

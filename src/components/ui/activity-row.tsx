@@ -61,7 +61,7 @@ function SpotifyProgress({ timestamps }: { timestamps: SpotifyTimestamps }) {
   return (
     <div className="mt-2">
       <div
-        className="h-1 overflow-hidden rounded-full bg-zinc-800/80"
+        className="h-1 overflow-hidden rounded-full bg-(--cft-prog-trk)"
         aria-label={`Spotify progress ${formatDuration(elapsedMs)} of ${formatDuration(durationMs)}`}
         aria-valuemax={durationMs}
         aria-valuemin={0}
@@ -69,11 +69,11 @@ function SpotifyProgress({ timestamps }: { timestamps: SpotifyTimestamps }) {
         role="progressbar"
       >
         <div
-          className="h-full rounded-full bg-zinc-500 transition-[width] duration-500 ease-linear"
+          className="h-full rounded-full bg-(--cft-mid) transition-[width] duration-500 ease-linear"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="mt-1 flex justify-between text-[10px] font-medium tabular-nums text-zinc-500">
+      <div className="mt-1 flex justify-between text-[10px] font-medium tabular-nums text-(--cft-lo)">
         <span>{formatDuration(elapsedMs)}</span>
         <span>{formatDuration(durationMs)}</span>
       </div>
@@ -98,16 +98,16 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
             className="w-24 h-24 rounded-xl shrink-0"
           />
         ) : (
-          <div className="w-24 h-24 rounded-xl bg-zinc-800 shrink-0 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-xl bg-(--cft-img-fb) shrink-0 flex items-center justify-center">
             <span className="text-green-500 text-base">♫</span>
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] text-zinc-600 uppercase tracking-widest mb-0.5 font-medium">
+          <p className="text-[11px] text-(--cft-dim) uppercase tracking-widest mb-0.5 font-medium">
             {label}
           </p>
-          <p className="text-sm font-medium text-zinc-200 truncate">{data.songTitle}</p>
-          <p className="text-xs text-zinc-400 truncate">{data.artistLine}</p>
+          <p className="text-sm font-medium text-(--cft-hi) truncate">{data.songTitle}</p>
+          <p className="text-xs text-(--cft-mid) truncate">{data.artistLine}</p>
           {timestamps && <SpotifyProgress timestamps={timestamps} />}
         </div>
       </div>
@@ -137,15 +137,15 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
           )}
         </div>
       ) : (
-        <div className="w-24 h-24 rounded-xl bg-zinc-800 shrink-0 flex items-center justify-center">
-          <span className="text-zinc-600 text-lg">🎮</span>
+        <div className="w-24 h-24 rounded-xl bg-(--cft-img-fb) shrink-0 flex items-center justify-center">
+          <span className="text-(--cft-dim) text-lg">🎮</span>
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] text-zinc-600 uppercase tracking-widest mb-0.5 font-medium">Playing</p>
-        <p className="text-sm font-medium text-zinc-200 truncate">{data.name}</p>
-        {data.details && <p className="text-xs text-zinc-400 truncate">{data.details}</p>}
-        {data.state && <p className="text-xs text-zinc-500 truncate">{data.state}</p>}
+        <p className="text-[11px] text-(--cft-dim) uppercase tracking-widest mb-0.5 font-medium">Playing</p>
+        <p className="text-sm font-medium text-(--cft-hi) truncate">{data.name}</p>
+        {data.details && <p className="text-xs text-(--cft-mid) truncate">{data.details}</p>}
+        {data.state && <p className="text-xs text-(--cft-lo) truncate">{data.state}</p>}
       </div>
     </div>
   )

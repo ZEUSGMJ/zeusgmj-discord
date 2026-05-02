@@ -32,7 +32,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
         <button
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={safeIndex === 0}
-          className="text-zinc-500 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-default text-lg leading-none shrink-0 w-5 text-center transition-colors"
+          className="text-(--cft-dim) hover:text-(--cft-mid) disabled:opacity-30 disabled:cursor-default text-lg leading-none shrink-0 w-5 text-center transition-colors"
           aria-label="Previous activity"
         >
           ‹
@@ -43,7 +43,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
         <button
           onClick={() => setIndex((i) => Math.min(items.length - 1, i + 1))}
           disabled={safeIndex === items.length - 1}
-          className="text-zinc-500 hover:text-zinc-300 disabled:opacity-30 disabled:cursor-default text-lg leading-none shrink-0 w-5 text-center transition-colors"
+          className="text-(--cft-dim) hover:text-(--cft-mid) disabled:opacity-30 disabled:cursor-default text-lg leading-none shrink-0 w-5 text-center transition-colors"
           aria-label="Next activity"
         >
           ›
@@ -54,7 +54,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
           <button
             key={i}
             onClick={() => setIndex(i)}
-            className={`w-1.5 h-1.5 rounded-full transition-colors ${i === safeIndex ? 'bg-zinc-300' : 'bg-zinc-600 hover:bg-zinc-500'}`}
+            className={`w-1.5 h-1.5 rounded-full transition-colors ${i === safeIndex ? 'bg-(--cft-mid)' : 'bg-(--cft-dim) hover:bg-(--cft-dot-hover)'}`}
             aria-label={`Activity ${i + 1}`}
           />
         ))}
