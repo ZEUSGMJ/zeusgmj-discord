@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { Gamepad } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { NormalizedActivity } from '@/lib/lanyard.shared'
 
@@ -138,7 +139,7 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
         </div>
       ) : (
         <div className="w-24 h-24 rounded-xl bg-(--cft-img-fb) shrink-0 flex items-center justify-center">
-          <span className="text-(--cft-dim) text-lg">🎮</span>
+          <Gamepad className="w-6 h-6 text-(--cft-dim)" />
         </div>
       )}
       <div className="min-w-0 flex-1">

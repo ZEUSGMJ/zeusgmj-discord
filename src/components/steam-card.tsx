@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { randomInt } from 'node:crypto'
 import { getRecentGames } from '@/lib/steam'
-import { Gamepad2 } from 'lucide-react'
+import { Gamepad, Gamepad2 } from 'lucide-react'
 
 const EMPTY_GAME_MESSAGES = [
   { ascii: '(>_>)', message: 'No games lately. The grass won.' },
@@ -48,7 +48,7 @@ export default async function SteamCard() {
                 />
               ) : (
                 <div className="w-16 h-24 rounded-lg bg-zinc-800 shrink-0 flex items-center justify-center">
-                  <span className="text-zinc-600 text-sm">🎮</span>
+                  <Gamepad className="w-5 h-5 text-zinc-600" />
                 </div>
               )}
               <div className="min-w-0 flex-1">
