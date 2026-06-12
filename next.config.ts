@@ -31,8 +31,13 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'steamcdn-a.akamaihd.net',
-        pathname: '/steam/apps/**',
+        hostname: 'shared.steamstatic.com',
+        pathname: '/store_item_assets/steam/apps/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn2.steamgriddb.com',
+        pathname: '/grid/**',
       },
     ],
   },
