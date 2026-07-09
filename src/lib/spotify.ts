@@ -36,11 +36,31 @@ const MOCK_TRACKS: SpotifyTopTrack[] = [
 
 let tokenCache: { token: string; expiresAt: number } | null = null
 
-async function getAccessToken(): Promise<string> {
-  if (tokenCache && Date.now() < tokenCache.expiresAt) {
-    return tokenCache.token
+const RETOKEND_ENABLED = Boolean(process.env.RETOKEND_URL && process.env.RETOKEND_SECRET)
+const RETOKEND_PROFILE = process.env.NODE_ENV === 'production' ? 'nextjs-portfolio-prod' : 'nextjs-portfolio-dev'
+
+async function getAccessTokenFromRetokend(): Promise<string> {
+  const res = await fetch(
+    `${process.env.RETOKEND_URL}/api/token?profile=${RETOKEND_PROFILE}`,
+    {
+      headers: { Authorization: `Bearer ${process.env.RETOKEND_SECRET}` },
+      cache: 'no-store',
+    },
+  )
+
+  if (!res.ok) {
+    if (res.status === 409) {
+      throw new Error('Spotify token refresh failed via retokend: 409 reauth_required')
+    }
+    throw new Error(`Spotify token refresh failed via retokend: ${res.status}`)
   }
 
+  const data = await res.json()
+  tokenCache = { token: data.access_token as string, expiresAt: data.expires_at as number }
+  return tokenCache.token
+}
+
+async function getAccessTokenDirect(): Promise<string> {
   const clientId = process.env.SPOTIFY_CLIENT_ID
   const clientSecret = process.env.SPOTIFY_SECRET_ID
   const refreshToken = process.env.SPOTIFY_REFRESH_TOKEN
@@ -71,8 +91,16 @@ async function getAccessToken(): Promise<string> {
   return tokenCache.token
 }
 
+async function getAccessToken(): Promise<string> {
+  if (tokenCache && Date.now() < tokenCache.expiresAt) {
+    return tokenCache.token
+  }
+
+  return RETOKEND_ENABLED ? getAccessTokenFromRetokend() : getAccessTokenDirect()
+}
+
 export async function getTopTracks(): Promise<SpotifyResult> {
-  if (!process.env.SPOTIFY_CLIENT_ID) {
+  if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) {
     return { tracks: MOCK_TRACKS }
   }
 
@@ -111,7 +139,7 @@ export async function getTopTracks(): Promise<SpotifyResult> {
 }
 
 export async function getRecentlyPlayed(): Promise<SpotifyRecentTrack[]> {
-  if (!process.env.SPOTIFY_CLIENT_ID) return []
+  if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) return []
 
   try {
     const token = await getAccessToken()
@@ -150,7 +178,7 @@ export async function getRecentlyPlayed(): Promise<SpotifyRecentTrack[]> {
 }
 
 export async function getCurrentlyPlaying(): Promise<SpotifyCurrentTrack | null> {
-  if (!process.env.SPOTIFY_CLIENT_ID) return null
+  if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) return null
 
   try {
     const token = await getAccessToken()
