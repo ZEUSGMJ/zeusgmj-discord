@@ -36,6 +36,8 @@ No API key needed. Just your Discord user ID. Lanyard handles presence automatic
 **Spotify**
 Create an app at the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard). Note that as of early 2026, Spotify [updated their developer access requirements](https://developer.spotify.com/blog/2026-02-06-update-on-developer-access-and-platform-security), worth reading before setting up. You will also need a refresh token via an OAuth flow, see the [Spotify docs](https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens) for that.
 
+Optionally, if you run a [ReTokenD](https://github.com/ZEUSGMJ/ReTokenD) token broker instance to manage Spotify refresh tokens centrally across projects, set `RETOKEND_URL` and `RETOKEND_SECRET` instead — when both are set they take priority over the `SPOTIFY_*` vars above. Leave them blank to use the direct flow.
+
 **Steam**
 Get an API key at [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey). Find your Steam ID at [steamid.io](https://steamid.io/lookup/).
 
