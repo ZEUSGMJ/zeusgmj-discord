@@ -6,6 +6,8 @@ import type {
   SpotifyResult,
   SpotifyTopTrack,
 } from '@/lib/spotify.shared'
+import { mapSpotifyTrack } from '@/lib/spotify.shared'
+import { RETOKEND_ENABLED, getAccessToken } from '@/lib/spotify-auth'
 
 const MOCK_TRACKS: SpotifyTopTrack[] = [
   {
@@ -34,71 +36,6 @@ const MOCK_TRACKS: SpotifyTopTrack[] = [
   },
 ]
 
-let tokenCache: { token: string; expiresAt: number } | null = null
-
-const RETOKEND_ENABLED = Boolean(process.env.RETOKEND_URL && process.env.RETOKEND_SECRET)
-const RETOKEND_PROFILE = process.env.NODE_ENV === 'production' ? 'nextjs-portfolio-prod' : 'nextjs-portfolio-dev'
-
-async function getAccessTokenFromRetokend(): Promise<string> {
-  const res = await fetch(
-    `${process.env.RETOKEND_URL}/api/token?profile=${RETOKEND_PROFILE}`,
-    {
-      headers: { Authorization: `Bearer ${process.env.RETOKEND_SECRET}` },
-      cache: 'no-store',
-    },
-  )
-
-  if (!res.ok) {
-    if (res.status === 409) {
-      throw new Error('Spotify token refresh failed via retokend: 409 reauth_required')
-    }
-    throw new Error(`Spotify token refresh failed via retokend: ${res.status}`)
-  }
-
-  const data = await res.json()
-  tokenCache = { token: data.access_token as string, expiresAt: data.expires_at as number }
-  return tokenCache.token
-}
-
-async function getAccessTokenDirect(): Promise<string> {
-  const clientId = process.env.SPOTIFY_CLIENT_ID
-  const clientSecret = process.env.SPOTIFY_SECRET_ID
-  const refreshToken = process.env.SPOTIFY_REFRESH_TOKEN
-
-  if (!clientId || !clientSecret || !refreshToken) {
-    throw new Error('Missing Spotify env vars')
-  }
-
-  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
-
-  const res = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-    }),
-    cache: 'no-store',
-  })
-
-  if (!res.ok) throw new Error(`Spotify token refresh failed: ${res.status}`)
-  const data = await res.json()
-  const expiresIn: number = (data.expires_in as number) ?? 3600
-  tokenCache = { token: data.access_token as string, expiresAt: Date.now() + expiresIn * 1000 - 60_000 }
-  return tokenCache.token
-}
-
-async function getAccessToken(): Promise<string> {
-  if (tokenCache && Date.now() < tokenCache.expiresAt) {
-    return tokenCache.token
-  }
-
-  return RETOKEND_ENABLED ? getAccessTokenFromRetokend() : getAccessTokenDirect()
-}
-
 export async function getTopTracks(): Promise<SpotifyResult> {
   if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) {
     return { tracks: MOCK_TRACKS }
@@ -107,7 +44,7 @@ export async function getTopTracks(): Promise<SpotifyResult> {
   try {
     const token = await getAccessToken()
     const res = await fetch(
-      'https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=6',
+      'https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=5',
       {
         headers: { Authorization: `Bearer ${token}` },
         next: { revalidate: 3600 },
@@ -116,20 +53,10 @@ export async function getTopTracks(): Promise<SpotifyResult> {
     if (!res.ok) throw new Error(`Spotify top tracks failed: ${res.status}`)
 
     const data = await res.json()
-    const tracks: SpotifyTopTrack[] = (data.items ?? []).map((item: Record<string, unknown>) => {
-      const album = item.album as Record<string, unknown>
-      const images = album.images as Array<{ url: string }> | undefined
-      const artists = item.artists as Array<{ name: string }>
-      const externalUrls = item.external_urls as Record<string, string> | undefined
-      return {
-        id: item.id as string,
-        name: item.name as string,
-        artists: artists.map((a) => a.name),
-        albumName: album.name as string,
-        albumArtUrl: images?.[0]?.url ?? null,
-        externalUrl: externalUrls?.spotify ?? `https://open.spotify.com/track/${item.id}`,
-      }
-    })
+    const tracks: SpotifyTopTrack[] = (data.items ?? []).map((item: Record<string, unknown>) => ({
+      id: item.id as string,
+      ...mapSpotifyTrack(item, `https://open.spotify.com/track/${item.id}`),
+    }))
 
     return { tracks }
   } catch (err) {
@@ -155,20 +82,7 @@ export async function getRecentlyPlayed(): Promise<SpotifyRecentTrack[]> {
         const track = item.track as Record<string, unknown> | null
         return track && (track.type as string) === 'track'
       })
-      .map((item) => {
-        const track = item.track as Record<string, unknown>
-        const album = track.album as Record<string, unknown>
-        const images = album.images as Array<{ url: string }> | undefined
-        const artists = track.artists as Array<{ name: string }>
-        const externalUrls = track.external_urls as Record<string, string> | undefined
-        return {
-          name: track.name as string,
-          artists: artists.map((a) => a.name),
-          albumName: album.name as string,
-          albumArtUrl: images?.[0]?.url ?? null,
-          externalUrl: externalUrls?.spotify ?? 'https://open.spotify.com',
-        }
-      })
+      .map((item) => mapSpotifyTrack(item.track as Record<string, unknown>))
 
     return items
   } catch (err) {
@@ -195,20 +109,7 @@ export async function getCurrentlyPlaying(): Promise<SpotifyCurrentTrack | null>
     if (data.currently_playing_type !== 'track' || !data.item) return null
     if (!data.is_playing) return null
 
-    const item = data.item as Record<string, unknown>
-    const album = item.album as Record<string, unknown>
-    const images = album.images as Array<{ url: string }> | undefined
-    const artists = item.artists as Array<{ name: string }>
-    const externalUrls = item.external_urls as Record<string, string> | undefined
-
-    return {
-      name: item.name as string,
-      artists: artists.map((a) => a.name),
-      albumName: album.name as string,
-      albumArtUrl: images?.[0]?.url ?? null,
-      externalUrl: externalUrls?.spotify ?? 'https://open.spotify.com',
-      isPlaying: data.is_playing as boolean,
-    }
+    return mapSpotifyTrack(data.item as Record<string, unknown>)
   } catch (err) {
     console.error('[spotify] getCurrentlyPlaying error:', err)
     return null

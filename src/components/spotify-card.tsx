@@ -17,18 +17,15 @@ export default async function SpotifyCard() {
         <p className="text-sm text-zinc-600 italic">No recent tracks</p>
       ) : (
         <ol className="space-y-3">
-          {result.tracks.map((track, i) => (
+          {result.tracks.map((track) => (
             <li key={track.id} className="flex items-center gap-3">
-              <span className="text-xs font-bold text-zinc-700 w-4 shrink-0 text-right">
-                {i + 1}
-              </span>
               {track.albumArtUrl ? (
                 <Image
                   src={track.albumArtUrl}
                   alt={track.albumName}
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 rounded-xs shrink-0"
+                  width={128}
+                  height={128}
+                  className="w-13 h-13 rounded-xs shrink-0"
                   placeholder={`data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="%2327272a" rx="2"/></svg>`}
                 />
               ) : (
@@ -39,11 +36,12 @@ export default async function SpotifyCard() {
                   href={track.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title={track.name}
                   className="text-sm font-medium text-zinc-200 truncate block hover:text-zinc-400 transition-colors"
                 >
                   {track.name}
                 </a>
-                <p className="text-xs text-zinc-500 truncate">{track.artists.join(', ')}</p>
+                <p title={track.artists.join(', ')} className="text-xs text-zinc-500 truncate select-none">{track.artists.join(', ')}</p>
               </div>
             </li>
           ))}
