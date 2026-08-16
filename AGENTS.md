@@ -12,18 +12,16 @@ Personal profile site displaying live data from Spotify, Steam, Discord (via Lan
 
 ## Rendering model
 - **Server components by default.** `SpotifyCard`, `SteamCard`, and `MediaCardWrapper` are async server components that call lib functions directly - no API routes involved.
-- **`ProfilePresenceCard` is `'use client'`** because it shows live Discord presence data. It connects to the Lanyard WebSocket (`wss://api.lanyard.rest/socket`) directly, fetches `/api/discord-profile` on mount, and conditionally fetches `/api/spotify/now-playing` and `/api/spotify/recently-played` when Lanyard is not already reporting Spotify activity.
+- **`ProfilePresenceCard` is `'use client'`** because it shows live Discord presence data. It reads presence state via `usePresence()` (`src/components/presence-provider.tsx`), which wraps `useLanyardPresence` (`src/hooks/use-lanyard-presence.ts` - WebSocket connection + Spotify fallback fetching) in a context provider mounted once in `page.tsx`. `ProfilePresenceCard` also fetches `/api/discord-profile` on mount and derives its color theme via `buildPresenceTheme` (`src/lib/presence-theme.shared.ts`).
 - **`LinksCard`** is a static server component with no data fetching.
-
-Note: `api/lanyard/route.ts` exists as a REST fallback but is **not used** by `ProfilePresenceCard`.
 
 ## Data flow
 ```
 Server components       Client components
       |                       |
       v                       v
-  src/lib/*.ts          /api/* routes
-  (direct calls)        (proxy to lib)
+  src/lib/*.ts          src/hooks/*.ts + /api/* routes
+  (direct calls)        (WebSocket / proxy to lib)
       |                       |
       +----------+------------+
                  v
@@ -31,7 +29,7 @@ Server components       Client components
     (Spotify / Steam / TMDB / Lanyard / dcdn.dstn.to)
 ```
 
-`ProfilePresenceCard` also connects to `wss://api.lanyard.rest/socket` directly (WebSocket, no API route) and calls `https://dcdn.dstn.to/profile/{userId}` via `/api/discord-profile` for richer profile data (banner, theme colors, badges, bio).
+`useLanyardPresence` connects to `wss://api.lanyard.rest/socket` directly (WebSocket, no API route). `ProfilePresenceCard` calls `https://dcdn.dstn.to/profile/{userId}` via `/api/discord-profile` for richer profile data (banner, theme colors, badges, bio).
 
 ## File structure
 ```
@@ -39,37 +37,55 @@ src/
   app/
     page.tsx              # Root layout, Suspense boundaries, skeleton fallbacks
     layout.tsx            # HTML shell, fonts, metadata
+    loading.tsx           # Root loading fallback -> HomePageLoadingGrid
+    error.tsx / global-error.tsx / not-found.tsx  # Error and 404 boundaries
+    icon.tsx              # Dynamic favicon, themed from Discord theme colors
     globals.css           # Tailwind import, :root color-scheme, scrollbar styles
+    robots.ts / sitemap.ts # SEO file conventions, use lib/site.ts
     api/
-      lanyard/route.ts          # REST proxy for Lanyard (not used by ProfilePresenceCard)
-      discord-profile/route.ts  # Proxies dcdn.dstn.to -> client
+      og/route.tsx               # OG image, themed from Discord presence + theme colors
+      discord-profile/route.ts   # Proxies dcdn.dstn.to -> client
       spotify/
-        now-playing/route.ts    # Proxies Spotify currently-playing -> client
+        now-playing/route.ts     # Proxies Spotify currently-playing -> client
         recently-played/route.ts # Proxies Spotify recently-played -> client
   components/
-    profile-presence-card.tsx  # 'use client' - Discord presence, Spotify, badges
+    profile-presence-card.tsx  # 'use client' - wires usePresence + theme to presentation
+    presence-provider.tsx      # 'use client' - PresenceProvider/usePresence context wrapping useLanyardPresence
     spotify-card.tsx           # Server - top tracks (last 4 weeks)
     steam-card.tsx             # Server - recently played games
     media-card-wrapper.tsx     # Server - fetches TMDB data, passes to MediaCard
     media-card.tsx             # 'use client' - tab state (movies/tv/anime, fav/watched)
     links-card.tsx             # Static - social links
+    theme-background.tsx       # Static - page-wide ambient gradient from theme color
+    year-progress-card.tsx     # Server - day-of-year progress grid
     ui/
       status-dot.tsx           # Presentational - Discord status indicator dot
-      activity-row.tsx         # Presentational - single activity or Spotify row
+      presence-header.tsx      # Presentational - banner/avatar/status for ProfilePresenceCard
+      presence-identity.tsx    # Presentational - name/badges/bio for ProfilePresenceCard
+      user-flag-badges.tsx     # Presentational - text badges from Discord public flags
+      activity-row.tsx         # Presentational - single activity or Spotify row + normalizeSpotify
       activity-carousel.tsx    # 'use client' - paginated carousel of activity rows
       discord-badge.tsx        # Presentational - single dcdn Discord badge icon
+      home-card-skeletons.tsx  # Presentational - loading skeletons for every home card
+      card-error-boundary.tsx  # 'use client' - per-card error boundary
+  hooks/
+    use-lanyard-presence.ts  # 'use client' - Lanyard WebSocket + Spotify fallback caching
   lib/
-    lanyard.shared.ts    # Client-safe Lanyard types + normalizeLanyard
+    lanyard.shared.ts    # Client-safe Lanyard types + normalizeLanyard + USER_FLAGS/BADGE_LABEL
     lanyard.ts           # Server-only Lanyard REST fetch
-    discord-profile.shared.ts # Client-safe Discord profile types + color helpers
+    discord-profile.shared.ts # Client-safe Discord profile types
     discord-profile.ts   # Server-only dcdn.dstn.to fetch
-    spotify.shared.ts    # Client-safe Spotify track/result types
-    spotify.ts           # Server-only token cache, top tracks, currently playing, recently played
+    contrast.shared.ts   # Client-safe WCAG contrast/luminance math
+    presence-theme.shared.ts # Client-safe theme derivation for ProfilePresenceCard
+    spotify.shared.ts    # Client-safe Spotify track/result types + mapSpotifyTrack
+    spotify.ts           # Server-only top tracks, currently playing, recently played
+    spotify-auth.ts      # Server-only token cache + retokend/direct token refresh
     steam.ts             # Steam recently played games
     tmdb.shared.ts       # Client-safe TMDB result types
     tmdb.ts              # TMDB favorites + watched lists (parallel fetches)
-    utils.ts             # formatPlaytime, truncate
+    utils.ts             # formatPlaytime
     site.ts              # Site URL helper for metadata and sitemap
+    grain-base64.ts      # Inline grain texture data URI for api/og
 ```
 
 # Environment Variables
@@ -85,7 +101,7 @@ All must be set in `.env.local`. Never commit values.
 | `TMDB_API_KEY` | - | Reserved (v3 key, unused currently) |
 | `TMDB_API_READ_ACCESS_TOKEN` | `lib/tmdb.ts` | Bearer token for TMDB v3 API |
 | `TMDB_ACCOUNT_ID` | `lib/tmdb.ts` | TMDB account ID for favorites/lists |
-| `DISCORD_USER_ID` | `api/lanyard/route.ts`, `api/discord-profile/route.ts` | Discord user ID (server-side) |
+| `DISCORD_USER_ID` | `api/discord-profile/route.ts`, `api/og/route.tsx`, `app/icon.tsx` | Discord user ID (server-side) |
 | `NEXT_PUBLIC_DISCORD_USER_ID` | `components/profile-presence-card.tsx` | Discord user ID (client-side, for Lanyard WebSocket) |
 | `SITE_URL` | `lib/site.ts` | Optional canonical production URL for metadata and sitemap |
 | `STEAM_API_KEY` | `lib/steam.ts` | Steam Web API key |
@@ -105,9 +121,9 @@ Server components call lib functions directly. Only create an API route when the
 - `next: { revalidate: 1800 }` - 30-min data (Steam recent games)
 
 ## Spotify token caching
-`getAccessToken()` in `lib/spotify.ts` caches the token in a module-level variable with expiry. Do not remove this - Spotify tokens are valid for 1 hour and calling the token endpoint on every request wastes quota.
+`getAccessToken()` in `lib/spotify-auth.ts` caches the token in a module-level variable with expiry. Do not remove this - Spotify tokens are valid for 1 hour and calling the token endpoint on every request wastes quota.
 
-When `RETOKEND_URL`/`RETOKEND_SECRET` are both set, `getAccessToken()` fetches from that retokend instance's `/api/token?profile=...` endpoint instead of refreshing directly against Spotify - retokend owns the actual Spotify refresh token in that case. `RETOKEND_ENABLED` in `lib/spotify.ts` selects the profile (`nextjs-portfolio-prod`/`nextjs-portfolio-dev`) based on `NODE_ENV`. This is optional - with those vars unset, the direct `SPOTIFY_*` refresh-token flow is used unchanged.
+When `RETOKEND_URL`/`RETOKEND_SECRET` are both set, `getAccessToken()` fetches from that retokend instance's `/api/token?profile=...` endpoint instead of refreshing directly against Spotify - retokend owns the actual Spotify refresh token in that case. `RETOKEND_ENABLED` in `lib/spotify-auth.ts` selects the profile (`nextjs-portfolio-prod`/`nextjs-portfolio-dev`) based on `NODE_ENV`. This is optional - with those vars unset, the direct `SPOTIFY_*` refresh-token flow is used unchanged.
 
 ## Mock data
 Every lib function returns mock data when env vars are absent. Keep mocks in sync with the real data shape when changing interfaces.
