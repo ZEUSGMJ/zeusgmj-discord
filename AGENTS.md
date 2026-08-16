@@ -12,7 +12,7 @@ Personal profile site displaying live data from Spotify, Steam, Discord (via Lan
 
 ## Rendering model
 - **Server components by default.** `SpotifyCard`, `SteamCard`, and `MediaCardWrapper` are async server components that call lib functions directly - no API routes involved.
-- **`ProfilePresenceCard` is `'use client'`** because it shows live Discord presence data. It reads presence state via `usePresence()` (`src/components/presence-provider.tsx`), which wraps `useLanyardPresence` (`src/hooks/use-lanyard-presence.ts` - WebSocket connection + Spotify fallback fetching) in a context provider mounted once in `page.tsx`. `ProfilePresenceCard` also fetches `/api/discord-profile` on mount and derives its color theme via `buildPresenceTheme` (`src/lib/presence-theme.shared.ts`).
+- **`ProfilePresenceCard` is `'use client'`** because it shows live Discord presence data. It reads presence state via `usePresence()` (`src/components/presence/presence-provider.tsx`), which wraps `useLanyardPresence` (`src/hooks/use-lanyard-presence.ts` - WebSocket connection + Spotify fallback fetching) in a context provider mounted once in `page.tsx`. `ProfilePresenceCard` also fetches `/api/discord-profile` on mount and derives its color theme via `buildPresenceTheme` (`src/lib/presence-theme.shared.ts`).
 - **`LinksCard`** is a static server component with no data fetching.
 
 ## Data flow
@@ -49,23 +49,28 @@ src/
         now-playing/route.ts     # Proxies Spotify currently-playing -> client
         recently-played/route.ts # Proxies Spotify recently-played -> client
   components/
-    profile-presence-card.tsx  # 'use client' - wires usePresence + theme to presentation
-    presence-provider.tsx      # 'use client' - PresenceProvider/usePresence context wrapping useLanyardPresence
     spotify-card.tsx           # Server - top tracks (last 4 weeks)
     steam-card.tsx             # Server - recently played games
-    media-card-wrapper.tsx     # Server - fetches TMDB data, passes to MediaCard
-    media-card.tsx             # 'use client' - tab state (movies/tv/anime, fav/watched)
     links-card.tsx             # Static - social links
     theme-background.tsx       # Static - page-wide ambient gradient from theme color
-    year-progress-card.tsx     # Server - day-of-year progress grid
+    media/
+      media-card-wrapper.tsx   # Server - fetches TMDB data, passes to MediaCard
+      media-card.tsx           # 'use client' - tab state (movies/tv/anime, fav/watched)
+    presence/
+      profile-presence-card.tsx # 'use client' - wires usePresence + theme to presentation
+      presence-provider.tsx     # 'use client' - PresenceProvider/usePresence context wrapping useLanyardPresence
+      status-dot.tsx            # Presentational - Discord status indicator dot
+      presence-header.tsx       # Presentational - banner/avatar/status for ProfilePresenceCard
+      presence-identity.tsx     # Presentational - name/badges/bio for ProfilePresenceCard
+      user-flag-badges.tsx      # Presentational - text badges from Discord public flags
+      activity-row.tsx          # Presentational - single activity or Spotify row + normalizeSpotify
+      activity-carousel.tsx     # 'use client' - paginated carousel of activity rows
+      discord-badge.tsx         # Presentational - single dcdn Discord badge icon
+    year-progress/
+      year-progress-card.tsx         # Server - day-of-year progress grid
+      year-progress-card-preview.tsx # 'use client' - design preview state
+      year-progress-designs.tsx      # Presentational year progress variants
     ui/
-      status-dot.tsx           # Presentational - Discord status indicator dot
-      presence-header.tsx      # Presentational - banner/avatar/status for ProfilePresenceCard
-      presence-identity.tsx    # Presentational - name/badges/bio for ProfilePresenceCard
-      user-flag-badges.tsx     # Presentational - text badges from Discord public flags
-      activity-row.tsx         # Presentational - single activity or Spotify row + normalizeSpotify
-      activity-carousel.tsx    # 'use client' - paginated carousel of activity rows
-      discord-badge.tsx        # Presentational - single dcdn Discord badge icon
       home-card-skeletons.tsx  # Presentational - loading skeletons for every home card
       card-error-boundary.tsx  # 'use client' - per-card error boundary
   hooks/
@@ -102,7 +107,7 @@ All must be set in `.env.local`. Never commit values.
 | `TMDB_API_READ_ACCESS_TOKEN` | `lib/tmdb.ts` | Bearer token for TMDB v3 API |
 | `TMDB_ACCOUNT_ID` | `lib/tmdb.ts` | TMDB account ID for favorites/lists |
 | `DISCORD_USER_ID` | `api/discord-profile/route.ts`, `api/og/route.tsx`, `app/icon.tsx` | Discord user ID (server-side) |
-| `NEXT_PUBLIC_DISCORD_USER_ID` | `components/profile-presence-card.tsx` | Discord user ID (client-side, for Lanyard WebSocket) |
+| `NEXT_PUBLIC_DISCORD_USER_ID` | `components/presence/profile-presence-card.tsx` | Discord user ID (client-side, for Lanyard WebSocket) |
 | `SITE_URL` | `lib/site.ts` | Optional canonical production URL for metadata and sitemap |
 | `STEAM_API_KEY` | `lib/steam.ts` | Steam Web API key |
 | `STEAM_ID` | `lib/steam.ts` | Steam 64-bit user ID |

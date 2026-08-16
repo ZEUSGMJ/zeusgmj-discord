@@ -1,12 +1,12 @@
 import { Suspense } from 'react'
-import ProfilePresenceCard from '@/components/profile-presence-card'
+import ProfilePresenceCard from '@/components/presence/profile-presence-card'
 import SpotifyCard from '@/components/spotify-card'
 import SteamCard from '@/components/steam-card'
-import MediaCardWrapper from '@/components/media-card-wrapper'
+import MediaCardWrapper from '@/components/media/media-card-wrapper'
 import LinksCard from '@/components/links-card'
 import ThemeBackground from '@/components/theme-background'
-import { PresenceProvider } from '@/components/presence-provider'
-import YearProgressCard from '@/components/year-progress-card'
+import { PresenceProvider } from '@/components/presence/presence-provider'
+import YearProgressCard from '@/components/year-progress/year-progress-card'
 import CardErrorBoundary from '@/components/ui/card-error-boundary'
 import {
   MediaCardSkeleton,

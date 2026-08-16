@@ -5,7 +5,7 @@ import { CalendarDays } from 'lucide-react'
 import YearProgressDesign, {
   YEAR_PROGRESS_VARIANTS,
   type YearProgressData,
-} from '@/components/year-progress-designs'
+} from '@/components/year-progress/year-progress-designs'
 
 export default function YearProgressCardPreview({
   progress,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import ActivityRow, { type CarouselItem } from '@/components/ui/activity-row'
+import ActivityRow, { type CarouselItem } from '@/components/presence/activity-row'
 
 export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
   const [index, setIndex] = useState(0)

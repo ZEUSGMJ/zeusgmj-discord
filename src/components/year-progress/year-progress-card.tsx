@@ -1,5 +1,5 @@
-import YearProgressCardPreview from '@/components/year-progress-card-preview'
-import type { YearProgressData } from '@/components/year-progress-designs'
+import YearProgressCardPreview from '@/components/year-progress/year-progress-card-preview'
+import type { YearProgressData } from '@/components/year-progress/year-progress-designs'
 
 const DAY_IN_MS = 86_400_000
 

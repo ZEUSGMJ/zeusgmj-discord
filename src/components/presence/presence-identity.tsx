@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { UserRoundSearch } from 'lucide-react'
 import type { NormalizedPresence } from '@/lib/lanyard.shared'
 import type { DiscordProfileBadge } from '@/lib/discord-profile.shared'
-import DiscordBadge from '@/components/ui/discord-badge'
-import UserFlagBadges from '@/components/ui/user-flag-badges'
+import DiscordBadge from '@/components/presence/discord-badge'
+import UserFlagBadges from '@/components/presence/user-flag-badges'
 
 export default function PresenceIdentity({
   user,
