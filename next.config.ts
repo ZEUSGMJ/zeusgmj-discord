@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       {
@@ -23,11 +26,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'media.discordapp.net',
         pathname: '/external/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'media.steampowered.com',
-        pathname: '/steamcommunity/public/images/apps/**',
       },
       {
         protocol: 'https',
