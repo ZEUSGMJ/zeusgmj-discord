@@ -63,7 +63,7 @@ function getQuarterProgress(progress: YearProgressData) {
 function ProgressFooter({ progress }: { progress: YearProgressData }) {
   return (
     <div className="mt-3 flex items-baseline justify-between gap-3">
-      <p className="text-2xl font-bold text-zinc-100">{progress.percent}%</p>
+      <p className="text-2xl font-bold text-(--theme-accent)">{progress.percent}%</p>
       <p className="text-xs text-zinc-600">
         Day {progress.dayOfYear} of {progress.daysInYear}
       </p>
@@ -85,9 +85,9 @@ function MatrixDesign({ progress }: { progress: YearProgressData }) {
             key={index}
             className={`aspect-square rounded-[1.5px] ${
               index === filledCount - 1
-                ? 'bg-zinc-50 ring-1 ring-zinc-500 ring-offset-1 ring-offset-zinc-900'
+                ? 'bg-zinc-50 ring-1 ring-(--theme-accent) ring-offset-1 ring-offset-zinc-900'
                 : index < filledCount
-                  ? 'bg-zinc-200'
+                  ? 'bg-(--theme-accent)'
                   : 'bg-zinc-700'
             }`}
           />
@@ -124,10 +124,10 @@ function OrbitDesign({ progress }: { progress: YearProgressData }) {
               strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray={`${progress.fraction * 100} 100`}
-              className="stroke-zinc-200"
+              className="stroke-(--theme-accent)"
             />
           </svg>
-          <span className="absolute inset-0 grid place-items-center text-2xl font-bold text-zinc-100">
+          <span className="absolute inset-0 grid place-items-center text-2xl font-bold text-(--theme-accent)">
             {progress.percent}%
           </span>
         </div>
@@ -167,9 +167,9 @@ function MonthsDesign({ progress }: { progress: YearProgressData }) {
               key={month}
               className={`relative flex h-9 items-center justify-center overflow-hidden rounded-md border font-mono text-[10px] font-semibold uppercase tracking-wider ${
                 isPast
-                  ? 'border-zinc-200 bg-zinc-200 text-zinc-900'
+                  ? 'border-(--theme-accent) bg-(--theme-accent) text-zinc-950'
                   : isCurrent
-                    ? 'border-zinc-500 bg-zinc-800 text-zinc-100'
+                    ? 'border-(--theme-accent) bg-zinc-800 text-(--theme-accent)'
                     : 'border-zinc-800 bg-zinc-800/60 text-zinc-600'
               }`}
             >
@@ -177,7 +177,7 @@ function MonthsDesign({ progress }: { progress: YearProgressData }) {
               {isCurrent && (
                 <span className="absolute inset-x-1 bottom-1 h-0.5 overflow-hidden rounded-full bg-zinc-700">
                   <span
-                    className="block h-full rounded-full bg-zinc-200"
+                    className="block h-full rounded-full bg-(--theme-accent)"
                     style={{ width: `${currentMonthFraction * 100}%` }}
                   />
                 </span>
@@ -209,7 +209,7 @@ function QuartersDesign({ progress }: { progress: YearProgressData }) {
               className="relative flex h-16 items-center justify-between overflow-hidden rounded-lg border border-zinc-800 bg-zinc-800/60 px-3"
             >
               <span
-                className="absolute inset-y-0 left-0 bg-zinc-700"
+                className="absolute inset-y-0 left-0 bg-(--theme-accent) opacity-30"
                 style={{ width: `${fill * 100}%` }}
               />
               <span className="relative font-mono text-xs font-semibold text-zinc-300">
@@ -246,7 +246,7 @@ function ColumnsDesign({ progress }: { progress: YearProgressData }) {
               <div key={month} className="flex flex-col items-center gap-2">
                 <span className="relative h-24 w-full overflow-hidden rounded-sm bg-zinc-800">
                   <span
-                    className="absolute inset-x-0 bottom-0 bg-zinc-200"
+                    className="absolute inset-x-0 bottom-0 bg-(--theme-accent)"
                     style={{ height: `${fill * 100}%` }}
                   />
                 </span>
@@ -282,7 +282,7 @@ function CountdownDesign({ progress }: { progress: YearProgressData }) {
         </div>
         <div className="mt-5 h-px bg-zinc-800" aria-hidden="true">
           <div
-            className="h-px bg-zinc-200"
+            className="h-px bg-(--theme-accent)"
             style={{ width: `${progress.fraction * 100}%` }}
           />
         </div>
@@ -318,7 +318,7 @@ function StripesDesign({ progress }: { progress: YearProgressData }) {
               </span>
               <span className="h-1 overflow-hidden bg-zinc-800">
                 <span
-                  className="block h-full bg-zinc-200"
+                  className="block h-full bg-(--theme-accent)"
                   style={{ width: `${fill * 100}%` }}
                 />
               </span>
@@ -352,10 +352,10 @@ function GaugeDesign({ progress }: { progress: YearProgressData }) {
               strokeWidth="10"
               strokeLinecap="round"
               strokeDasharray={`${progress.fraction * 100} 100`}
-              className="stroke-zinc-200"
+              className="stroke-(--theme-accent)"
             />
           </svg>
-          <span className="absolute inset-x-0 bottom-0 text-center font-mono text-3xl font-semibold text-zinc-100">
+          <span className="absolute inset-x-0 bottom-0 text-center font-mono text-3xl font-semibold text-(--theme-accent)">
             {progress.percent}%
           </span>
         </div>
@@ -376,7 +376,7 @@ function FractionDesign({ progress }: { progress: YearProgressData }) {
     <div className="flex flex-1 flex-col justify-between">
       <div className="grid flex-1 place-items-center py-2">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 font-mono">
-          <span className="text-right text-5xl font-semibold tracking-tighter text-zinc-100">
+          <span className="text-right text-5xl font-semibold tracking-tighter text-(--theme-accent)">
             {progress.dayOfYear}
           </span>
           <span className="h-20 w-px rotate-12 bg-zinc-700" aria-hidden="true" />
@@ -387,7 +387,7 @@ function FractionDesign({ progress }: { progress: YearProgressData }) {
       </div>
       <div className="flex items-baseline justify-between">
         <p className="text-xs uppercase tracking-widest text-zinc-600">days</p>
-        <p className="text-2xl font-bold text-zinc-100">{progress.percent}%</p>
+        <p className="text-2xl font-bold text-(--theme-accent)">{progress.percent}%</p>
       </div>
     </div>
   )
@@ -402,27 +402,27 @@ function RingsDesign({ progress }: { progress: YearProgressData }) {
       radius: 52,
       width: 7,
       fraction: progress.fraction,
-      strokeClass: 'stroke-zinc-100',
-      dotClass: 'bg-zinc-100',
-      textClass: 'text-zinc-300',
+      strokeClass: 'stroke-(--theme-accent)',
+      dotClass: 'bg-(--theme-accent)',
+      textClass: 'text-(--theme-accent)',
     },
     {
       label: 'Quarter',
       radius: 39,
       width: 7,
       fraction: quarterFraction,
-      strokeClass: 'stroke-zinc-400',
-      dotClass: 'bg-zinc-400',
-      textClass: 'text-zinc-400',
+      strokeClass: 'stroke-(--theme-accent) opacity-70',
+      dotClass: 'bg-(--theme-accent) opacity-70',
+      textClass: 'text-(--theme-accent) opacity-70',
     },
     {
       label: 'Month',
       radius: 26,
       width: 7,
       fraction: monthFraction,
-      strokeClass: 'stroke-zinc-600',
-      dotClass: 'bg-zinc-600',
-      textClass: 'text-zinc-500',
+      strokeClass: 'stroke-(--theme-accent) opacity-40',
+      dotClass: 'bg-(--theme-accent) opacity-40',
+      textClass: 'text-(--theme-accent) opacity-40',
     },
   ]
 
@@ -456,7 +456,7 @@ function RingsDesign({ progress }: { progress: YearProgressData }) {
               </g>
             ))}
           </svg>
-          <span className="absolute inset-0 grid place-items-center font-mono text-sm font-semibold text-zinc-100">
+          <span className="absolute inset-0 grid place-items-center font-mono text-sm font-semibold text-(--theme-accent)">
             {progress.percent}%
           </span>
         </div>
@@ -516,9 +516,9 @@ function CalendarDesign({ progress }: { progress: YearProgressData }) {
                       !isValid
                         ? 'opacity-0'
                         : isToday
-                          ? 'bg-zinc-100 ring-1 ring-zinc-500 ring-offset-1 ring-offset-zinc-900'
+                          ? 'bg-zinc-50 ring-1 ring-(--theme-accent) ring-offset-1 ring-offset-zinc-900'
                           : isPast
-                            ? 'bg-zinc-300'
+                            ? 'bg-(--theme-accent)'
                             : 'bg-zinc-800'
                     }`}
                   />
