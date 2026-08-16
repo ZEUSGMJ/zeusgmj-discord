@@ -97,9 +97,11 @@ export interface LanyardData {
 }
 
 export interface NormalizedActivity {
+  type: 0 | 3
   name: string
   details: string | null
   state: string | null
+  timestamps: { start: number; end: number } | null
   largeImageUrl: string | null
   largeText: string | null
   smallImageUrl: string | null
@@ -137,6 +139,31 @@ function resolveAssetUrl(assetKey: string, appId: string): string {
   return `https://cdn.discordapp.com/app-assets/${appId}/${assetKey}.webp?size=128`
 }
 
+function isDisplayableActivity(
+  activity: Activity,
+): activity is Activity & { type: NormalizedActivity['type']; application_id: string } {
+  return (activity.type === 0 || activity.type === 3) && activity.application_id !== null
+}
+
+function normalizeActivityTimestamps(
+  timestamps: Activity['timestamps'],
+): NormalizedActivity['timestamps'] {
+  const start = timestamps?.start
+  const end = timestamps?.end
+
+  if (
+    typeof start !== 'number' ||
+    typeof end !== 'number' ||
+    !Number.isFinite(start) ||
+    !Number.isFinite(end) ||
+    end <= start
+  ) {
+    return null
+  }
+
+  return { start, end }
+}
+
 export function normalizeLanyard(data: LanyardData): NormalizedPresence {
   const { discord_user, discord_status, activities, spotify, listening_to_spotify } = data
 
@@ -157,16 +184,18 @@ export function normalizeLanyard(data: LanyardData): NormalizedPresence {
     : null
 
   const normalizedActivities: NormalizedActivity[] = activities
-    .filter((activity) => activity.type === 0 && activity.application_id !== null)
+    .filter(isDisplayableActivity)
     .map((activity) => {
-      const appId = activity.application_id!
+      const appId = activity.application_id
       const assetKey = activity.assets?.large_image ?? null
       const smallKey = activity.assets?.small_image ?? null
 
       return {
+        type: activity.type,
         name: activity.name,
         details: activity.details ?? null,
         state: activity.state ?? null,
+        timestamps: normalizeActivityTimestamps(activity.timestamps),
         largeImageUrl: assetKey ? resolveAssetUrl(assetKey, appId) : null,
         largeText: activity.assets?.large_text ?? null,
         smallImageUrl: smallKey ? resolveAssetUrl(smallKey, appId) : null,

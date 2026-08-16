@@ -1,12 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { Gamepad } from 'lucide-react'
+import { Gamepad, MonitorPlay } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { NormalizedActivity, SpotifyTrack } from '@/lib/lanyard.shared'
 import type { SpotifyCurrentTrack, SpotifyRecentTrack } from '@/lib/spotify.shared'
 
-type SpotifyTimestamps = {
+type ProgressTimestamps = {
   start: number
   end: number
 }
@@ -16,7 +16,7 @@ export type SpotifyDisplay = {
   artistLine: string
   artUrl: string | null
   albumTitle: string
-  timestamps: SpotifyTimestamps | null
+  timestamps: ProgressTimestamps | null
 }
 
 export type CarouselItem =
@@ -42,9 +42,9 @@ export function normalizeSpotify(track: SpotifyTrack | SpotifyCurrentTrack | Spo
   }
 }
 
-function getValidSpotifyTimestamps(
-  timestamps: SpotifyDisplay['timestamps'],
-): SpotifyTimestamps | null {
+function getValidTimestamps(
+  timestamps: ProgressTimestamps | null,
+): ProgressTimestamps | null {
   if (
     timestamps &&
     Number.isFinite(timestamps.start) &&
@@ -65,7 +65,7 @@ function formatDuration(ms: number) {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
-function SpotifyProgress({ timestamps }: { timestamps: SpotifyTimestamps }) {
+function ActivityProgress({ timestamps }: { timestamps: ProgressTimestamps }) {
   const [now, setNow] = useState(() => Date.now())
   const durationMs = timestamps.end - timestamps.start
   const elapsedMs = Math.min(Math.max(now - timestamps.start, 0), durationMs)
@@ -83,7 +83,7 @@ function SpotifyProgress({ timestamps }: { timestamps: SpotifyTimestamps }) {
     <div className="mt-2">
       <div
         className="h-1 overflow-hidden rounded-full bg-(--cft-prog-trk)"
-        aria-label={`Spotify progress ${formatDuration(elapsedMs)} of ${formatDuration(durationMs)}`}
+        aria-label={`Playback progress ${formatDuration(elapsedMs)} of ${formatDuration(durationMs)}`}
         aria-valuemax={durationMs}
         aria-valuemin={0}
         aria-valuenow={elapsedMs}
@@ -106,7 +106,7 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
   if (item.kind === 'spotify') {
     const { data, fromApi, isRecentlyPlayed } = item
     const label = isRecentlyPlayed ? 'Recently played' : fromApi ? 'Listening on Spotify' : 'Listening to Spotify'
-    const timestamps = fromApi ? null : getValidSpotifyTimestamps(data.timestamps)
+    const timestamps = fromApi ? null : getValidTimestamps(data.timestamps)
 
     return (
       <div className="flex items-center gap-3">
@@ -129,13 +129,17 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
           </p>
           <p className="text-sm font-medium text-(--cft-hi) truncate">{data.songTitle}</p>
           <p className="text-xs text-(--cft-mid) truncate">{data.artistLine}</p>
-          {timestamps && <SpotifyProgress timestamps={timestamps} />}
+          {timestamps && <ActivityProgress timestamps={timestamps} />}
         </div>
       </div>
     )
   }
 
   const { data } = item
+  const activityLabel = data.type === 3 ? 'Watching' : 'Playing'
+  const ActivityIcon = data.type === 3 ? MonitorPlay : Gamepad
+  const timestamps = data.type === 3 ? getValidTimestamps(data.timestamps) : null
+
   return (
     <div className="flex items-center gap-3">
       {data.largeImageUrl ? (
@@ -153,20 +157,23 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
               alt={data.smallText ?? ''}
               width={128}
               height={128}
-              className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full ring-4 ring-zinc-900"
+              className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-zinc-900 ring-4 ring-zinc-900"
             />
           )}
         </div>
       ) : (
         <div className="w-24 h-24 rounded-xl bg-(--cft-img-fb) shrink-0 flex items-center justify-center">
-          <Gamepad className="w-6 h-6 text-(--cft-dim)" />
+          <ActivityIcon className="w-6 h-6 text-(--cft-dim)" />
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] text-(--cft-dim) uppercase tracking-widest mb-0.5 font-medium">Playing</p>
+        <p className="text-[11px] text-(--cft-dim) uppercase tracking-widest mb-0.5 font-medium">
+          {activityLabel}
+        </p>
         <p className="text-sm font-medium text-(--cft-hi) truncate">{data.name}</p>
         {data.details && <p className="text-xs text-(--cft-mid) truncate">{data.details}</p>}
         {data.state && <p className="text-xs text-(--cft-lo) truncate">{data.state}</p>}
+        {timestamps && <ActivityProgress timestamps={timestamps} />}
       </div>
     </div>
   )
