@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import type { NormalizedPresence } from '@/lib/lanyard.shared'
-import StatusDot from '@/components/ui/status-dot'
+import StatusDot from '@/components/presence/status-dot'
 
 const statusLabel: Record<NormalizedPresence['status'], string> = {
   online: 'Online',
@@ -26,15 +26,17 @@ export default function PresenceHeader({
   return (
     <div className="-mt-16 flex items-end justify-between">
       <div className="relative size-32 shrink-0">
-        <Image
-          src={user.avatarUrl}
-          alt={user.displayName}
-          width={512}
-          height={512}
-          className="relative z-10 size-32 rounded-full ring-8 ring-zinc-900"
-          preload
-          unoptimized={user.avatarUrl.includes('animated=true')}
-        />
+        <div className="relative z-10 size-32 rounded-full bg-zinc-900 ring-8 ring-zinc-900">
+          <Image
+            src={user.avatarUrl}
+            alt={user.displayName}
+            width={512}
+            height={512}
+            className="size-32 rounded-full"
+            preload
+            unoptimized={user.avatarUrl.includes('animated=true')}
+          />
+        </div>
         {user.avatarDecorationUrl && (
           <div className="pointer-events-none absolute -inset-4 z-20">
             <Image
