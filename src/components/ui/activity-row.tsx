@@ -3,7 +3,8 @@
 import Image from 'next/image'
 import { Gamepad } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { NormalizedActivity } from '@/lib/lanyard.shared'
+import type { NormalizedActivity, SpotifyTrack } from '@/lib/lanyard.shared'
+import type { SpotifyCurrentTrack, SpotifyRecentTrack } from '@/lib/spotify.shared'
 
 type SpotifyTimestamps = {
   start: number
@@ -21,6 +22,25 @@ export type SpotifyDisplay = {
 export type CarouselItem =
   | { kind: 'activity'; data: NormalizedActivity }
   | { kind: 'spotify'; data: SpotifyDisplay; fromApi: boolean; isRecentlyPlayed?: boolean }
+
+export function normalizeSpotify(track: SpotifyTrack | SpotifyCurrentTrack | SpotifyRecentTrack): SpotifyDisplay {
+  if ('song' in track) {
+    return {
+      songTitle: track.song,
+      artistLine: track.artist,
+      artUrl: track.album_art_url,
+      albumTitle: track.album,
+      timestamps: track.timestamps,
+    }
+  }
+  return {
+    songTitle: track.name,
+    artistLine: track.artists.join(', '),
+    artUrl: track.albumArtUrl,
+    albumTitle: track.albumName,
+    timestamps: null,
+  }
+}
 
 function getValidSpotifyTimestamps(
   timestamps: SpotifyDisplay['timestamps'],

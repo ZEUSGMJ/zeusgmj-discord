@@ -4,7 +4,3 @@ export function formatPlaytime(minutes: number): string {
   const m = minutes % 60
   return m === 0 ? `${h}h` : `${h}h ${m}m`
 }
-
-export function truncate(str: string, max: number): string {
-  return str.length > max ? str.slice(0, max - 1) + '…' : str
-}

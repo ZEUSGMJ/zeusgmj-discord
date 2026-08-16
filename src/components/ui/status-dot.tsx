@@ -1,7 +1,6 @@
 interface StatusDotProps {
   status: 'online' | 'idle' | 'dnd' | 'offline'
   size?: 'sm' | 'md' | 'lg' | 'xl'
-  className?: string
 }
 
 const colorMap = {
@@ -25,10 +24,10 @@ const labelMap = {
   offline: 'Offline',
 }
 
-export default function StatusDot({ status, size = 'md', className = '' }: StatusDotProps) {
+export default function StatusDot({ status, size = 'md' }: StatusDotProps) {
   return (
     <span
-      className={`inline-block rounded-full ring-4 ring-zinc-900 ring-offset-2 ring-offset-zinc-900 ${colorMap[status]} ${sizeMap[size]} ${className}`}
+      className={`inline-block rounded-full ring-4 ring-zinc-900 ring-offset-2 ring-offset-zinc-900 ${colorMap[status]} ${sizeMap[size]}`}
       title={labelMap[status]}
       aria-label={labelMap[status]}
     />

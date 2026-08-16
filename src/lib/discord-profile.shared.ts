@@ -8,7 +8,6 @@ export interface DiscordProfileBadge {
 export interface DiscordProfileData {
   badges: DiscordProfileBadge[]
   themeColors: [number, number] | null
-  accentColor: number | null
   bio: string | null
   bannerHash: string | null
 }

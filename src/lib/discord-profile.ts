@@ -29,7 +29,6 @@ export async function fetchDiscordProfile(userId: string): Promise<DiscordProfil
       link: badge.link,
     })),
     themeColors,
-    accentColor: (userProfile.accent_color ?? user.accent_color) as number | null,
     bio: (userProfile.bio ?? user.bio ?? null) as string | null,
     bannerHash: (userProfile.banner ?? user.banner ?? null) as string | null,
   }

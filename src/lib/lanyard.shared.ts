@@ -12,6 +12,20 @@ export const USER_FLAGS = {
   CERTIFIED_MODERATOR: 1 << 18,
 } as const
 
+export const BADGE_LABEL: Record<string, string> = {
+  STAFF: 'Discord Staff',
+  PARTNER: 'Partner',
+  HYPESQUAD: 'HypeSquad Events',
+  BUG_HUNTER_LEVEL_1: 'Bug Hunter',
+  HYPESQUAD_BRAVERY: 'Bravery',
+  HYPESQUAD_BRILLIANCE: 'Brilliance',
+  HYPESQUAD_BALANCE: 'Balance',
+  PREMIUM_EARLY_SUPPORTER: 'Early Supporter',
+  BUG_HUNTER_LEVEL_2: 'Bug Hunter Gold',
+  VERIFIED_DEVELOPER: 'Verified Developer',
+  CERTIFIED_MODERATOR: 'Moderator Alumni',
+}
+
 export interface DiscordUser {
   id: string
   username: string
@@ -109,7 +123,6 @@ export interface NormalizedPresence {
   primaryGuild: { tag: string; badgeUrl: string | null } | null
   spotify: SpotifyTrack | null
   listeningToSpotify: boolean
-  platforms: { desktop: boolean; mobile: boolean; web: boolean }
 }
 
 function resolveAssetUrl(assetKey: string, appId: string): string {
@@ -201,10 +214,5 @@ export function normalizeLanyard(data: LanyardData): NormalizedPresence {
     primaryGuild,
     spotify: listening_to_spotify ? spotify : null,
     listeningToSpotify: listening_to_spotify,
-    platforms: {
-      desktop: data.active_on_discord_desktop,
-      mobile: data.active_on_discord_mobile,
-      web: data.active_on_discord_web,
-    },
   }
 }
