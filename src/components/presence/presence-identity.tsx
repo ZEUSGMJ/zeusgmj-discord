@@ -4,6 +4,7 @@ import type { NormalizedPresence } from '@/lib/lanyard.shared'
 import type { DiscordProfileBadge } from '@/lib/discord-profile.shared'
 import DiscordBadge from '@/components/presence/discord-badge'
 import UserFlagBadges from '@/components/presence/user-flag-badges'
+import BioMarkdown from '@/components/presence/bio-markdown'
 
 export default function PresenceIdentity({
   user,
@@ -91,7 +92,7 @@ export default function PresenceIdentity({
         </div>
       )}
 
-      <p className="text-sm text-(--cft-lo) mt-1">{bio}</p>
+      <BioMarkdown bio={bio} />
     </div>
   )
 }
