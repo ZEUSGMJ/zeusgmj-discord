@@ -147,9 +147,7 @@ function resolveAssetUrl(assetKey: string, appId: string): string {
   return `https://cdn.discordapp.com/app-assets/${appId}/${assetKey}.webp?size=128`;
 }
 
-function isDisplayableActivity(
-  activity: Activity,
-): activity is Activity & {
+function isDisplayableActivity(activity: Activity): activity is Activity & {
   type: NormalizedActivity['type'];
   application_id: string;
 } {

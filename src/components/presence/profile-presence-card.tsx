@@ -94,7 +94,7 @@ export default function ProfilePresenceCard() {
         onLayoutAnimationComplete={onProfileLayoutAnimationComplete}
         className={
           compact
-            ? 'relative aspect-[16/3] max-h-[84px] min-h-16'
+            ? 'relative aspect-16/3 max-h-21 min-h-16'
             : 'relative h-full'
         }
       >
@@ -182,7 +182,7 @@ export default function ProfilePresenceCard() {
       onLayoutAnimationComplete={onProfileLayoutAnimationComplete}
       className={
         compact
-          ? 'relative aspect-[16/3] max-h-[84px] min-h-16'
+          ? 'relative aspect-16/3 max-h-21 min-h-16'
           : 'relative h-full'
       }
     >
