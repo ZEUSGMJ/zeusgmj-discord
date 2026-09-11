@@ -1,6 +1,8 @@
 import Image from 'next/image'
+import { motion } from 'motion/react'
 import type { NormalizedPresence } from '@/lib/lanyard.shared'
 import StatusDot from '@/components/presence/status-dot'
+import { LAYOUT_TRANSITION } from '@/components/reveal/timing'
 
 const statusLabel: Record<NormalizedPresence['status'], string> = {
   online: 'Online',
@@ -19,25 +21,43 @@ const statusBadge: Record<NormalizedPresence['status'], string> = {
 export default function PresenceHeader({
   user,
   status,
+  compact = false,
 }: {
   user: NormalizedPresence['user']
   status: NormalizedPresence['status']
+  compact?: boolean
 }) {
   return (
-    <div className="-mt-16 flex items-end justify-between">
-      <div className="relative size-32 shrink-0">
-        <div className="relative z-10 size-32 rounded-full bg-zinc-900 ring-8 ring-zinc-900">
+    <motion.div
+      layout
+      transition={LAYOUT_TRANSITION}
+      className={compact ? 'flex items-center gap-3' : '-mt-16 flex items-end justify-between'}
+    >
+      <motion.div
+        layout
+        transition={LAYOUT_TRANSITION}
+        className={compact ? 'relative size-12 shrink-0' : 'relative size-32 shrink-0'}
+      >
+        <motion.div
+          layout
+          transition={LAYOUT_TRANSITION}
+          className={
+            compact
+              ? 'relative z-10 size-12 rounded-full bg-zinc-900 ring-2 ring-zinc-900'
+              : 'relative z-10 size-32 rounded-full bg-zinc-900 ring-8 ring-zinc-900'
+          }
+        >
           <Image
             src={user.avatarUrl}
             alt={user.displayName}
             width={512}
             height={512}
-            className="size-32 rounded-full"
+            className={compact ? 'size-12 rounded-full' : 'size-32 rounded-full'}
             preload
             unoptimized={user.avatarUrl.includes('animated=true')}
           />
-        </div>
-        {user.avatarDecorationUrl && (
+        </motion.div>
+        {!compact && user.avatarDecorationUrl && (
           <div className="pointer-events-none absolute -inset-4 z-20">
             <Image
               src={user.avatarDecorationUrl}
@@ -49,14 +69,16 @@ export default function PresenceHeader({
             />
           </div>
         )}
-        <div className="absolute bottom-0.5 right-0.5 z-30">
-          <StatusDot status={status} size="xl" />
+        <div className={compact ? 'absolute bottom-0 right-0 z-30' : 'absolute bottom-0.5 right-0.5 z-30'}>
+          <StatusDot status={status} size={compact ? 'sm' : 'xl'} />
         </div>
-      </div>
+      </motion.div>
 
-      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusBadge[status]}`}>
-        {statusLabel[status]}
-      </span>
-    </div>
+      {!compact && (
+        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusBadge[status]}`}>
+          {statusLabel[status]}
+        </span>
+      )}
+    </motion.div>
   )
 }

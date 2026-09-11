@@ -1,20 +1,14 @@
 import Image from 'next/image'
 import { UserRoundSearch } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import type { NormalizedPresence } from '@/lib/lanyard.shared'
 import type { DiscordProfileBadge } from '@/lib/discord-profile.shared'
 import DiscordBadge from '@/components/presence/discord-badge'
 import UserFlagBadges from '@/components/presence/user-flag-badges'
 import BioMarkdown from '@/components/presence/bio-markdown'
+import { DUR_MICRO, EASE_OUT } from '@/components/reveal/timing'
 
-export default function PresenceIdentity({
-  user,
-  primaryGuild,
-  customStatus,
-  badges,
-  bio,
-  discordUserId,
-  accentColor,
-}: {
+interface PresenceIdentityProps {
   user: NormalizedPresence['user']
   primaryGuild: NormalizedPresence['primaryGuild']
   customStatus: NormalizedPresence['customStatus']
@@ -22,7 +16,59 @@ export default function PresenceIdentity({
   bio: string
   discordUserId: string | undefined
   accentColor: string | null
-}) {
+  compact?: boolean
+  listeningToSpotify?: boolean
+}
+
+function PresenceIdentityCompact({
+  user,
+  primaryGuild,
+  customStatus,
+  listeningToSpotify = false,
+}: PresenceIdentityProps) {
+  const statusText = customStatus?.text ?? customStatus?.emojiName ?? null
+
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <h2 className="truncate text-sm font-semibold leading-tight text-(--cft-hi)">
+          {user.displayName}
+        </h2>
+        {primaryGuild && (
+          <span className="flex shrink-0 items-center gap-1 rounded bg-(--cft-badge-bg) px-1.5 py-0.5 text-[10px] font-black tracking-widest text-(--cft-lo)">
+            {primaryGuild.badgeUrl && (
+              <Image
+                src={primaryGuild.badgeUrl}
+                alt=""
+                width={10}
+                height={10}
+                className="h-2.5 w-2.5 rounded-sm"
+                aria-hidden
+              />
+            )}
+            {primaryGuild.tag}
+          </span>
+        )}
+      </div>
+      {statusText && (
+        <p className="truncate text-xs text-(--cft-lo)">
+          {listeningToSpotify && '♪ '}
+          {statusText}
+        </p>
+      )}
+    </div>
+  )
+}
+
+function PresenceIdentityExpanded({
+  user,
+  primaryGuild,
+  customStatus,
+  badges,
+  bio,
+  discordUserId,
+  accentColor,
+}: PresenceIdentityProps) {
   return (
     <div className="flex gap-1 flex-col">
       <div className="flex items-start justify-between gap-3">
@@ -94,5 +140,26 @@ export default function PresenceIdentity({
 
       <BioMarkdown bio={bio} />
     </div>
+  )
+}
+
+export default function PresenceIdentity(props: PresenceIdentityProps) {
+  const { compact = false } = props
+  const reduceMotion = useReducedMotion() ?? false
+
+  return (
+    <AnimatePresence mode="popLayout" initial={false}>
+      <motion.div
+        key={compact ? 'compact' : 'expanded'}
+        layout
+        className={compact ? 'min-w-0 flex-1' : undefined}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: reduceMotion ? 0 : DUR_MICRO, ease: EASE_OUT }}
+      >
+        {compact ? <PresenceIdentityCompact {...props} /> : <PresenceIdentityExpanded {...props} />}
+      </motion.div>
+    </AnimatePresence>
   )
 }

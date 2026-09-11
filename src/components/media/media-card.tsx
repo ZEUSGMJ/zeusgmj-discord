@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import type { AllTmdbData, TmdbMovie, TmdbResult } from '@/lib/tmdb.shared'
 import { Film } from 'lucide-react'
+import { DUR_MICRO, EASE_OUT } from '@/components/reveal/timing'
 
 type Category = 'movies' | 'tv' | 'anime'
 type Mode = 'favorites' | 'watched'
@@ -67,6 +69,7 @@ function ItemRow({ item }: { item: TmdbMovie }) {
 export default function MediaCard({ data }: Props) {
   const [category, setCategory] = useState<Category>('movies')
   const [mode, setMode] = useState<Mode>('favorites')
+  const reduceMotion = useReducedMotion() ?? false
 
   const result: TmdbResult =
     mode === 'favorites'
@@ -127,11 +130,20 @@ export default function MediaCard({ data }: Props) {
       {result.items.length === 0 ? (
         <p className="text-sm text-zinc-600 italic">No items found</p>
       ) : (
-        <ul className="space-y-3">
-          {result.items.map((item) => (
-            <ItemRow key={item.id} item={item} />
-          ))}
-        </ul>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.ul
+            key={`${category}-${mode}`}
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: DUR_MICRO, ease: EASE_OUT }}
+            className="space-y-3"
+          >
+            {result.items.map((item) => (
+              <ItemRow key={item.id} item={item} />
+            ))}
+          </motion.ul>
+        </AnimatePresence>
       )}
 
       {result.error && (
