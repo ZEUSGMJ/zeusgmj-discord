@@ -93,9 +93,7 @@ export default function ProfilePresenceCard() {
         transition={compact ? PROFILE_COMPACT_TRANSITION : LAYOUT_TRANSITION}
         onLayoutAnimationComplete={onProfileLayoutAnimationComplete}
         className={
-          compact
-            ? 'relative aspect-16/3 max-h-21 min-h-16'
-            : 'relative h-full'
+          compact ? 'relative aspect-16/3 max-h-21 min-h-16' : 'relative h-full'
         }
       >
         <motion.div
@@ -181,9 +179,7 @@ export default function ProfilePresenceCard() {
       transition={compact ? PROFILE_COMPACT_TRANSITION : LAYOUT_TRANSITION}
       onLayoutAnimationComplete={onProfileLayoutAnimationComplete}
       className={
-        compact
-          ? 'relative aspect-16/3 max-h-21 min-h-16'
-          : 'relative h-full'
+        compact ? 'relative aspect-16/3 max-h-21 min-h-16' : 'relative h-full'
       }
     >
       <motion.div
