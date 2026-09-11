@@ -1,30 +1,30 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import type { AllTmdbData, TmdbMovie, TmdbResult } from '@/lib/tmdb.shared'
-import { Film } from 'lucide-react'
-import { DUR_MICRO, EASE_OUT } from '@/components/reveal/timing'
+import { useState } from 'react';
+import Image from 'next/image';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import type { AllTmdbData, TmdbMovie, TmdbResult } from '@/lib/tmdb.shared';
+import { Film } from 'lucide-react';
+import { DUR_MICRO, EASE_OUT } from '@/components/reveal/timing';
 
-type Category = 'movies' | 'tv' | 'anime'
-type Mode = 'favorites' | 'watched'
+type Category = 'movies' | 'tv' | 'anime';
+type Mode = 'favorites' | 'watched';
 
 interface Props {
-  data: AllTmdbData
+  data: AllTmdbData;
 }
 
 function ItemRow({ item }: { item: TmdbMovie }) {
-  const [loaded, setLoaded] = useState(false)
-  const hasPoster = !!item.posterUrl
+  const [loaded, setLoaded] = useState(false);
+  const hasPoster = !!item.posterUrl;
 
   return (
     <li className="flex gap-3">
-      <div className="relative w-10 h-14 shrink-0">
+      <div className="relative h-14 w-10 shrink-0">
         {hasPoster ? (
           <>
             {!loaded && (
-              <div className="absolute inset-0 rounded-lg bg-zinc-800 animate-pulse" />
+              <div className="absolute inset-0 animate-pulse rounded-lg bg-zinc-800" />
             )}
             <Image
               src={item.posterUrl!}
@@ -38,15 +38,15 @@ function ItemRow({ item }: { item: TmdbMovie }) {
             />
           </>
         ) : (
-          <div className="absolute inset-0 rounded-lg bg-zinc-800 animate-pulse" />
+          <div className="absolute inset-0 animate-pulse rounded-lg bg-zinc-800" />
         )}
       </div>
 
-      <div className="min-w-0 flex flex-col justify-center gap-1.5">
+      <div className="flex min-w-0 flex-col justify-center gap-1.5">
         {hasPoster && !loaded ? (
           <>
-            <div className="h-3 w-28 bg-zinc-800 rounded animate-pulse" />
-            <div className="h-2 w-16 bg-zinc-800 rounded animate-pulse" />
+            <div className="h-3 w-28 animate-pulse rounded bg-zinc-800" />
+            <div className="h-2 w-16 animate-pulse rounded bg-zinc-800" />
           </>
         ) : (
           <>
@@ -54,7 +54,7 @@ function ItemRow({ item }: { item: TmdbMovie }) {
               href={item.tmdbUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-zinc-200 truncate block leading-tight hover:text-zinc-400 transition-colors"
+              className="block truncate text-sm leading-tight font-medium text-zinc-200 transition-colors hover:text-zinc-400"
             >
               {item.title}
             </a>
@@ -63,33 +63,33 @@ function ItemRow({ item }: { item: TmdbMovie }) {
         )}
       </div>
     </li>
-  )
+  );
 }
 
 export default function MediaCard({ data }: Props) {
-  const [category, setCategory] = useState<Category>('movies')
-  const [mode, setMode] = useState<Mode>('favorites')
-  const reduceMotion = useReducedMotion() ?? false
+  const [category, setCategory] = useState<Category>('movies');
+  const [mode, setMode] = useState<Mode>('favorites');
+  const reduceMotion = useReducedMotion() ?? false;
 
   const result: TmdbResult =
     mode === 'favorites'
       ? data.favorites[category]
-      : data.watched[category === 'tv' ? 'shows' : category]
+      : data.watched[category === 'tv' ? 'shows' : category];
 
   return (
-    <div className="h-full rounded-3xl bg-zinc-900 border border-zinc-800/50 p-5 shine-edge">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+    <div className="shine-edge h-full rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
           Media
         </h3>
-        <Film className="text-zinc-500 w-4 h-4" />
+        <Film className="h-4 w-4 text-zinc-500" />
       </div>
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as Category)}
-          className="bg-zinc-800 text-zinc-300 text-xs rounded-lg border border-zinc-700/50 px-2 py-1 cursor-pointer focus:outline-none"
+          className="cursor-pointer rounded-lg border border-zinc-700/50 bg-zinc-800 px-2 py-1 text-xs text-zinc-300 focus:outline-none"
         >
           <option value="movies">Movies</option>
           <option value="tv">TV Shows</option>
@@ -101,7 +101,7 @@ export default function MediaCard({ data }: Props) {
             onClick={() => setMode('favorites')}
             className={`transition-colors ${
               mode === 'favorites'
-                ? 'text-zinc-100 font-medium'
+                ? 'font-medium text-zinc-100'
                 : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >
@@ -112,7 +112,7 @@ export default function MediaCard({ data }: Props) {
             onClick={() => setMode('watched')}
             className={`transition-colors ${
               mode === 'watched'
-                ? 'text-zinc-100 font-medium'
+                ? 'font-medium text-zinc-100'
                 : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >
@@ -122,7 +122,7 @@ export default function MediaCard({ data }: Props) {
       </div>
 
       {mode === 'watched' && result.itemCount !== undefined && (
-        <p className="text-xs text-zinc-500 mb-3">
+        <p className="mb-3 text-xs text-zinc-500">
           {result.itemCount} {category} watched
         </p>
       )}
@@ -147,8 +147,8 @@ export default function MediaCard({ data }: Props) {
       )}
 
       {result.error && (
-        <p className="text-xs text-zinc-700 mt-3">{result.error}</p>
+        <p className="mt-3 text-xs text-zinc-700">{result.error}</p>
       )}
     </div>
-  )
+  );
 }

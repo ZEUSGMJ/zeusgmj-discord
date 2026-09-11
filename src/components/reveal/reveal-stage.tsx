@@ -1,32 +1,47 @@
-'use client'
+'use client';
 
-import { AnimatePresence, motion } from 'motion/react'
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import RevealCard, { type RevealCardId } from '@/components/reveal/reveal-card'
-import { useReveal } from '@/components/reveal/reveal-context'
-import { CARD_WAVES, GRID_ID, LAYOUT_TRANSITION, MOBILE_CARD_WAVES, type CardWave } from '@/components/reveal/timing'
+import { AnimatePresence, motion } from 'motion/react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
+import { useMediaQuery } from '@/hooks/use-media-query';
+import RevealCard, { type RevealCardId } from '@/components/reveal/reveal-card';
+import { useReveal } from '@/components/reveal/reveal-context';
+import {
+  CARD_WAVES,
+  GRID_ID,
+  LAYOUT_TRANSITION,
+  MOBILE_CARD_WAVES,
+  type CardWave,
+} from '@/components/reveal/timing';
 
 interface RevealStageProps {
-  presence: ReactNode
-  links: ReactNode
-  yearProgress: ReactNode
-  tracks: ReactNode
-  games: ReactNode
-  media: ReactNode
+  presence: ReactNode;
+  links: ReactNode;
+  yearProgress: ReactNode;
+  tracks: ReactNode;
+  games: ReactNode;
+  media: ReactNode;
 }
 
-const DETAIL_CARD_COUNT = 4
+const DETAIL_CARD_COUNT = 4;
 function useFrozenCardWaves(generation: number) {
-  const isSmOrWider = useMediaQuery('(min-width: 640px)')
-  const resolvedWaves = isSmOrWider ? CARD_WAVES : MOBILE_CARD_WAVES
-  const [snapshot, setSnapshot] = useState(() => ({ generation, waves: resolvedWaves }))
+  const isSmOrWider = useMediaQuery('(min-width: 640px)');
+  const resolvedWaves = isSmOrWider ? CARD_WAVES : MOBILE_CARD_WAVES;
+  const [snapshot, setSnapshot] = useState(() => ({
+    generation,
+    waves: resolvedWaves,
+  }));
 
   if (snapshot.generation !== generation) {
-    setSnapshot({ generation, waves: resolvedWaves })
+    setSnapshot({ generation, waves: resolvedWaves });
   }
 
-  return snapshot.waves as Record<RevealCardId, CardWave>
+  return snapshot.waves as Record<RevealCardId, CardWave>;
 }
 
 export default function RevealStage({
@@ -44,42 +59,46 @@ export default function RevealStage({
     intentGeneration,
     onDetailsEnterComplete,
     onDetailsExitComplete,
-  } = useReveal()
-  const cardWaves = useFrozenCardWaves(intentGeneration)
+  } = useReveal();
+  const cardWaves = useFrozenCardWaves(intentGeneration);
   const enterProgressRef = useRef({
     generation: intentGeneration,
     cardIds: new Set<RevealCardId>(),
     reported: false,
-  })
+  });
 
   useEffect(() => {
     enterProgressRef.current = {
       generation: intentGeneration,
       cardIds: new Set<RevealCardId>(),
       reported: false,
-    }
-  }, [detailsMounted, intentGeneration])
+    };
+  }, [detailsMounted, intentGeneration]);
 
-  const handleCardEnterComplete = useCallback((cardId: RevealCardId, generation: number) => {
-    if (!targetExpanded || !layoutExpanded || generation !== intentGeneration) return
+  const handleCardEnterComplete = useCallback(
+    (cardId: RevealCardId, generation: number) => {
+      if (!targetExpanded || !layoutExpanded || generation !== intentGeneration)
+        return;
 
-    if (enterProgressRef.current.generation !== generation) {
-      enterProgressRef.current = {
-        generation,
-        cardIds: new Set<RevealCardId>(),
-        reported: false,
+      if (enterProgressRef.current.generation !== generation) {
+        enterProgressRef.current = {
+          generation,
+          cardIds: new Set<RevealCardId>(),
+          reported: false,
+        };
       }
-    }
 
-    const progress = enterProgressRef.current
-    if (progress.reported) return
-    progress.cardIds.add(cardId)
+      const progress = enterProgressRef.current;
+      if (progress.reported) return;
+      progress.cardIds.add(cardId);
 
-    if (progress.cardIds.size === DETAIL_CARD_COUNT) {
-      progress.reported = true
-      onDetailsEnterComplete(generation)
-    }
-  }, [intentGeneration, layoutExpanded, onDetailsEnterComplete, targetExpanded])
+      if (progress.cardIds.size === DETAIL_CARD_COUNT) {
+        progress.reported = true;
+        onDetailsEnterComplete(generation);
+      }
+    },
+    [intentGeneration, layoutExpanded, onDetailsEnterComplete, targetExpanded],
+  );
 
   return (
     <motion.div
@@ -100,7 +119,11 @@ export default function RevealStage({
         {presence}
       </motion.div>
 
-      <AnimatePresence mode="sync" initial={false} onExitComplete={onDetailsExitComplete}>
+      <AnimatePresence
+        mode="sync"
+        initial={false}
+        onExitComplete={onDetailsExitComplete}
+      >
         {detailsMounted && (
           <RevealCard
             key="column"
@@ -152,5 +175,5 @@ export default function RevealStage({
         )}
       </AnimatePresence>
     </motion.div>
-  )
+  );
 }

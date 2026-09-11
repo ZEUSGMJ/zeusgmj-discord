@@ -1,88 +1,93 @@
-import { ImageResponse } from 'next/og'
-import { fetchDiscordProfile } from '@/lib/discord-profile'
-import { intToHex } from '@/lib/discord-profile.shared'
-import { contrastRatio } from '@/lib/contrast.shared'
+import { ImageResponse } from 'next/og';
+import { fetchDiscordProfile } from '@/lib/discord-profile';
+import { intToHex } from '@/lib/discord-profile.shared';
+import { contrastRatio } from '@/lib/contrast.shared';
 
-export const size = { width: 64, height: 64 }
-export const contentType = 'image/png'
-export const revalidate = 3600
+export const size = { width: 64, height: 64 };
+export const contentType = 'image/png';
+export const revalidate = 3600;
 
 function pickBackground(textHex: string, preferredBgHex: string): string {
-  if (contrastRatio(textHex, preferredBgHex) >= 3.5) return preferredBgHex
+  if (contrastRatio(textHex, preferredBgHex) >= 3.5) return preferredBgHex;
   return contrastRatio(textHex, '#000000') >= contrastRatio(textHex, '#ffffff')
     ? '#000000'
-    : '#ffffff'
+    : '#ffffff';
 }
 
 async function loadRobotoSerifFont(): Promise<ArrayBuffer | null> {
   try {
     const cssRes = await fetch(
-      'https://fonts.googleapis.com/css2?family=Roboto+Serif:ital,wght@1,800&display=swap'
-    )
-    if (!cssRes.ok) return null
-    const css = await cssRes.text()
-    const match = css.match(/src:\s*url\(([^)]+)\)/)
-    if (!match) return null
-    const fontRes = await fetch(match[1])
-    if (!fontRes.ok) return null
-    return fontRes.arrayBuffer()
+      'https://fonts.googleapis.com/css2?family=Roboto+Serif:ital,wght@1,800&display=swap',
+    );
+    if (!cssRes.ok) return null;
+    const css = await cssRes.text();
+    const match = css.match(/src:\s*url\(([^)]+)\)/);
+    if (!match) return null;
+    const fontRes = await fetch(match[1]);
+    if (!fontRes.ok) return null;
+    return fontRes.arrayBuffer();
   } catch {
-    return null
+    return null;
   }
 }
 
 export default async function Icon() {
-  const userId = process.env.DISCORD_USER_ID
-  let textColor = '#ffffff'
-  let bgColor = '#000000'
+  const userId = process.env.DISCORD_USER_ID;
+  let textColor = '#ffffff';
+  let bgColor = '#000000';
 
   if (userId) {
     try {
-      const profile = await fetchDiscordProfile(userId)
+      const profile = await fetchDiscordProfile(userId);
       if (profile.themeColors) {
-        const fgHex = intToHex(profile.themeColors[0])
-        const candidateBgHex = intToHex(profile.themeColors[1])
-        textColor = fgHex
-        bgColor = pickBackground(fgHex, candidateBgHex)
+        const fgHex = intToHex(profile.themeColors[0]);
+        const candidateBgHex = intToHex(profile.themeColors[1]);
+        textColor = fgHex;
+        bgColor = pickBackground(fgHex, candidateBgHex);
       }
     } catch {}
   }
 
-  const fontData = await loadRobotoSerifFont()
+  const fontData = await loadRobotoSerifFont();
 
   return new ImageResponse(
-    (
-      <div
+    <div
+      style={{
+        width: 64,
+        height: 64,
+        borderRadius: '50%',
+        backgroundColor: bgColor,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <span
         style={{
-          width: 64,
-          height: 64,
-          borderRadius: '50%',
-          backgroundColor: bgColor,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          fontFamily: fontData ? '"Roboto Serif"' : 'serif',
+          fontWeight: 800,
+          fontStyle: 'italic',
+          fontSize: 42,
+          color: textColor,
+          lineHeight: 1,
+          marginTop: 4,
         }}
       >
-        <span
-          style={{
-            fontFamily: fontData ? '"Roboto Serif"' : 'serif',
-            fontWeight: 800,
-            fontStyle: 'italic',
-            fontSize: 42,
-            color: textColor,
-            lineHeight: 1,
-            marginTop: 4,
-          }}
-        >
-          Z
-        </span>
-      </div>
-    ),
+        Z
+      </span>
+    </div>,
     {
       ...size,
       fonts: fontData
-        ? [{ name: 'Roboto Serif', data: fontData, weight: 800, style: 'italic' }]
+        ? [
+            {
+              name: 'Roboto Serif',
+              data: fontData,
+              weight: 800,
+              style: 'italic',
+            },
+          ]
         : [],
-    }
-  )
+    },
+  );
 }

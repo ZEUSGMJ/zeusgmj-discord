@@ -1,5 +1,5 @@
-import { HomePageLoadingGrid } from '@/components/ui/home-card-skeletons'
+import { HomePageLoadingGrid } from '@/components/ui/home-card-skeletons';
 
 export default function Loading() {
-  return <HomePageLoadingGrid />
+  return <HomePageLoadingGrid />;
 }

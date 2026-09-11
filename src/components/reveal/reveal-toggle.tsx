@@ -1,22 +1,22 @@
-'use client'
+'use client';
 
-import { ChevronDown } from 'lucide-react'
-import { motion, useReducedMotion } from 'motion/react'
-import { useEffect } from 'react'
-import { useReveal } from '@/components/reveal/reveal-context'
-import { GRID_ID } from '@/components/reveal/timing'
+import { ChevronDown } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+import { useEffect } from 'react';
+import { useReveal } from '@/components/reveal/reveal-context';
+import { GRID_ID } from '@/components/reveal/timing';
 
 export default function RevealToggle({ compact }: { compact: boolean }) {
-  const { targetExpanded, toggle, collapse } = useReveal()
-  const reduceMotion = useReducedMotion() ?? false
+  const { targetExpanded, toggle, collapse } = useReveal();
+  const reduceMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') collapse()
+      if (event.key === 'Escape') collapse();
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [collapse])
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [collapse]);
 
   return (
     <motion.button
@@ -29,7 +29,7 @@ export default function RevealToggle({ compact }: { compact: boolean }) {
       className={
         compact
           ? 'relative z-30 flex size-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-300 backdrop-blur-sm transition-colors hover:text-zinc-100'
-          : 'absolute right-4 top-4 z-30 flex size-9 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-300 backdrop-blur-sm transition-colors hover:text-zinc-100'
+          : 'absolute top-4 right-4 z-30 flex size-9 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-300 backdrop-blur-sm transition-colors hover:text-zinc-100'
       }
       whileHover={reduceMotion ? undefined : { scale: 1.04 }}
       whileTap={reduceMotion ? undefined : { scale: 0.97 }}
@@ -48,5 +48,5 @@ export default function RevealToggle({ compact }: { compact: boolean }) {
         <ChevronDown className="size-4" />
       </motion.span>
     </motion.button>
-  )
+  );
 }

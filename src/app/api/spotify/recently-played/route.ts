@@ -1,8 +1,8 @@
-import { getRecentlyPlayed } from '@/lib/spotify'
+import { getRecentlyPlayed } from '@/lib/spotify';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const tracks = await getRecentlyPlayed()
-  return Response.json(tracks)
+  const tracks = await getRecentlyPlayed();
+  return Response.json(tracks);
 }

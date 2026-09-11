@@ -10,7 +10,7 @@ export const USER_FLAGS = {
   BUG_HUNTER_LEVEL_2: 1 << 14,
   VERIFIED_DEVELOPER: 1 << 17,
   CERTIFIED_MODERATOR: 1 << 18,
-} as const
+} as const;
 
 export const BADGE_LABEL: Record<string, string> = {
   STAFF: 'Discord Staff',
@@ -24,132 +24,146 @@ export const BADGE_LABEL: Record<string, string> = {
   BUG_HUNTER_LEVEL_2: 'Bug Hunter Gold',
   VERIFIED_DEVELOPER: 'Verified Developer',
   CERTIFIED_MODERATOR: 'Moderator Alumni',
-}
+};
 
 export interface DiscordUser {
-  id: string
-  username: string
-  display_name: string | null
-  global_name: string | null
-  avatar: string | null
-  discriminator: string
-  public_flags: number
-  banner: string | null
-  banner_color: string | null
-  avatar_decoration_data: { asset: string; sku_id: string } | null
+  id: string;
+  username: string;
+  display_name: string | null;
+  global_name: string | null;
+  avatar: string | null;
+  discriminator: string;
+  public_flags: number;
+  banner: string | null;
+  banner_color: string | null;
+  avatar_decoration_data: { asset: string; sku_id: string } | null;
   primary_guild: {
-    badge: string
-    tag: string
-    identity_guild_id: string
-    identity_enabled: boolean
-  } | null
+    badge: string;
+    tag: string;
+    identity_guild_id: string;
+    identity_enabled: boolean;
+  } | null;
   collectibles: {
     nameplate: {
-      asset: string
-      palette: string
-      sku_id: string
-      label: string
-      expires_at: string | null
-    } | null
-  } | null
-  display_name_styles: { colors: number[]; effect_id: number; font_id: number } | null
+      asset: string;
+      palette: string;
+      sku_id: string;
+      label: string;
+      expires_at: string | null;
+    } | null;
+  } | null;
+  display_name_styles: {
+    colors: number[];
+    effect_id: number;
+    font_id: number;
+  } | null;
 }
 
 export interface SpotifyTrack {
-  song: string
-  artist: string
-  album: string
-  album_art_url: string | null
-  track_id: string | null
-  timestamps: { start: number; end: number } | null
+  song: string;
+  artist: string;
+  album: string;
+  album_art_url: string | null;
+  track_id: string | null;
+  timestamps: { start: number; end: number } | null;
 }
 
 export interface Activity {
-  id: string
-  name: string
-  type: number
-  state: string | null
-  details: string | null
-  timestamps: { start?: number; end?: number } | null
+  id: string;
+  name: string;
+  type: number;
+  state: string | null;
+  details: string | null;
+  timestamps: { start?: number; end?: number } | null;
   assets: {
-    large_image: string | null
-    large_text: string | null
-    small_image: string | null
-    small_text: string | null
-  } | null
-  application_id: string | null
-  created_at: number
-  emoji: { id: string | null; name: string; animated: boolean } | null
+    large_image: string | null;
+    large_text: string | null;
+    small_image: string | null;
+    small_text: string | null;
+  } | null;
+  application_id: string | null;
+  created_at: number;
+  emoji: { id: string | null; name: string; animated: boolean } | null;
 }
 
 export interface LanyardData {
-  discord_user: DiscordUser
-  discord_status: 'online' | 'idle' | 'dnd' | 'offline'
-  activities: Activity[]
-  listening_to_spotify: boolean
-  spotify: SpotifyTrack | null
-  kv: Record<string, string>
-  active_on_discord_desktop: boolean
-  active_on_discord_mobile: boolean
-  active_on_discord_web: boolean
-  active_on_discord_embedded: boolean
-  active_on_discord_vr: boolean
+  discord_user: DiscordUser;
+  discord_status: 'online' | 'idle' | 'dnd' | 'offline';
+  activities: Activity[];
+  listening_to_spotify: boolean;
+  spotify: SpotifyTrack | null;
+  kv: Record<string, string>;
+  active_on_discord_desktop: boolean;
+  active_on_discord_mobile: boolean;
+  active_on_discord_web: boolean;
+  active_on_discord_embedded: boolean;
+  active_on_discord_vr: boolean;
 }
 
 export interface NormalizedActivity {
-  type: 0 | 3
-  name: string
-  details: string | null
-  state: string | null
-  timestamps: { start: number; end: number } | null
-  largeImageUrl: string | null
-  largeText: string | null
-  smallImageUrl: string | null
-  smallText: string | null
+  type: 0 | 3;
+  name: string;
+  details: string | null;
+  state: string | null;
+  timestamps: { start: number; end: number } | null;
+  largeImageUrl: string | null;
+  largeText: string | null;
+  smallImageUrl: string | null;
+  smallText: string | null;
 }
 
 export interface NormalizedPresence {
-  status: LanyardData['discord_status']
+  status: LanyardData['discord_status'];
   user: {
-    id: string
-    username: string
-    displayName: string
-    avatarUrl: string
-    bannerUrl: string | null
-    bannerColor: string | null
-    avatarDecorationUrl: string | null
-    publicFlags: number
-  }
-  activities: NormalizedActivity[]
-  customStatus: { emojiUrl: string | null; emojiName: string | null; text: string | null } | null
-  primaryGuild: { tag: string; badgeUrl: string | null } | null
-  spotify: SpotifyTrack | null
-  listeningToSpotify: boolean
+    id: string;
+    username: string;
+    displayName: string;
+    avatarUrl: string;
+    bannerUrl: string | null;
+    bannerColor: string | null;
+    avatarDecorationUrl: string | null;
+    publicFlags: number;
+  };
+  activities: NormalizedActivity[];
+  customStatus: {
+    emojiUrl: string | null;
+    emojiName: string | null;
+    text: string | null;
+  } | null;
+  primaryGuild: { tag: string; badgeUrl: string | null } | null;
+  spotify: SpotifyTrack | null;
+  listeningToSpotify: boolean;
 }
 
 function resolveAssetUrl(assetKey: string, appId: string): string {
   if (assetKey.startsWith('mp:external/')) {
-    return `https://media.discordapp.net/external/${assetKey.slice('mp:external/'.length)}`
+    return `https://media.discordapp.net/external/${assetKey.slice('mp:external/'.length)}`;
   }
 
   if (assetKey.startsWith('spotify:')) {
-    return `https://i.scdn.co/image/${assetKey.slice('spotify:'.length)}`
+    return `https://i.scdn.co/image/${assetKey.slice('spotify:'.length)}`;
   }
 
-  return `https://cdn.discordapp.com/app-assets/${appId}/${assetKey}.webp?size=128`
+  return `https://cdn.discordapp.com/app-assets/${appId}/${assetKey}.webp?size=128`;
 }
 
 function isDisplayableActivity(
   activity: Activity,
-): activity is Activity & { type: NormalizedActivity['type']; application_id: string } {
-  return (activity.type === 0 || activity.type === 3) && activity.application_id !== null
+): activity is Activity & {
+  type: NormalizedActivity['type'];
+  application_id: string;
+} {
+  return (
+    (activity.type === 0 || activity.type === 3) &&
+    activity.application_id !== null
+  );
 }
 
 function normalizeActivityTimestamps(
   timestamps: Activity['timestamps'],
 ): NormalizedActivity['timestamps'] {
-  const start = timestamps?.start
-  const end = timestamps?.end
+  const start = timestamps?.start;
+  const end = timestamps?.end;
 
   if (
     typeof start !== 'number' ||
@@ -158,14 +172,20 @@ function normalizeActivityTimestamps(
     !Number.isFinite(end) ||
     end <= start
   ) {
-    return null
+    return null;
   }
 
-  return { start, end }
+  return { start, end };
 }
 
 export function normalizeLanyard(data: LanyardData): NormalizedPresence {
-  const { discord_user, discord_status, activities, spotify, listening_to_spotify } = data
+  const {
+    discord_user,
+    discord_status,
+    activities,
+    spotify,
+    listening_to_spotify,
+  } = data;
 
   const avatarUrl = discord_user.avatar
     ? `https://cdn.discordapp.com/avatars/${discord_user.id}/${discord_user.avatar}.webp?size=256${discord_user.avatar.startsWith('a_') ? '&animated=true' : ''}`
@@ -173,22 +193,22 @@ export function normalizeLanyard(data: LanyardData): NormalizedPresence {
         discord_user.discriminator === '0'
           ? 0
           : parseInt(discord_user.discriminator, 10) % 5
-      }.png`
+      }.png`;
 
   const bannerUrl = discord_user.banner
     ? `https://cdn.discordapp.com/banners/${discord_user.id}/${discord_user.banner}.webp?size=480${discord_user.banner.startsWith('a_') ? '&animated=true' : ''}`
-    : null
+    : null;
 
   const avatarDecorationUrl = discord_user.avatar_decoration_data
     ? `https://cdn.discordapp.com/avatar-decoration-presets/${discord_user.avatar_decoration_data.asset}.png`
-    : null
+    : null;
 
   const normalizedActivities: NormalizedActivity[] = activities
     .filter(isDisplayableActivity)
     .map((activity) => {
-      const appId = activity.application_id
-      const assetKey = activity.assets?.large_image ?? null
-      const smallKey = activity.assets?.small_image ?? null
+      const appId = activity.application_id;
+      const assetKey = activity.assets?.large_image ?? null;
+      const smallKey = activity.assets?.small_image ?? null;
 
       return {
         type: activity.type,
@@ -200,21 +220,22 @@ export function normalizeLanyard(data: LanyardData): NormalizedPresence {
         largeText: activity.assets?.large_text ?? null,
         smallImageUrl: smallKey ? resolveAssetUrl(smallKey, appId) : null,
         smallText: activity.assets?.small_text ?? null,
-      }
-    })
+      };
+    });
 
-  const customActivity = activities.find((activity) => activity.type === 4) ?? null
-  let customStatus: NormalizedPresence['customStatus'] = null
+  const customActivity =
+    activities.find((activity) => activity.type === 4) ?? null;
+  let customStatus: NormalizedPresence['customStatus'] = null;
 
   if (customActivity) {
-    const emoji = customActivity.emoji ?? null
+    const emoji = customActivity.emoji ?? null;
     customStatus = {
       emojiUrl: emoji?.id
         ? `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? 'gif' : 'webp'}?size=32`
         : null,
       emojiName: emoji?.name ?? null,
       text: customActivity.state ?? null,
-    }
+    };
   }
 
   const primaryGuild = discord_user.primary_guild
@@ -224,14 +245,17 @@ export function normalizeLanyard(data: LanyardData): NormalizedPresence {
           ? `https://cdn.discordapp.com/guild-tag-badges/${discord_user.primary_guild.identity_guild_id}/${discord_user.primary_guild.badge}.webp?size=32`
           : null,
       }
-    : null
+    : null;
 
   return {
     status: discord_status,
     user: {
       id: discord_user.id,
       username: discord_user.username,
-      displayName: discord_user.display_name ?? discord_user.global_name ?? discord_user.username,
+      displayName:
+        discord_user.display_name ??
+        discord_user.global_name ??
+        discord_user.username,
       avatarUrl,
       bannerUrl,
       bannerColor: discord_user.banner_color ?? null,
@@ -243,5 +267,5 @@ export function normalizeLanyard(data: LanyardData): NormalizedPresence {
     primaryGuild,
     spotify: listening_to_spotify ? spotify : null,
     listeningToSpotify: listening_to_spotify,
-  }
+  };
 }

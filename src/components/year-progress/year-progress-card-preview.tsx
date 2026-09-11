@@ -1,38 +1,39 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { CalendarDays } from 'lucide-react'
+import { useState } from 'react';
+import { CalendarDays } from 'lucide-react';
 import YearProgressDesign, {
   YEAR_PROGRESS_VARIANTS,
   type YearProgressData,
-} from '@/components/year-progress/year-progress-designs'
+} from '@/components/year-progress/year-progress-designs';
 
 export default function YearProgressCardPreview({
   progress,
 }: {
-  progress: YearProgressData
+  progress: YearProgressData;
 }) {
-  const [variantIndex, setVariantIndex] = useState(0)
-  const [iconRotation, setIconRotation] = useState(0)
-  const variant = YEAR_PROGRESS_VARIANTS[variantIndex]
+  const [variantIndex, setVariantIndex] = useState(0);
+  const [iconRotation, setIconRotation] = useState(0);
+  const variant = YEAR_PROGRESS_VARIANTS[variantIndex];
   const nextVariant =
-    YEAR_PROGRESS_VARIANTS[(variantIndex + 1) % YEAR_PROGRESS_VARIANTS.length]
+    YEAR_PROGRESS_VARIANTS[(variantIndex + 1) % YEAR_PROGRESS_VARIANTS.length];
 
   function showNextVariant() {
-    setVariantIndex(
-      (current) => (current + 1) % YEAR_PROGRESS_VARIANTS.length,
-    )
-    setIconRotation((current) => current + 45)
+    setVariantIndex((current) => (current + 1) % YEAR_PROGRESS_VARIANTS.length);
+    setIconRotation((current) => current + 45);
   }
 
   return (
     <div className="shine-edge flex h-full min-h-44 flex-1 flex-col rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex min-w-0 items-baseline gap-2">
-          <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+          <h3 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
             {progress.year} Progress
           </h3>
-          <span className="font-mono text-[10px] text-zinc-700" aria-hidden="true">
+          <span
+            className="font-mono text-[10px] text-zinc-700"
+            aria-hidden="true"
+          >
             {String(variantIndex + 1).padStart(2, '0')}/
             {YEAR_PROGRESS_VARIANTS.length}
           </span>
@@ -63,5 +64,5 @@ export default function YearProgressCardPreview({
         <YearProgressDesign index={variantIndex} progress={progress} />
       </div>
     </div>
-  )
+  );
 }

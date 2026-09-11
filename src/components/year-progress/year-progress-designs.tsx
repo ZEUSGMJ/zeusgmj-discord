@@ -1,18 +1,18 @@
 export interface YearProgressData {
-  year: number
-  daysInYear: number
-  dayOfYear: number
-  fraction: number
-  percent: number
-  monthIndex: number
-  dayOfMonth: number
-  daysInMonth: number
+  year: number;
+  daysInYear: number;
+  dayOfYear: number;
+  fraction: number;
+  percent: number;
+  monthIndex: number;
+  dayOfMonth: number;
+  daysInMonth: number;
 }
 
-const COLS = 20
-const ROWS = 15
-const TOTAL_CELLS = COLS * ROWS
-const DAY_IN_MS = 86_400_000
+const COLS = 20;
+const ROWS = 15;
+const TOTAL_CELLS = COLS * ROWS;
+const DAY_IN_MS = 86_400_000;
 const MONTHS = [
   'Jan',
   'Feb',
@@ -26,7 +26,7 @@ const MONTHS = [
   'Oct',
   'Nov',
   'Dec',
-] as const
+] as const;
 export const YEAR_PROGRESS_VARIANTS = [
   'Matrix',
   'Orbit',
@@ -39,17 +39,17 @@ export const YEAR_PROGRESS_VARIANTS = [
   'Fraction',
   'Rings',
   'Calendar',
-] as const
+] as const;
 
 function getQuarterProgress(progress: YearProgressData) {
-  const quarterIndex = Math.floor(progress.monthIndex / 3)
-  const quarterStart = Date.UTC(progress.year, quarterIndex * 3, 1)
-  const quarterEnd = Date.UTC(progress.year, (quarterIndex + 1) * 3, 1)
+  const quarterIndex = Math.floor(progress.monthIndex / 3);
+  const quarterStart = Date.UTC(progress.year, quarterIndex * 3, 1);
+  const quarterEnd = Date.UTC(progress.year, (quarterIndex + 1) * 3, 1);
   const currentDay = Date.UTC(
     progress.year,
     progress.monthIndex,
     progress.dayOfMonth,
-  )
+  );
 
   return {
     quarterIndex,
@@ -57,22 +57,24 @@ function getQuarterProgress(progress: YearProgressData) {
       (currentDay - quarterStart + DAY_IN_MS) / (quarterEnd - quarterStart),
       1,
     ),
-  }
+  };
 }
 
 function ProgressFooter({ progress }: { progress: YearProgressData }) {
   return (
     <div className="mt-3 flex items-baseline justify-between gap-3">
-      <p className="text-2xl font-bold text-(--theme-accent)">{progress.percent}%</p>
+      <p className="text-2xl font-bold text-(--theme-accent)">
+        {progress.percent}%
+      </p>
       <p className="text-xs text-zinc-600">
         Day {progress.dayOfYear} of {progress.daysInYear}
       </p>
     </div>
-  )
+  );
 }
 
 function MatrixDesign({ progress }: { progress: YearProgressData }) {
-  const filledCount = Math.round(progress.fraction * TOTAL_CELLS)
+  const filledCount = Math.round(progress.fraction * TOTAL_CELLS);
 
   return (
     <>
@@ -95,11 +97,11 @@ function MatrixDesign({ progress }: { progress: YearProgressData }) {
       </div>
       <ProgressFooter progress={progress} />
     </>
-  )
+  );
 }
 
 function OrbitDesign({ progress }: { progress: YearProgressData }) {
-  const daysRemaining = progress.daysInYear - progress.dayOfYear
+  const daysRemaining = progress.daysInYear - progress.dayOfYear;
 
   return (
     <div className="flex flex-1 flex-col justify-between">
@@ -133,10 +135,10 @@ function OrbitDesign({ progress }: { progress: YearProgressData }) {
         </div>
 
         <div className="min-w-0">
-          <p className="font-mono text-3xl font-semibold leading-none text-zinc-200">
+          <p className="font-mono text-3xl leading-none font-semibold text-zinc-200">
             {progress.dayOfYear}
           </p>
-          <p className="mt-1 text-xs uppercase tracking-wider text-zinc-500">
+          <p className="mt-1 text-xs tracking-wider text-zinc-500 uppercase">
             days elapsed
           </p>
           <div className="my-3 h-px bg-zinc-800" />
@@ -149,23 +151,26 @@ function OrbitDesign({ progress }: { progress: YearProgressData }) {
         Day {progress.dayOfYear} of {progress.daysInYear}
       </p>
     </div>
-  )
+  );
 }
 
 function MonthsDesign({ progress }: { progress: YearProgressData }) {
-  const currentMonthFraction = progress.dayOfMonth / progress.daysInMonth
+  const currentMonthFraction = progress.dayOfMonth / progress.daysInMonth;
 
   return (
     <div className="flex flex-1 flex-col justify-between">
-      <div className="grid flex-1 grid-cols-4 content-center gap-2 py-1" aria-hidden="true">
+      <div
+        className="grid flex-1 grid-cols-4 content-center gap-2 py-1"
+        aria-hidden="true"
+      >
         {MONTHS.map((month, index) => {
-          const isPast = index < progress.monthIndex
-          const isCurrent = index === progress.monthIndex
+          const isPast = index < progress.monthIndex;
+          const isCurrent = index === progress.monthIndex;
 
           return (
             <span
               key={month}
-              className={`relative flex h-9 items-center justify-center overflow-hidden rounded-md border font-mono text-[10px] font-semibold uppercase tracking-wider ${
+              className={`relative flex h-9 items-center justify-center overflow-hidden rounded-md border font-mono text-[10px] font-semibold tracking-wider uppercase ${
                 isPast
                   ? 'border-(--theme-accent) bg-(--theme-accent) text-zinc-950'
                   : isCurrent
@@ -183,25 +188,28 @@ function MonthsDesign({ progress }: { progress: YearProgressData }) {
                 </span>
               )}
             </span>
-          )
+          );
         })}
       </div>
       <ProgressFooter progress={progress} />
     </div>
-  )
+  );
 }
 
 function QuartersDesign({ progress }: { progress: YearProgressData }) {
   const { quarterIndex, fraction: currentQuarterProgress } =
-    getQuarterProgress(progress)
+    getQuarterProgress(progress);
 
   return (
     <div className="flex flex-1 flex-col justify-between">
-      <div className="grid flex-1 grid-cols-2 content-center gap-2 py-1" aria-hidden="true">
+      <div
+        className="grid flex-1 grid-cols-2 content-center gap-2 py-1"
+        aria-hidden="true"
+      >
         {Array.from({ length: 4 }, (_, index) => {
-          const isPast = index < quarterIndex
-          const isCurrent = index === quarterIndex
-          const fill = isPast ? 1 : isCurrent ? currentQuarterProgress : 0
+          const isPast = index < quarterIndex;
+          const isCurrent = index === quarterIndex;
+          const fill = isPast ? 1 : isCurrent ? currentQuarterProgress : 0;
 
           return (
             <div
@@ -219,28 +227,31 @@ function QuartersDesign({ progress }: { progress: YearProgressData }) {
                 {Math.round(fill * 100)}%
               </span>
             </div>
-          )
+          );
         })}
       </div>
       <ProgressFooter progress={progress} />
     </div>
-  )
+  );
 }
 
 function ColumnsDesign({ progress }: { progress: YearProgressData }) {
-  const currentMonthFraction = progress.dayOfMonth / progress.daysInMonth
+  const currentMonthFraction = progress.dayOfMonth / progress.daysInMonth;
 
   return (
     <div className="flex flex-1 flex-col justify-between">
       <div className="flex flex-1 items-center py-2">
-        <div className="grid w-full grid-cols-12 items-end gap-1.5" aria-hidden="true">
+        <div
+          className="grid w-full grid-cols-12 items-end gap-1.5"
+          aria-hidden="true"
+        >
           {MONTHS.map((month, index) => {
             const fill =
               index < progress.monthIndex
                 ? 1
                 : index === progress.monthIndex
                   ? currentMonthFraction
-                  : 0
+                  : 0;
 
             return (
               <div key={month} className="flex flex-col items-center gap-2">
@@ -250,11 +261,11 @@ function ColumnsDesign({ progress }: { progress: YearProgressData }) {
                     style={{ height: `${fill * 100}%` }}
                   />
                 </span>
-                <span className="font-mono text-[8px] uppercase text-zinc-600">
+                <span className="font-mono text-[8px] text-zinc-600 uppercase">
                   {month.charAt(0)}
                 </span>
               </div>
-            )
+            );
           })}
         </div>
       </div>
@@ -262,23 +273,25 @@ function ColumnsDesign({ progress }: { progress: YearProgressData }) {
         Day {progress.dayOfYear} of {progress.daysInYear}
       </p>
     </div>
-  )
+  );
 }
 
 function CountdownDesign({ progress }: { progress: YearProgressData }) {
-  const daysRemaining = progress.daysInYear - progress.dayOfYear
+  const daysRemaining = progress.daysInYear - progress.dayOfYear;
 
   return (
     <div className="flex flex-1 flex-col justify-between">
       <div className="flex flex-1 flex-col justify-center">
-        <p className="font-mono text-7xl font-semibold leading-none tracking-tighter text-zinc-100">
+        <p className="font-mono text-7xl leading-none font-semibold tracking-tighter text-zinc-100">
           {daysRemaining}
         </p>
         <div className="mt-2 flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+          <p className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
             days left
           </p>
-          <p className="font-mono text-sm text-zinc-500">{progress.percent}% used</p>
+          <p className="font-mono text-sm text-zinc-500">
+            {progress.percent}% used
+          </p>
         </div>
         <div className="mt-5 h-px bg-zinc-800" aria-hidden="true">
           <div
@@ -291,11 +304,11 @@ function CountdownDesign({ progress }: { progress: YearProgressData }) {
         Day {progress.dayOfYear} of {progress.daysInYear}
       </p>
     </div>
-  )
+  );
 }
 
 function StripesDesign({ progress }: { progress: YearProgressData }) {
-  const currentMonthFraction = progress.dayOfMonth / progress.daysInMonth
+  const currentMonthFraction = progress.dayOfMonth / progress.daysInMonth;
 
   return (
     <div className="flex flex-1 flex-col justify-between">
@@ -309,11 +322,14 @@ function StripesDesign({ progress }: { progress: YearProgressData }) {
               ? 1
               : index === progress.monthIndex
                 ? currentMonthFraction
-                : 0
+                : 0;
 
           return (
-            <div key={month} className="grid grid-cols-[1.5rem_1fr] items-center gap-1.5">
-              <span className="font-mono text-[8px] leading-none uppercase text-zinc-600">
+            <div
+              key={month}
+              className="grid grid-cols-[1.5rem_1fr] items-center gap-1.5"
+            >
+              <span className="font-mono text-[8px] leading-none text-zinc-600 uppercase">
                 {month}
               </span>
               <span className="h-1 overflow-hidden bg-zinc-800">
@@ -323,12 +339,12 @@ function StripesDesign({ progress }: { progress: YearProgressData }) {
                 />
               </span>
             </div>
-          )
+          );
         })}
       </div>
       <ProgressFooter progress={progress} />
     </div>
-  )
+  );
 }
 
 function GaugeDesign({ progress }: { progress: YearProgressData }) {
@@ -368,7 +384,7 @@ function GaugeDesign({ progress }: { progress: YearProgressData }) {
         Day {progress.dayOfYear} of {progress.daysInYear}
       </p>
     </div>
-  )
+  );
 }
 
 function FractionDesign({ progress }: { progress: YearProgressData }) {
@@ -379,23 +395,28 @@ function FractionDesign({ progress }: { progress: YearProgressData }) {
           <span className="text-right text-5xl font-semibold tracking-tighter text-(--theme-accent)">
             {progress.dayOfYear}
           </span>
-          <span className="h-20 w-px rotate-12 bg-zinc-700" aria-hidden="true" />
+          <span
+            className="h-20 w-px rotate-12 bg-zinc-700"
+            aria-hidden="true"
+          />
           <span className="text-5xl font-semibold tracking-tighter text-zinc-500">
             {progress.daysInYear}
           </span>
         </div>
       </div>
       <div className="flex items-baseline justify-between">
-        <p className="text-xs uppercase tracking-widest text-zinc-600">days</p>
-        <p className="text-2xl font-bold text-(--theme-accent)">{progress.percent}%</p>
+        <p className="text-xs tracking-widest text-zinc-600 uppercase">days</p>
+        <p className="text-2xl font-bold text-(--theme-accent)">
+          {progress.percent}%
+        </p>
       </div>
     </div>
-  )
+  );
 }
 
 function RingsDesign({ progress }: { progress: YearProgressData }) {
-  const { fraction: quarterFraction } = getQuarterProgress(progress)
-  const monthFraction = progress.dayOfMonth / progress.daysInMonth
+  const { fraction: quarterFraction } = getQuarterProgress(progress);
+  const monthFraction = progress.dayOfMonth / progress.daysInMonth;
   const rings = [
     {
       label: 'Year',
@@ -424,7 +445,7 @@ function RingsDesign({ progress }: { progress: YearProgressData }) {
       dotClass: 'bg-(--theme-accent) opacity-40',
       textClass: 'text-(--theme-accent) opacity-40',
     },
-  ]
+  ];
 
   return (
     <div className="flex flex-1 flex-col justify-between">
@@ -479,35 +500,38 @@ function RingsDesign({ progress }: { progress: YearProgressData }) {
         Day {progress.dayOfYear} of {progress.daysInYear}
       </p>
     </div>
-  )
+  );
 }
 
 function CalendarDesign({ progress }: { progress: YearProgressData }) {
-  const startOfYear = Date.UTC(progress.year, 0, 1)
+  const startOfYear = Date.UTC(progress.year, 0, 1);
 
   return (
     <div className="flex flex-1 flex-col justify-between">
-      <div className="flex flex-1 flex-col justify-center gap-1 py-1" aria-hidden="true">
+      <div
+        className="flex flex-1 flex-col justify-center gap-1 py-1"
+        aria-hidden="true"
+      >
         {MONTHS.map((month, monthIndex) => {
           const daysInMonth = new Date(
             Date.UTC(progress.year, monthIndex + 1, 0),
-          ).getUTCDate()
+          ).getUTCDate();
           const monthStartDay =
-            (Date.UTC(progress.year, monthIndex, 1) - startOfYear) / DAY_IN_MS
+            (Date.UTC(progress.year, monthIndex, 1) - startOfYear) / DAY_IN_MS;
 
           return (
             <div
               key={month}
               className="grid grid-cols-[1.25rem_repeat(31,minmax(0,1fr))] items-center gap-0.75"
             >
-              <span className="font-mono text-[8px] uppercase text-zinc-600">
+              <span className="font-mono text-[8px] text-zinc-600 uppercase">
                 {month.charAt(0)}
               </span>
               {Array.from({ length: 31 }, (_, dayIndex) => {
-                const isValid = dayIndex < daysInMonth
-                const ordinal = monthStartDay + dayIndex + 1
-                const isPast = ordinal <= progress.dayOfYear
-                const isToday = ordinal === progress.dayOfYear
+                const isValid = dayIndex < daysInMonth;
+                const ordinal = monthStartDay + dayIndex + 1;
+                const isPast = ordinal <= progress.dayOfYear;
+                const isToday = ordinal === progress.dayOfYear;
 
                 return (
                   <span
@@ -522,46 +546,46 @@ function CalendarDesign({ progress }: { progress: YearProgressData }) {
                             : 'bg-zinc-800'
                     }`}
                   />
-                )
+                );
               })}
             </div>
-          )
+          );
         })}
       </div>
       <ProgressFooter progress={progress} />
     </div>
-  )
+  );
 }
 
 export default function YearProgressDesign({
   index,
   progress,
 }: {
-  index: number
-  progress: YearProgressData
+  index: number;
+  progress: YearProgressData;
 }) {
   switch (index) {
     case 1:
-      return <OrbitDesign progress={progress} />
+      return <OrbitDesign progress={progress} />;
     case 2:
-      return <MonthsDesign progress={progress} />
+      return <MonthsDesign progress={progress} />;
     case 3:
-      return <QuartersDesign progress={progress} />
+      return <QuartersDesign progress={progress} />;
     case 4:
-      return <ColumnsDesign progress={progress} />
+      return <ColumnsDesign progress={progress} />;
     case 5:
-      return <CountdownDesign progress={progress} />
+      return <CountdownDesign progress={progress} />;
     case 6:
-      return <StripesDesign progress={progress} />
+      return <StripesDesign progress={progress} />;
     case 7:
-      return <GaugeDesign progress={progress} />
+      return <GaugeDesign progress={progress} />;
     case 8:
-      return <FractionDesign progress={progress} />
+      return <FractionDesign progress={progress} />;
     case 9:
-      return <RingsDesign progress={progress} />
+      return <RingsDesign progress={progress} />;
     case 10:
-      return <CalendarDesign progress={progress} />
+      return <CalendarDesign progress={progress} />;
     default:
-      return <MatrixDesign progress={progress} />
+      return <MatrixDesign progress={progress} />;
   }
 }

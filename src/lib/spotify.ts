@@ -1,13 +1,13 @@
-import 'server-only'
+import 'server-only';
 
 import type {
   SpotifyCurrentTrack,
   SpotifyRecentTrack,
   SpotifyResult,
   SpotifyTopTrack,
-} from '@/lib/spotify.shared'
-import { mapSpotifyTrack } from '@/lib/spotify.shared'
-import { RETOKEND_ENABLED, getAccessToken } from '@/lib/spotify-auth'
+} from '@/lib/spotify.shared';
+import { mapSpotifyTrack } from '@/lib/spotify.shared';
+import { RETOKEND_ENABLED, getAccessToken } from '@/lib/spotify-auth';
 
 const MOCK_TRACKS: SpotifyTopTrack[] = [
   {
@@ -34,84 +34,96 @@ const MOCK_TRACKS: SpotifyTopTrack[] = [
     albumArtUrl: null,
     externalUrl: 'https://open.spotify.com',
   },
-]
+];
 
 export async function getTopTracks(): Promise<SpotifyResult> {
   if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) {
-    return { tracks: MOCK_TRACKS }
+    return { tracks: MOCK_TRACKS };
   }
 
   try {
-    const token = await getAccessToken()
+    const token = await getAccessToken();
     const res = await fetch(
       'https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=5',
       {
         headers: { Authorization: `Bearer ${token}` },
         next: { revalidate: 3600 },
       },
-    )
-    if (!res.ok) throw new Error(`Spotify top tracks failed: ${res.status}`)
+    );
+    if (!res.ok) throw new Error(`Spotify top tracks failed: ${res.status}`);
 
-    const data = await res.json()
-    const tracks: SpotifyTopTrack[] = (data.items ?? []).map((item: Record<string, unknown>) => ({
-      id: item.id as string,
-      ...mapSpotifyTrack(item, `https://open.spotify.com/track/${item.id}`),
-    }))
+    const data = await res.json();
+    const tracks: SpotifyTopTrack[] = (data.items ?? []).map(
+      (item: Record<string, unknown>) => ({
+        id: item.id as string,
+        ...mapSpotifyTrack(item, `https://open.spotify.com/track/${item.id}`),
+      }),
+    );
 
-    return { tracks }
+    return { tracks };
   } catch (err) {
-    console.error('[spotify] getTopTracks error:', err)
-    return { tracks: MOCK_TRACKS, error: 'Failed to load' }
+    console.error('[spotify] getTopTracks error:', err);
+    return { tracks: MOCK_TRACKS, error: 'Failed to load' };
   }
 }
 
 export async function getRecentlyPlayed(): Promise<SpotifyRecentTrack[]> {
-  if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) return []
+  if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) return [];
 
   try {
-    const token = await getAccessToken()
-    const res = await fetch('https://api.spotify.com/v1/me/player/recently-played?limit=10', {
-      headers: { Authorization: `Bearer ${token}` },
-      next: { revalidate: 21600 },
-    })
-    if (!res.ok) throw new Error(`Spotify recently-played failed: ${res.status}`)
+    const token = await getAccessToken();
+    const res = await fetch(
+      'https://api.spotify.com/v1/me/player/recently-played?limit=10',
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        next: { revalidate: 21600 },
+      },
+    );
+    if (!res.ok)
+      throw new Error(`Spotify recently-played failed: ${res.status}`);
 
-    const data = await res.json()
-    const items: SpotifyRecentTrack[] = ((data.items ?? []) as Array<Record<string, unknown>>)
+    const data = await res.json();
+    const items: SpotifyRecentTrack[] = (
+      (data.items ?? []) as Array<Record<string, unknown>>
+    )
       .filter((item) => {
-        const track = item.track as Record<string, unknown> | null
-        return track && (track.type as string) === 'track'
+        const track = item.track as Record<string, unknown> | null;
+        return track && (track.type as string) === 'track';
       })
-      .map((item) => mapSpotifyTrack(item.track as Record<string, unknown>))
+      .map((item) => mapSpotifyTrack(item.track as Record<string, unknown>));
 
-    return items
+    return items;
   } catch (err) {
-    console.error('[spotify] getRecentlyPlayed error:', err)
-    return []
+    console.error('[spotify] getRecentlyPlayed error:', err);
+    return [];
   }
 }
 
 export async function getCurrentlyPlaying(): Promise<SpotifyCurrentTrack | null> {
-  if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) return null
+  if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) return null;
 
   try {
-    const token = await getAccessToken()
-    const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: 'no-store',
-    })
+    const token = await getAccessToken();
+    const res = await fetch(
+      'https://api.spotify.com/v1/me/player/currently-playing',
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+      },
+    );
 
-    if (res.status === 204) return null
-    if (!res.ok) throw new Error(`Spotify currently-playing failed: ${res.status}`)
+    if (res.status === 204) return null;
+    if (!res.ok)
+      throw new Error(`Spotify currently-playing failed: ${res.status}`);
 
-    const data = await res.json()
+    const data = await res.json();
 
-    if (data.currently_playing_type !== 'track' || !data.item) return null
-    if (!data.is_playing) return null
+    if (data.currently_playing_type !== 'track' || !data.item) return null;
+    if (!data.is_playing) return null;
 
-    return mapSpotifyTrack(data.item as Record<string, unknown>)
+    return mapSpotifyTrack(data.item as Record<string, unknown>);
   } catch (err) {
-    console.error('[spotify] getCurrentlyPlaying error:', err)
-    return null
+    console.error('[spotify] getCurrentlyPlaying error:', err);
+    return null;
   }
 }

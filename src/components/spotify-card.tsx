@@ -1,16 +1,16 @@
-import Image from 'next/image'
-import { getTopTracks } from '@/lib/spotify'
-import { Music } from 'lucide-react'
+import Image from 'next/image';
+import { getTopTracks } from '@/lib/spotify';
+import { Music } from 'lucide-react';
 
 export default async function SpotifyCard() {
-  const result = await getTopTracks()
+  const result = await getTopTracks();
   return (
-    <div className="h-full rounded-3xl bg-zinc-900 border border-zinc-800/50 p-5 shine-edge">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+    <div className="shine-edge h-full rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
           Top Tracks (Last 4 Weeks)
         </h3>
-        <Music className='text-zinc-500 w-4 h-4'/>
+        <Music className="h-4 w-4 text-zinc-500" />
       </div>
 
       {result.tracks.length === 0 ? (
@@ -25,11 +25,11 @@ export default async function SpotifyCard() {
                   alt={track.albumName}
                   width={128}
                   height={128}
-                  className="w-13 h-13 rounded-xs shrink-0"
+                  className="h-13 w-13 shrink-0 rounded-xs"
                   placeholder={`data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="%2327272a" rx="2"/></svg>`}
                 />
               ) : (
-                <div className="w-10 h-10 rounded-xs bg-zinc-800 shrink-0" />
+                <div className="h-10 w-10 shrink-0 rounded-xs bg-zinc-800" />
               )}
               <div className="min-w-0">
                 <a
@@ -37,11 +37,16 @@ export default async function SpotifyCard() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={track.name}
-                  className="text-sm font-medium text-zinc-200 truncate block hover:text-zinc-400 transition-colors"
+                  className="block truncate text-sm font-medium text-zinc-200 transition-colors hover:text-zinc-400"
                 >
                   {track.name}
                 </a>
-                <p title={track.artists.join(', ')} className="text-xs text-zinc-500 truncate select-none">{track.artists.join(', ')}</p>
+                <p
+                  title={track.artists.join(', ')}
+                  className="truncate text-xs text-zinc-500 select-none"
+                >
+                  {track.artists.join(', ')}
+                </p>
               </div>
             </li>
           ))}
@@ -49,8 +54,8 @@ export default async function SpotifyCard() {
       )}
 
       {result.error && (
-        <p className="text-xs text-zinc-700 mt-3">{result.error}</p>
+        <p className="mt-3 text-xs text-zinc-700">{result.error}</p>
       )}
     </div>
-  )
+  );
 }

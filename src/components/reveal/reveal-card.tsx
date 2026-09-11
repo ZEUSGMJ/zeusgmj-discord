@@ -1,8 +1,13 @@
-'use client'
+'use client';
 
-import { motion, useAnimationControls, useReducedMotion, type Variants } from 'motion/react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { useReveal } from '@/components/reveal/reveal-context'
+import {
+  motion,
+  useAnimationControls,
+  useReducedMotion,
+  type Variants,
+} from 'motion/react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useReveal } from '@/components/reveal/reveal-context';
 import {
   DUR_CARD_ENTER,
   DUR_CARD_EXIT,
@@ -12,18 +17,18 @@ import {
   PROFILE_SETTLE_TRANSITION,
   SHELL_SETTLE_DELAY,
   type CardWave,
-} from '@/components/reveal/timing'
+} from '@/components/reveal/timing';
 
 interface RevealCardProps {
-  children: ReactNode
-  cardId: RevealCardId
-  generation: number
-  wave: CardWave
-  className?: string
-  onEnterComplete: (cardId: RevealCardId, generation: number) => void
+  children: ReactNode;
+  cardId: RevealCardId;
+  generation: number;
+  wave: CardWave;
+  className?: string;
+  onEnterComplete: (cardId: RevealCardId, generation: number) => void;
 }
 
-export type RevealCardId = 'column' | 'tracks' | 'games' | 'media'
+export type RevealCardId = 'column' | 'tracks' | 'games' | 'media';
 
 export default function RevealCard({
   children,
@@ -33,49 +38,56 @@ export default function RevealCard({
   className,
   onEnterComplete,
 }: RevealCardProps) {
-  const { targetExpanded, profileSettle } = useReveal()
-  const reduceMotion = useReducedMotion() ?? false
-  const [reveal, setReveal] = useState<'waiting' | 'in' | 'out'>('waiting')
-  const reportedGenerationRef = useRef<number | null>(null)
-  const pulsedRevisionRef = useRef<number | null>(null)
-  const pulseControls = useAnimationControls()
+  const { targetExpanded, profileSettle } = useReveal();
+  const reduceMotion = useReducedMotion() ?? false;
+  const [reveal, setReveal] = useState<'waiting' | 'in' | 'out'>('waiting');
+  const reportedGenerationRef = useRef<number | null>(null);
+  const pulsedRevisionRef = useRef<number | null>(null);
+  const pulseControls = useAnimationControls();
 
   useEffect(() => {
-    const timer = setTimeout(() => setReveal(targetExpanded ? 'waiting' : 'out'), 0)
-    return () => clearTimeout(timer)
-  }, [targetExpanded])
+    const timer = setTimeout(
+      () => setReveal(targetExpanded ? 'waiting' : 'out'),
+      0,
+    );
+    return () => clearTimeout(timer);
+  }, [targetExpanded]);
 
   useEffect(() => {
-    pulseControls.stop()
-    pulseControls.set({ scale: 1 })
+    pulseControls.stop();
+    pulseControls.set({ scale: 1 });
 
     if (
-      reduceMotion
-      || !targetExpanded
-      || !profileSettle
-      || profileSettle.direction !== 'expanded'
-      || profileSettle.generation !== generation
-      || pulsedRevisionRef.current === profileSettle.revision
-    ) return
+      reduceMotion ||
+      !targetExpanded ||
+      !profileSettle ||
+      profileSettle.direction !== 'expanded' ||
+      profileSettle.generation !== generation ||
+      pulsedRevisionRef.current === profileSettle.revision
+    )
+      return;
 
-    pulsedRevisionRef.current = profileSettle.revision
+    pulsedRevisionRef.current = profileSettle.revision;
     const timer = setTimeout(() => {
-      pulseControls.set({ scale: 1.012 })
-      void pulseControls.start({ scale: 1, transition: PROFILE_SETTLE_TRANSITION })
-    }, SHELL_SETTLE_DELAY * 1000)
+      pulseControls.set({ scale: 1.012 });
+      void pulseControls.start({
+        scale: 1,
+        transition: PROFILE_SETTLE_TRANSITION,
+      });
+    }, SHELL_SETTLE_DELAY * 1000);
 
     return () => {
-      clearTimeout(timer)
-      pulseControls.stop()
-      pulseControls.set({ scale: 1 })
-    }
-  }, [generation, profileSettle, pulseControls, reduceMotion, targetExpanded])
+      clearTimeout(timer);
+      pulseControls.stop();
+      pulseControls.set({ scale: 1 });
+    };
+  }, [generation, profileSettle, pulseControls, reduceMotion, targetExpanded]);
 
   const variants: Variants = {
     initial: {
       opacity: 0,
-      x: reduceMotion ? 0 : wave.from.x ?? 0,
-      y: reduceMotion ? 0 : wave.from.y ?? 0,
+      x: reduceMotion ? 0 : (wave.from.x ?? 0),
+      y: reduceMotion ? 0 : (wave.from.y ?? 0),
       transition: {
         duration: reduceMotion ? DUR_MICRO : DUR_CARD_EXIT,
         ease: EASE_IN,
@@ -93,14 +105,14 @@ export default function RevealCard({
     },
     exit: {
       opacity: 0,
-      x: reduceMotion ? 0 : wave.from.x ?? 0,
-      y: reduceMotion ? 0 : wave.from.y ?? 0,
+      x: reduceMotion ? 0 : (wave.from.x ?? 0),
+      y: reduceMotion ? 0 : (wave.from.y ?? 0),
       transition: {
         duration: reduceMotion ? DUR_MICRO : DUR_CARD_EXIT,
         ease: EASE_IN,
       },
     },
-  }
+  };
 
   return (
     <motion.div
@@ -111,20 +123,22 @@ export default function RevealCard({
       animate={targetExpanded ? 'visible' : 'exit'}
       exit="exit"
       onAnimationComplete={(definition) => {
-        if (definition !== 'visible' || !targetExpanded) return
-        setReveal('in')
-        if (reportedGenerationRef.current === generation) return
-        reportedGenerationRef.current = generation
-        onEnterComplete(cardId, generation)
+        if (definition !== 'visible' || !targetExpanded) return;
+        setReveal('in');
+        if (reportedGenerationRef.current === generation) return;
+        reportedGenerationRef.current = generation;
+        onEnterComplete(cardId, generation);
       }}
     >
       <motion.div
         initial={false}
         animate={pulseControls}
-        className={className ? `${className} origin-center` : 'h-full origin-center'}
+        className={
+          className ? `${className} origin-center` : 'h-full origin-center'
+        }
       >
         {children}
       </motion.div>
     </motion.div>
-  )
+  );
 }

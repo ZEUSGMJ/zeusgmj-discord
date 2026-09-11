@@ -1,6 +1,6 @@
 interface StatusDotProps {
-  status: 'online' | 'idle' | 'dnd' | 'offline'
-  size?: 'sm' | 'md' | 'lg' | 'xl'
+  status: 'online' | 'idle' | 'dnd' | 'offline';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 const colorMap = {
@@ -8,21 +8,21 @@ const colorMap = {
   idle: 'bg-yellow-400 ring-yellow-400/30',
   dnd: 'bg-red-500 ring-red-500/30',
   offline: 'bg-zinc-500',
-}
+};
 
 const sizeMap = {
   sm: 'w-2 h-2',
   md: 'w-2.5 h-2.5',
   lg: 'w-3.5 h-3.5',
   xl: 'w-6 h-6',
-}
+};
 
 const labelMap = {
   online: 'Online',
   idle: 'Idle',
   dnd: 'Do Not Disturb',
   offline: 'Offline',
-}
+};
 
 export default function StatusDot({ status, size = 'md' }: StatusDotProps) {
   return (
@@ -31,5 +31,5 @@ export default function StatusDot({ status, size = 'md' }: StatusDotProps) {
       title={labelMap[status]}
       aria-label={labelMap[status]}
     />
-  )
+  );
 }
