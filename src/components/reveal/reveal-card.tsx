@@ -29,7 +29,7 @@ interface RevealCardProps {
   onEnterComplete: (cardId: RevealCardId, generation: number) => void;
 }
 
-export type RevealCardId = 'column' | 'tracks' | 'games' | 'media';
+export type RevealCardId = 'column' | 'links' | 'games' | 'media';
 
 export default function RevealCard({
   children,

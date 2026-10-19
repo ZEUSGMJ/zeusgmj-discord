@@ -37,21 +37,21 @@ export interface CardWave {
 }
 
 export const CARD_WAVES: Record<
-  'column' | 'tracks' | 'games' | 'media',
+  'column' | 'links' | 'games' | 'media',
   CardWave
 > = {
   column: { delay: 0.06, from: { x: -64 } },
-  tracks: { delay: 0.06, from: { y: -48 } },
+  links: { delay: 0.06, from: { y: -48 } },
   games: { delay: 0.11, from: { y: -48 } },
   media: { delay: 0.16, from: { x: -56, y: -40 } },
 };
 
 export const MOBILE_CARD_WAVES: Record<
-  'column' | 'tracks' | 'games' | 'media',
+  'column' | 'links' | 'games' | 'media',
   CardWave
 > = {
   column: { delay: CARD_WAVES.column.delay, from: { y: -48 } },
-  tracks: { delay: CARD_WAVES.tracks.delay, from: { y: -48 } },
+  links: { delay: CARD_WAVES.links.delay, from: { y: -48 } },
   games: { delay: CARD_WAVES.games.delay, from: { y: -48 } },
   media: { delay: CARD_WAVES.media.delay, from: { y: -48 } },
 };

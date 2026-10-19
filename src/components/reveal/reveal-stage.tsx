@@ -30,8 +30,8 @@ interface RevealStageProps {
 
 const DETAIL_CARD_COUNT = 4;
 function useFrozenCardWaves(generation: number) {
-  const isSmOrWider = useMediaQuery('(min-width: 640px)');
-  const resolvedWaves = isSmOrWider ? CARD_WAVES : MOBILE_CARD_WAVES;
+  const isLgOrWider = useMediaQuery('(min-width: 1024px)');
+  const resolvedWaves = isLgOrWider ? CARD_WAVES : MOBILE_CARD_WAVES;
   const [snapshot, setSnapshot] = useState(() => ({
     generation,
     waves: resolvedWaves,
@@ -134,21 +134,21 @@ export default function RevealStage({
             outerClassName="lg:col-span-5"
             onEnterComplete={handleCardEnterComplete}
           >
-            <div>{links}</div>
-            <div className="min-h-44 flex-1">{yearProgress}</div>
+            {yearProgress}
+            {tracks}
           </RevealCard>
         )}
 
         {detailsMounted && (
           <RevealCard
-            key="tracks"
-            cardId="tracks"
+            key="links"
+            cardId="links"
             generation={intentGeneration}
-            wave={cardWaves.tracks}
+            wave={cardWaves.links}
             outerClassName="lg:col-span-12"
             onEnterComplete={handleCardEnterComplete}
           >
-            {tracks}
+            {links}
           </RevealCard>
         )}
 
