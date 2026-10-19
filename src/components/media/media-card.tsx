@@ -62,7 +62,10 @@ function Poster({ item, index }: { item: TmdbMovie; index: number }) {
             />
           )}
         </span>
-        <span className="line-clamp-2 text-xs leading-4 font-medium text-ink lg:text-[13px] lg:leading-[18px]">
+        <span
+          title={item.title}
+          className="line-clamp-2 text-xs leading-4 font-medium text-ink lg:text-[13px] lg:leading-[18px]"
+        >
           {item.title}
         </span>
       </a>
@@ -112,7 +115,7 @@ export default function MediaCard({ data }: Props) {
           type="button"
           onClick={() => setMode(otherMode)}
           aria-label={`Showing ${mode}. Switch to ${otherMode}.`}
-          className="group flex items-center gap-1 rounded-md text-xs leading-4 font-medium text-(--tile-label) transition-[color,opacity,transform] duration-240 hover:opacity-80 active:scale-[0.97] lg:text-[13px] lg:leading-[18px]"
+          className="group flex shrink-0 items-center gap-1 rounded-md text-xs leading-4 font-medium whitespace-nowrap text-(--tile-label) transition-[color,opacity,transform] duration-240 hover:opacity-80 active:scale-[0.97] lg:text-[13px] lg:leading-[18px]"
         >
           Media · {mode}
           <ChevronsUpDown
