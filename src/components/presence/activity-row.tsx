@@ -112,6 +112,15 @@ function ActivityProgress({ timestamps }: { timestamps: ProgressTimestamps }) {
   );
 }
 
+const TILE_CLASS =
+  'relative size-19 shrink-0 rounded-xl bg-(--cft-img-fb) lg:size-29 lg:rounded-2xl';
+const LABEL_CLASS =
+  'text-[11px] leading-3.5 font-semibold tracking-[0.06em] text-(--cft-mid) uppercase lg:text-xs lg:leading-4';
+const TITLE_CLASS =
+  'truncate text-base leading-[22px] font-bold text-(--cft-hi) lg:text-xl lg:leading-[26px]';
+const DETAIL_CLASS =
+  'truncate text-[13px] leading-[18px] text-(--cft-mid) lg:text-sm lg:leading-5';
+
 export default function ActivityRow({ item }: { item: CarouselItem }) {
   if (item.kind === 'spotify') {
     const { data, fromApi, isRecentlyPlayed } = item;
@@ -123,28 +132,26 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
     const timestamps = fromApi ? null : getValidTimestamps(data.timestamps);
 
     return (
-      <div className="flex items-center gap-3">
-        {data.artUrl ? (
-          <Image
-            src={data.artUrl}
-            alt={data.albumTitle}
-            width={128}
-            height={128}
-            className="h-24 w-24 shrink-0 rounded-xl"
-          />
-        ) : (
-          <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl bg-(--cft-img-fb)">
-            <span className="text-base text-green-500">♫</span>
-          </div>
-        )}
-        <div className="min-w-0 flex-1">
-          <p className="mb-0.5 text-[11px] font-medium tracking-widest text-(--cft-dim) uppercase">
-            {label}
-          </p>
-          <p className="truncate text-sm font-medium text-(--cft-hi)">
-            {data.songTitle}
-          </p>
-          <p className="truncate text-xs text-(--cft-mid)">{data.artistLine}</p>
+      <div className="flex items-center gap-3.5 lg:gap-5">
+        <div className={TILE_CLASS}>
+          {data.artUrl ? (
+            <Image
+              src={data.artUrl}
+              alt={data.albumTitle}
+              width={232}
+              height={232}
+              className="size-full rounded-[inherit] object-cover"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center">
+              <span className="text-xl text-online">♫</span>
+            </div>
+          )}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5 lg:gap-[3px]">
+          <p className={LABEL_CLASS}>{label}</p>
+          <p className={TITLE_CLASS}>{data.songTitle}</p>
+          <p className={DETAIL_CLASS}>{data.artistLine}</p>
           {timestamps && <ActivityProgress timestamps={timestamps} />}
         </div>
       </div>
@@ -158,43 +165,37 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
     data.type === 3 ? getValidTimestamps(data.timestamps) : null;
 
   return (
-    <div className="flex items-center gap-3">
-      {data.largeImageUrl ? (
-        <div className="relative h-24 w-24 shrink-0">
+    <div className="flex items-center gap-3.5 lg:gap-5">
+      <div className={TILE_CLASS}>
+        {data.largeImageUrl ? (
           <Image
             src={data.largeImageUrl}
             alt={data.largeText ?? data.name}
-            width={128}
-            height={128}
-            className="h-24 w-24 rounded-xl"
+            width={232}
+            height={232}
+            className="size-full rounded-[inherit] object-cover"
           />
-          {data.smallImageUrl && (
-            <Image
-              src={data.smallImageUrl}
-              alt={data.smallText ?? ''}
-              width={128}
-              height={128}
-              className="absolute -right-1 -bottom-1 h-8 w-8 rounded-full bg-zinc-900 ring-4 ring-zinc-900"
-            />
-          )}
-        </div>
-      ) : (
-        <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl bg-(--cft-img-fb)">
-          <ActivityIcon className="h-6 w-6 text-(--cft-dim)" />
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <p className="mb-0.5 text-[11px] font-medium tracking-widest text-(--cft-dim) uppercase">
-          {activityLabel}
-        </p>
-        <p className="truncate text-sm font-medium text-(--cft-hi)">
-          {data.name}
-        </p>
-        {data.details && (
-          <p className="truncate text-xs text-(--cft-mid)">{data.details}</p>
+        ) : (
+          <div className="flex size-full items-center justify-center">
+            <ActivityIcon className="size-6 text-(--cft-dim)" />
+          </div>
         )}
+        {data.largeImageUrl && data.smallImageUrl && (
+          <Image
+            src={data.smallImageUrl}
+            alt={data.smallText ?? ''}
+            width={88}
+            height={88}
+            className="absolute -right-2 -bottom-2 size-8 rounded-full border-[3px] border-(--cft-ring) bg-(--cft-ring) lg:-right-3 lg:-bottom-3 lg:size-11"
+          />
+        )}
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5 lg:gap-[3px]">
+        <p className={LABEL_CLASS}>{activityLabel}</p>
+        <p className={TITLE_CLASS}>{data.name}</p>
+        {data.details && <p className={DETAIL_CLASS}>{data.details}</p>}
         {data.state && (
-          <p className="truncate text-xs text-(--cft-lo)">{data.state}</p>
+          <p className={`${DETAIL_CLASS} text-(--cft-lo)`}>{data.state}</p>
         )}
         {timestamps && <ActivityProgress timestamps={timestamps} />}
       </div>
