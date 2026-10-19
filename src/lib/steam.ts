@@ -1,14 +1,12 @@
 import 'server-only';
 
 import { getDominantColor } from '@/lib/image-color';
-import { formatPlaytime } from '@/lib/utils';
 
 export interface SteamGame {
   appId: number;
   name: string;
-  playtimeForever: string;
-  playtime2Weeks: string;
   minutes2Weeks: number;
+  minutesForever: number;
   iconUrl: string | null;
   storeUrl: string;
 }
@@ -25,27 +23,24 @@ const MOCK_GAMES: SteamGame[] = [
   {
     appId: 730,
     name: 'Counter-Strike 2',
-    playtimeForever: '200h',
-    playtime2Weeks: '3h',
     minutes2Weeks: 180,
+    minutesForever: 12000,
     iconUrl: null,
     storeUrl: 'https://store.steampowered.com/app/730',
   },
   {
     appId: 570,
     name: 'Dota 2',
-    playtimeForever: '80h',
-    playtime2Weeks: '1h',
     minutes2Weeks: 60,
+    minutesForever: 4800,
     iconUrl: null,
     storeUrl: 'https://store.steampowered.com/app/570',
   },
   {
     appId: 1172470,
     name: 'Apex Legends',
-    playtimeForever: '40h',
-    playtime2Weeks: '0m',
     minutes2Weeks: 0,
+    minutesForever: 2400,
     iconUrl: null,
     storeUrl: 'https://store.steampowered.com/app/1172470',
   },
@@ -131,9 +126,8 @@ export async function getRecentGames(): Promise<SteamResult> {
       rawGames.map(async (g) => ({
         appId: g.appid as number,
         name: g.name as string,
-        playtimeForever: formatPlaytime(g.playtime_forever as number),
-        playtime2Weeks: formatPlaytime((g.playtime_2weeks as number) ?? 0),
         minutes2Weeks: (g.playtime_2weeks as number) ?? 0,
+        minutesForever: (g.playtime_forever as number) ?? 0,
         iconUrl: await resolveImageUrl(g.appid as number),
         storeUrl: `https://store.steampowered.com/app/${g.appid}`,
       })),

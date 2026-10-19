@@ -1,73 +1,86 @@
-import { Link } from 'lucide-react';
-
 interface LinkItem {
   label: string;
+  abbreviation: string;
   href: string;
   description: string;
-  external: boolean;
 }
 
 const LINKS: LinkItem[] = [
   {
     label: 'GitHub',
+    abbreviation: 'Gh',
     href: 'https://github.com/ZEUSGMJ',
     description: 'Code & projects',
-    external: true,
   },
   {
     label: 'Twitter / X',
+    abbreviation: 'X',
     href: 'https://x.com/zeusgmj',
     description: 'Mostly lurking',
-    external: true,
   },
   {
     label: 'Spotify',
+    abbreviation: 'Sp',
     href: 'https://open.spotify.com/user/wvckgj74wvfnyyzl8vtg6pwrr',
     description: 'I have some playlists',
-    external: true,
   },
   {
     label: 'Steam',
+    abbreviation: 'St',
     href: 'https://steamcommunity.com/id/ZEUSGMJ/',
     description: 'Too many hours',
-    external: true,
   },
   {
     label: 'Stats.fm',
+    abbreviation: 'Fm',
     href: 'https://stats.fm/zeusgmj',
     description: 'Obsessively tracked',
-    external: true,
   },
 ];
 
 export default function LinksCard() {
   return (
-    <div className="rounded-[28px] bg-surface p-[22px] lg:rounded-tile lg:p-7">
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
-          Links
-        </h3>
-        <Link className="h-4 w-4 text-zinc-500" />
-      </div>
-      <ul className="space-y-1">
-        {LINKS.map((link) => (
-          <li key={link.href}>
-            <a
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-              className="group flex items-center justify-between rounded-xl px-2 py-2.5 transition-colors hover:bg-zinc-800/70"
+    <nav aria-label="Links">
+      <ul className="grid grid-cols-2 gap-2 lg:grid-cols-5 lg:gap-3">
+        {LINKS.map((link, index) => {
+          const isLast = index === LINKS.length - 1;
+
+          return (
+            <li
+              key={link.href}
+              className={isLast ? 'col-span-2 lg:col-span-1' : ''}
             >
-              <span className="text-sm font-medium text-zinc-300 transition-colors group-hover:text-zinc-100">
-                {link.label}
-              </span>
-              <span className="text-xs text-zinc-600 transition-colors group-hover:text-zinc-500">
-                {link.description}
-              </span>
-            </a>
-          </li>
-        ))}
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-full items-center gap-2.5 rounded-[20px] bg-surface px-3.5 py-3 transition-[background-color,transform] duration-150 hover:bg-surface-raised active:scale-[0.98] lg:gap-3.5 lg:rounded-3xl lg:px-5 lg:py-4"
+              >
+                <span
+                  aria-hidden="true"
+                  className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-raised text-xs leading-4 font-semibold text-ink transition-colors group-hover:bg-hairline lg:size-10 lg:text-[13px]"
+                >
+                  {link.abbreviation}
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="truncate text-[13px] leading-[18px] font-medium text-ink lg:text-sm lg:leading-5">
+                    {link.label}
+                  </span>
+                  <span className="truncate text-[11px] leading-3.5 text-ink-muted lg:text-xs lg:leading-4">
+                    {link.description}
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={`text-[13px] leading-4 text-ink-dim transition-[color,transform] duration-150 group-hover:translate-x-px group-hover:-translate-y-px group-hover:text-ink lg:text-sm lg:leading-[18px] ${isLast ? '' : 'hidden lg:block'}`}
+                >
+                  ↗
+                </span>
+              </a>
+            </li>
+          );
+        })}
       </ul>
-    </div>
+    </nav>
   );
 }
