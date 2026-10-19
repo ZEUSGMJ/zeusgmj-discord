@@ -30,16 +30,23 @@ const MAX_RETRIES = 5;
 const MAX_RETRY_DELAY_MS = 30_000;
 
 async function fetchCurrentlyPlaying(): Promise<SpotifyCurrentTrack | null> {
-  const res = await fetch('/api/spotify/now-playing');
-  if (res.status === 204) return null;
-  if (!res.ok) return null;
-  return res.json() as Promise<SpotifyCurrentTrack>;
+  try {
+    const res = await fetch('/api/spotify/now-playing');
+    if (res.status === 204 || !res.ok) return null;
+    return (await res.json()) as SpotifyCurrentTrack;
+  } catch {
+    return null;
+  }
 }
 
 async function fetchRecentlyPlayed(): Promise<SpotifyRecentTrack[]> {
-  const res = await fetch('/api/spotify/recently-played');
-  if (!res.ok) return [];
-  return res.json() as Promise<SpotifyRecentTrack[]>;
+  try {
+    const res = await fetch('/api/spotify/recently-played');
+    if (!res.ok) return [];
+    return (await res.json()) as SpotifyRecentTrack[];
+  } catch {
+    return [];
+  }
 }
 
 export function useLanyardPresence(userId: string | undefined): LoadState {
