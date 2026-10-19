@@ -95,7 +95,13 @@ export default function PresenceNameplate({
           <source src={nameplate.animatedUrl} type="video/webm" />
         </video>
       )}
-      <div className="absolute inset-0 z-10 bg-linear-to-r from-black/75 via-black/35 to-black/5" />
+      <div
+        className="absolute inset-0 z-10"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, color-mix(in srgb, var(--cft-bg-0, #09090b) 94%, transparent) 0%, color-mix(in srgb, var(--cft-bg-0, #09090b) 70%, transparent) 45%, color-mix(in srgb, var(--cft-bg-1, #09090b) 30%, transparent) 100%)',
+        }}
+      />
     </motion.div>
   );
 }

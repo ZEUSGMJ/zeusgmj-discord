@@ -1,73 +1,90 @@
-import { Link } from 'lucide-react';
+import type { ComponentType, SVGProps } from 'react';
+import { LuArrowUpRight } from 'react-icons/lu';
+import { SiGithub, SiSpotify, SiSteam, SiX } from 'react-icons/si';
+import StatsFmIcon from '@/components/icons/stats-fm-icon';
 
 interface LinkItem {
   label: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   href: string;
   description: string;
-  external: boolean;
 }
 
 const LINKS: LinkItem[] = [
   {
     label: 'GitHub',
+    icon: SiGithub,
     href: 'https://github.com/ZEUSGMJ',
     description: 'Code & projects',
-    external: true,
   },
   {
     label: 'Twitter / X',
+    icon: SiX,
     href: 'https://x.com/zeusgmj',
     description: 'Mostly lurking',
-    external: true,
   },
   {
     label: 'Spotify',
+    icon: SiSpotify,
     href: 'https://open.spotify.com/user/wvckgj74wvfnyyzl8vtg6pwrr',
     description: 'I have some playlists',
-    external: true,
   },
   {
     label: 'Steam',
+    icon: SiSteam,
     href: 'https://steamcommunity.com/id/ZEUSGMJ/',
     description: 'Too many hours',
-    external: true,
   },
   {
     label: 'Stats.fm',
+    icon: StatsFmIcon,
     href: 'https://stats.fm/zeusgmj',
     description: 'Obsessively tracked',
-    external: true,
   },
 ];
 
 export default function LinksCard() {
   return (
-    <div className="shine-edge rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
-          Links
-        </h3>
-        <Link className="h-4 w-4 text-zinc-500" />
-      </div>
-      <ul className="space-y-1">
-        {LINKS.map((link) => (
-          <li key={link.href}>
-            <a
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-              className="group flex items-center justify-between rounded-xl px-2 py-2.5 transition-colors hover:bg-zinc-800/70"
+    <nav aria-label="Links">
+      <ul className="links-row grid grid-cols-2 gap-2 lg:gap-3">
+        {LINKS.map((link, index) => {
+          const isLast = index === LINKS.length - 1;
+          const Icon = link.icon;
+
+          return (
+            <li
+              key={link.href}
+              className={isLast ? 'col-span-2 lg:col-span-1' : ''}
             >
-              <span className="text-sm font-medium text-zinc-300 transition-colors group-hover:text-zinc-100">
-                {link.label}
-              </span>
-              <span className="text-xs text-zinc-600 transition-colors group-hover:text-zinc-500">
-                {link.description}
-              </span>
-            </a>
-          </li>
-        ))}
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-full items-center gap-2.5 rounded-[20px] bg-surface px-3.5 py-3 transition-[background-color,transform] duration-150 hover:bg-surface-raised active:scale-[0.98] lg:gap-3 lg:rounded-[22px] lg:px-4"
+              >
+                <span
+                  aria-hidden="true"
+                  className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-raised text-(--theme-accent-ink,#7c8cff) transition-colors group-hover:bg-hairline lg:size-9"
+                >
+                  <Icon className="size-4 lg:size-[18px]" />
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col lg:[mask-image:linear-gradient(to_right,#000_calc(100%-1rem),transparent)]">
+                  <span className="truncate text-[13px] leading-[18px] font-medium text-ink lg:text-clip">
+                    {link.label}
+                  </span>
+                  <span className="truncate text-[11px] leading-3.5 text-ink-muted lg:text-xs lg:leading-4 lg:text-clip">
+                    {link.description}
+                  </span>
+                </span>
+                <LuArrowUpRight
+                  aria-hidden="true"
+                  className={`size-4 shrink-0 text-ink-dim transition-[color,transform] duration-150 group-hover:translate-x-px group-hover:-translate-y-px group-hover:text-ink ${isLast ? '' : 'hidden lg:block'}`}
+                />
+              </a>
+            </li>
+          );
+        })}
       </ul>
-    </div>
+    </nav>
   );
 }

@@ -1,6 +1,5 @@
-export function formatPlaytime(minutes: number): string {
-  if (minutes < 60) return `${minutes}m`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return m === 0 ? `${h}h` : `${h}h ${m}m`;
+export function formatHours(minutes: number): string {
+  const hours = minutes / 60;
+  if (hours === 0) return '0 h';
+  return hours < 10 ? `${hours.toFixed(1)} h` : `${Math.round(hours)} h`;
 }

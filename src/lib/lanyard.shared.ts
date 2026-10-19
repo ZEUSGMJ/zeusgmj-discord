@@ -1,3 +1,8 @@
+import {
+  normalizeDisplayNameStyles,
+  type DisplayNameStyles,
+} from '@/lib/discord-profile.shared';
+
 export const USER_FLAGS = {
   STAFF: 1 << 0,
   PARTNER: 1 << 1,
@@ -123,6 +128,7 @@ export interface NormalizedPresence {
     bannerColor: string | null;
     avatarDecorationUrl: string | null;
     publicFlags: number;
+    displayNameStyles: DisplayNameStyles | null;
   };
   activities: NormalizedActivity[];
   customStatus: {
@@ -133,6 +139,12 @@ export interface NormalizedPresence {
   primaryGuild: { tag: string; badgeUrl: string | null } | null;
   spotify: SpotifyTrack | null;
   listeningToSpotify: boolean;
+}
+
+export function hasCustomStatus(
+  customStatus: NormalizedPresence['customStatus'],
+): customStatus is NonNullable<NormalizedPresence['customStatus']> {
+  return Boolean(customStatus && (customStatus.text ?? customStatus.emojiName));
 }
 
 function resolveAssetUrl(assetKey: string, appId: string): string {
@@ -259,6 +271,9 @@ export function normalizeLanyard(data: LanyardData): NormalizedPresence {
       bannerColor: discord_user.banner_color ?? null,
       avatarDecorationUrl,
       publicFlags: discord_user.public_flags,
+      displayNameStyles: normalizeDisplayNameStyles(
+        discord_user.display_name_styles,
+      ),
     },
     activities: normalizedActivities,
     customStatus,

@@ -1,19 +1,23 @@
 import Image from 'next/image';
 import type { DiscordProfileBadge } from '@/lib/discord-profile.shared';
+import { hideOnError } from '@/components/ui/hide-on-error';
 
 export default function DiscordBadge({
   badge,
+  className = 'size-5',
 }: {
   badge: DiscordProfileBadge;
+  className?: string;
 }) {
   const img = (
     <Image
       src={`https://cdn.discordapp.com/badge-icons/${badge.icon}.png`}
       alt={badge.description}
-      width={20}
-      height={20}
+      width={44}
+      height={44}
       title={badge.description}
-      className="h-5 w-5"
+      className={className}
+      onError={hideOnError}
     />
   );
 
@@ -24,6 +28,7 @@ export default function DiscordBadge({
         target="_blank"
         rel="noopener noreferrer"
         title={badge.description}
+        className="shrink-0"
       >
         {img}
       </a>

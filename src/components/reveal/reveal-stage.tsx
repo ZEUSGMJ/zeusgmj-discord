@@ -30,8 +30,8 @@ interface RevealStageProps {
 
 const DETAIL_CARD_COUNT = 4;
 function useFrozenCardWaves(generation: number) {
-  const isSmOrWider = useMediaQuery('(min-width: 640px)');
-  const resolvedWaves = isSmOrWider ? CARD_WAVES : MOBILE_CARD_WAVES;
+  const isLgOrWider = useMediaQuery('(min-width: 1024px)');
+  const resolvedWaves = isLgOrWider ? CARD_WAVES : MOBILE_CARD_WAVES;
   const [snapshot, setSnapshot] = useState(() => ({
     generation,
     waves: resolvedWaves,
@@ -107,14 +107,14 @@ export default function RevealStage({
       id={GRID_ID}
       className={
         layoutExpanded
-          ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
+          ? 'grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4'
           : 'flex justify-center'
       }
     >
       <motion.div
         layout
         transition={LAYOUT_TRANSITION}
-        className={layoutExpanded ? 'sm:col-span-2' : 'w-full max-w-md'}
+        className={layoutExpanded ? 'lg:col-span-7' : 'w-full max-w-[480px]'}
       >
         {presence}
       </motion.div>
@@ -130,23 +130,25 @@ export default function RevealStage({
             cardId="column"
             generation={intentGeneration}
             wave={cardWaves.column}
-            className="flex h-full flex-col gap-4"
+            className="flex h-full flex-col gap-3 lg:gap-4"
+            outerClassName="lg:col-span-5"
             onEnterComplete={handleCardEnterComplete}
           >
-            <div>{links}</div>
-            <div className="min-h-44 flex-1">{yearProgress}</div>
+            {yearProgress}
+            {tracks}
           </RevealCard>
         )}
 
         {detailsMounted && (
           <RevealCard
-            key="tracks"
-            cardId="tracks"
+            key="links"
+            cardId="links"
             generation={intentGeneration}
-            wave={cardWaves.tracks}
+            wave={cardWaves.links}
+            outerClassName="lg:col-span-12"
             onEnterComplete={handleCardEnterComplete}
           >
-            {tracks}
+            {links}
           </RevealCard>
         )}
 
@@ -156,6 +158,7 @@ export default function RevealStage({
             cardId="games"
             generation={intentGeneration}
             wave={cardWaves.games}
+            outerClassName="lg:col-span-6"
             onEnterComplete={handleCardEnterComplete}
           >
             {games}
@@ -168,6 +171,7 @@ export default function RevealStage({
             cardId="media"
             generation={intentGeneration}
             wave={cardWaves.media}
+            outerClassName="lg:col-span-6"
             onEnterComplete={handleCardEnterComplete}
           >
             {media}

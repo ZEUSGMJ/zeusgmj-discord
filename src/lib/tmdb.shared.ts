@@ -10,6 +10,7 @@ export interface TmdbResult {
   items: TmdbMovie[];
   label: string;
   itemCount?: number;
+  accent: string | null;
   error?: string;
 }
 

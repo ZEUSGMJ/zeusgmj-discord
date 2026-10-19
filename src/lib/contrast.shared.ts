@@ -101,3 +101,37 @@ export function pickForeground(
 
   return bestForeground(backgroundLs).hex;
 }
+
+export function mixHex(hex: string, targetChannel: number, amount: number) {
+  return `#${[1, 3, 5]
+    .map((start) =>
+      Math.round(
+        parseInt(hex.slice(start, start + 2), 16) * (1 - amount) +
+          targetChannel * amount,
+      )
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
+}
+
+export function liftToContrast(
+  hex: string,
+  backgroundLs: number[],
+  minRatio: number,
+): string {
+  let lifted = hex;
+  for (let amount = 0.05; amount <= 1; amount += 0.05) {
+    const L = hexToLuminance(lifted);
+    if (
+      Math.min(...backgroundLs.map((bgL) => wcagContrast(L, bgL))) >= minRatio
+    )
+      return lifted;
+    lifted = mixHex(hex, 255, amount);
+  }
+  return lifted;
+}
+
+export function readableOn(hex: string, light = '#ffffff', dark = '#07080a') {
+  return contrastRatio(hex, dark) >= contrastRatio(hex, light) ? dark : light;
+}

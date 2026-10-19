@@ -8,6 +8,7 @@ import type {
 } from '@/lib/spotify.shared';
 import { mapSpotifyTrack } from '@/lib/spotify.shared';
 import { RETOKEND_ENABLED, getAccessToken } from '@/lib/spotify-auth';
+import { getDominantColor } from '@/lib/image-color';
 
 const MOCK_TRACKS: SpotifyTopTrack[] = [
   {
@@ -34,11 +35,29 @@ const MOCK_TRACKS: SpotifyTopTrack[] = [
     albumArtUrl: null,
     externalUrl: 'https://open.spotify.com',
   },
+  {
+    id: 'mock-4',
+    name: 'Get Lucky',
+    artists: ['Daft Punk', 'Pharrell Williams'],
+    albumName: 'Random Access Memories',
+    albumArtUrl: null,
+    externalUrl: 'https://open.spotify.com',
+  },
+  {
+    id: 'mock-5',
+    name: 'Nights',
+    artists: ['Frank Ocean'],
+    albumName: 'Blonde',
+    albumArtUrl: null,
+    externalUrl: 'https://open.spotify.com',
+  },
 ];
+
+const MOCK_ACCENT = '#6c63e0';
 
 export async function getTopTracks(): Promise<SpotifyResult> {
   if (!RETOKEND_ENABLED && !process.env.SPOTIFY_CLIENT_ID) {
-    return { tracks: MOCK_TRACKS };
+    return { tracks: MOCK_TRACKS, accent: MOCK_ACCENT };
   }
 
   try {
@@ -60,10 +79,14 @@ export async function getTopTracks(): Promise<SpotifyResult> {
       }),
     );
 
-    return { tracks };
+    return { tracks, accent: await getDominantColor(tracks[0]?.albumArtUrl) };
   } catch (err) {
     console.error('[spotify] getTopTracks error:', err);
-    return { tracks: MOCK_TRACKS, error: 'Failed to load' };
+    return {
+      tracks: MOCK_TRACKS,
+      accent: MOCK_ACCENT,
+      error: 'Failed to load',
+    };
   }
 }
 

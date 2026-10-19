@@ -1,12 +1,20 @@
 'use client';
 
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import ActivityRow, {
   type CarouselItem,
 } from '@/components/presence/activity-row';
+import { DUR_ITEM, DUR_MICRO, EASE_OUT } from '@/components/reveal/timing';
+
+const SLIDE_OFFSET = 16;
+const ARROW_CLASS =
+  '-my-3 flex shrink-0 items-center justify-center py-3 text-(--cft-hi) transition-[color,opacity,transform] hover:text-(--cft-mid) active:scale-90 disabled:cursor-default disabled:opacity-30 disabled:hover:text-(--cft-hi)';
 
 export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
-  const [index, setIndex] = useState(0);
+  const [position, setPosition] = useState({ index: 0, direction: 1 });
+  const reduceMotion = useReducedMotion() ?? false;
 
   if (items.length === 0) return null;
 
@@ -14,51 +22,102 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
     return <ActivityRow item={items[0]} />;
   }
 
-  const safeIndex = Math.min(index, items.length - 1);
+  const safeIndex = Math.min(position.index, items.length - 1);
+
+  function goTo(next: number) {
+    const clamped = Math.min(items.length - 1, Math.max(0, next));
+    if (clamped === safeIndex) return;
+    setPosition({ index: clamped, direction: clamped > safeIndex ? 1 : -1 });
+  }
+
+  const offset = (direction: number) =>
+    reduceMotion
+      ? 'translateX(0px)'
+      : `translateX(${direction * SLIDE_OFFSET}px)`;
 
   return (
     <div
       tabIndex={0}
+      role="group"
+      aria-roledescription="carousel"
       aria-label="Activity carousel"
+      className="flex flex-col items-center gap-3 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-(--cft-dim) lg:gap-3.5"
       onKeyDown={(e) => {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
-          setIndex((i) => Math.max(0, i - 1));
+          goTo(safeIndex - 1);
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
-          setIndex((i) => Math.min(items.length - 1, i + 1));
+          goTo(safeIndex + 1);
         }
       }}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex w-full items-center gap-2.5 lg:gap-4">
         <button
-          onClick={() => setIndex((i) => Math.max(0, i - 1))}
+          type="button"
+          onClick={() => goTo(safeIndex - 1)}
           disabled={safeIndex === 0}
-          className="w-5 shrink-0 text-center text-lg leading-none text-(--cft-dim) transition-colors hover:text-(--cft-mid) disabled:cursor-default disabled:opacity-30"
+          className={ARROW_CLASS}
           aria-label="Previous activity"
         >
-          ‹
+          <LuChevronLeft aria-hidden="true" className="size-5" />
         </button>
-        <div className="min-w-0 flex-1">
-          <ActivityRow item={items[safeIndex]} />
+        <div className="relative min-w-0 flex-1">
+          <AnimatePresence
+            mode="popLayout"
+            initial={false}
+            custom={position.direction}
+          >
+            <motion.div
+              key={safeIndex}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${safeIndex + 1} of ${items.length}`}
+              custom={position.direction}
+              initial={{ opacity: 0, transform: offset(position.direction) }}
+              animate={{
+                opacity: 1,
+                transform: 'translateX(0px)',
+                transition: { duration: DUR_ITEM, ease: EASE_OUT },
+              }}
+              exit={{
+                opacity: 0,
+                transform: offset(-position.direction),
+                transition: { duration: DUR_MICRO, ease: EASE_OUT },
+              }}
+            >
+              <ActivityRow item={items[safeIndex]} />
+            </motion.div>
+          </AnimatePresence>
         </div>
         <button
-          onClick={() => setIndex((i) => Math.min(items.length - 1, i + 1))}
+          type="button"
+          onClick={() => goTo(safeIndex + 1)}
           disabled={safeIndex === items.length - 1}
-          className="w-5 shrink-0 text-center text-lg leading-none text-(--cft-dim) transition-colors hover:text-(--cft-mid) disabled:cursor-default disabled:opacity-30"
+          className={ARROW_CLASS}
           aria-label="Next activity"
         >
-          ›
+          <LuChevronRight aria-hidden="true" className="size-5" />
         </button>
       </div>
-      <div className="mt-2 flex justify-center gap-1.5">
+      <div className="flex gap-[7px] lg:gap-2">
         {items.map((_, i) => (
           <button
             key={i}
-            onClick={() => setIndex(i)}
-            className={`h-1.5 w-1.5 rounded-full transition-colors ${i === safeIndex ? 'bg-(--cft-mid)' : 'bg-(--cft-dim) hover:bg-(--cft-dot-hover)'}`}
+            type="button"
+            onClick={() => goTo(i)}
+            className="group -m-1.5 p-1.5"
             aria-label={`Activity ${i + 1}`}
-          />
+            aria-current={i === safeIndex}
+          >
+            <span
+              className={`block size-[7px] rounded-full transition-colors lg:size-2 ${
+                i === safeIndex
+                  ? 'bg-(--cft-hi)'
+                  : 'bg-(--cft-dim)/60 group-hover:bg-(--cft-dim)'
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>

@@ -14,8 +14,17 @@ export const DUR_FOOTER_WORDMARK_ENTER = 0.24;
 export const DUR_FOOTER_MOUNTAIN_EXIT = 0.24;
 export const DUR_FOOTER_WORDMARK_EXIT = 0.2;
 export const DUR_FOOTER_EXIT = 0.1;
+export const DELAY_CONTENT_ENTER = 0.08;
+export const DELAY_CAROUSEL_ENTER = 0.14;
+
+export const translatePx = (x = 0, y = 0) => `translate(${x}px, ${y}px)`;
 
 export const LAYOUT_TRANSITION = { duration: DUR_LAYOUT, ease: EASE_OUT };
+export const CONTENT_ENTER_TRANSITION = {
+  duration: DUR_ITEM,
+  delay: DELAY_CONTENT_ENTER,
+  ease: EASE_OUT,
+};
 export const PROFILE_COMPACT_TRANSITION = {
   type: 'spring' as const,
   duration: 0.28,
@@ -37,21 +46,21 @@ export interface CardWave {
 }
 
 export const CARD_WAVES: Record<
-  'column' | 'tracks' | 'games' | 'media',
+  'column' | 'links' | 'games' | 'media',
   CardWave
 > = {
   column: { delay: 0.06, from: { x: -64 } },
-  tracks: { delay: 0.06, from: { y: -48 } },
+  links: { delay: 0.06, from: { y: -48 } },
   games: { delay: 0.11, from: { y: -48 } },
   media: { delay: 0.16, from: { x: -56, y: -40 } },
 };
 
 export const MOBILE_CARD_WAVES: Record<
-  'column' | 'tracks' | 'games' | 'media',
+  'column' | 'links' | 'games' | 'media',
   CardWave
 > = {
   column: { delay: CARD_WAVES.column.delay, from: { y: -48 } },
-  tracks: { delay: CARD_WAVES.tracks.delay, from: { y: -48 } },
+  links: { delay: CARD_WAVES.links.delay, from: { y: -48 } },
   games: { delay: CARD_WAVES.games.delay, from: { y: -48 } },
   media: { delay: CARD_WAVES.media.delay, from: { y: -48 } },
 };
