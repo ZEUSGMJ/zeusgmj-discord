@@ -9,7 +9,7 @@ import { DUR_ITEM, DUR_MICRO, EASE_OUT } from '@/components/reveal/timing';
 
 const SLIDE_OFFSET = 16;
 const ARROW_CLASS =
-  '-my-3 w-3.5 shrink-0 py-3 text-center text-xl leading-none text-(--cft-hi) transition-[color,opacity] hover:text-(--cft-mid) disabled:cursor-default disabled:opacity-30 disabled:hover:text-(--cft-hi) lg:w-5 lg:text-[22px]';
+  '-my-3 w-3.5 shrink-0 py-3 text-center text-xl leading-none text-(--cft-hi) transition-[color,opacity,transform] hover:text-(--cft-mid) active:scale-90 disabled:cursor-default disabled:opacity-30 disabled:hover:text-(--cft-hi) lg:w-5 lg:text-[22px]';
 
 export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
   const [position, setPosition] = useState({ index: 0, direction: 1 });
