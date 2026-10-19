@@ -66,13 +66,21 @@ src/
       activity-row.tsx          # Presentational - single activity or Spotify row + normalizeSpotify
       activity-carousel.tsx     # 'use client' - paginated carousel of activity rows
       discord-badge.tsx         # Presentational - single dcdn Discord badge icon
+      display-name.tsx          # Presentational - display name with Discord colour + effect (default font only)
     year-progress/
-      year-progress-card.tsx         # Server - day-of-year progress grid
-      year-progress-card-preview.tsx # 'use client' - design preview state
-      year-progress-designs.tsx      # Presentational year progress variants
+      year-progress-card.tsx   # Server - day-of-year numeral + ten-segment meter
+    reveal/
+      reveal-stage.tsx         # 'use client' - compact row <-> bento grid; mounts the four detail cards
+      reveal-card.tsx          # 'use client' - enter/exit wave for one detail card (ids: column, links, games, media)
+      reveal-context.tsx       # 'use client' - expand/collapse intent, layout and footer sequencing
+      reveal-toggle.tsx        # 'use client' - expand/collapse button (compact + banner variants)
+      timing.ts                # Durations, easings, CARD_WAVES - reuse these, do not invent new curves
+    footer/
+      footer-background.tsx    # 'use client' - halftone mountain + wordmark, reveal-gated; pre-warms the shader at idle
     ui/
       home-card-skeletons.tsx  # Presentational - loading skeletons for every home card
       card-error-boundary.tsx  # 'use client' - per-card error boundary
+      hide-on-error.ts         # onError handler that hides failed decorative images
   hooks/
     use-lanyard-presence.ts  # 'use client' - Lanyard WebSocket + Spotify fallback caching
   lib/
@@ -80,15 +88,18 @@ src/
     lanyard.ts           # Server-only Lanyard REST fetch
     discord-profile.shared.ts # Client-safe Discord profile types
     discord-profile.ts   # Server-only dcdn.dstn.to fetch
-    contrast.shared.ts   # Client-safe WCAG contrast/luminance math
+    contrast.shared.ts   # Client-safe WCAG contrast/luminance math, liftToContrast, readableOn
     presence-theme.shared.ts # Client-safe theme derivation for ProfilePresenceCard
+    display-name.shared.ts # Client-safe display_name_styles -> effect + CSS variables
+    tile-color.shared.ts # Client-safe deriveTileColors(accent, kind) -> tint/glow/label with fallbacks
+    image-color.ts       # Server-only getDominantColor(imageUrl) via sharp, cached with unstable_cache
     spotify.shared.ts    # Client-safe Spotify track/result types + mapSpotifyTrack
     spotify.ts           # Server-only top tracks, currently playing, recently played
     spotify-auth.ts      # Server-only token cache + retokend/direct token refresh
     steam.ts             # Steam recently played games
     tmdb.shared.ts       # Client-safe TMDB result types
     tmdb.ts              # TMDB favorites + watched lists (parallel fetches)
-    utils.ts             # formatPlaytime
+    utils.ts             # formatHours
     site.ts              # Site URL helper for metadata and sitemap
     grain-base64.ts      # Inline grain texture data URI for api/og
 ```
@@ -124,6 +135,7 @@ Server components call lib functions directly. Only create an API route when the
 - `cache: 'no-store'` - live data (Lanyard, Spotify now-playing, Spotify token refresh)
 - `next: { revalidate: 3600 }` - hourly data (Spotify top tracks, TMDB)
 - `next: { revalidate: 1800 }` - 30-min data (Steam recent games)
+- `unstable_cache` with `revalidate: 3600` - dominant colours from `lib/image-color.ts` (cache only the resulting hex, never image bytes). `cacheComponents` is off, so `use cache` is unavailable. Colour extraction must never throw or block: failures return `null` and tiles fall back to their static tint.
 
 ## Spotify token caching
 `getAccessToken()` in `lib/spotify-auth.ts` caches the token in a module-level variable with expiry. Do not remove this - Spotify tokens are valid for 1 hour and calling the token endpoint on every request wastes quota.
@@ -147,7 +159,19 @@ Remote image domains are declared in `next.config.ts` under `remotePatterns`. Al
 **Lanyard vs dcdn**: Lanyard's WebSocket payload does not include `banner` or `banner_color` for the Discord user. Fetch the banner hash from dcdn (`/api/discord-profile` -> `bannerHash`) and construct the URL in the component. dcdn can fail - always fall back gracefully (banner color -> hardcoded default).
 
 ## Tailwind v4
-Uses `@import "tailwindcss"` and `@theme inline { }` - not the v3 `tailwind.config.js` approach. Custom colors (`--color-background`, `--color-foreground`) are declared in `globals.css` under `@theme inline` and used as `bg-background`, `text-foreground` etc.
+Uses `@import "tailwindcss"` and `@theme inline { }` - not the v3 `tailwind.config.js` approach. Custom colors are declared in `globals.css` under `@theme inline` and used as utilities: `bg-background` (`#07080A`), `bg-surface` / `bg-surface-raised` / `bg-hairline`, `text-ink` / `text-ink-muted` / `text-ink-dim`, `bg-online`, plus `rounded-tile` (32px; mobile tiles use 28px).
+
+## Tiles and tints
+Tracks, games and media tiles take their gradient from the dominant colour of their first item: the server component passes `accent` through `deriveTileColors(accent, kind)` and sets `--tile-tint` / `--tile-glow` / `--tile-label` with `tileStyle()`. Always keep the static fallbacks (violet, ember, teal) working when `accent` is `null`. The media tile renders one tint layer per list and cross-fades by opacity - never animate the gradient itself.
+
+## Theme variables
+`PresenceProvider` sets `--theme-accent` (Discord `themeColor2`), `--theme-accent-ink` (lifted to at least 3:1 against the tile surface - use this for text and meters) and `--theme-accent-on` (readable foreground on the accent). Server components read them with CSS fallbacks, e.g. `text-(--theme-accent-ink,#7c8cff)`.
+
+## Display names
+`DisplayName` renders `display_name_styles` (colour + effect: 1 solid, 2 gradient, 3 neon, 4 toon, 5 pop, 6 glow; others fall back to solid). Only the default font is used - never load or bundle Discord's fonts, and write effect CSS ourselves. One-shot effect motion lives inside `prefers-reduced-motion: no-preference`.
+
+## Dependencies
+`sharp` is kept on the same 0.34.x line Next bundles (`^0.34.5`). A second sharp version in the graph loads two libvips builds in one process and breaks `/icon` and image routes on Windows - bump it only together with Next.
 
 ## Comments
 Do not add section comments, planning comments, or explanatory prose comments. Code should be self-evident.
