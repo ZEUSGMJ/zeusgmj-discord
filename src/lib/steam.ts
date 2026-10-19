@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { getDominantColor } from '@/lib/image-color';
 import { formatPlaytime } from '@/lib/utils';
 
 export interface SteamGame {
@@ -7,14 +8,18 @@ export interface SteamGame {
   name: string;
   playtimeForever: string;
   playtime2Weeks: string;
+  minutes2Weeks: number;
   iconUrl: string | null;
   storeUrl: string;
 }
 
 export interface SteamResult {
   games: SteamGame[];
+  accent: string | null;
   error?: string;
 }
+
+const MOCK_ACCENT = '#e0763c';
 
 const MOCK_GAMES: SteamGame[] = [
   {
@@ -22,6 +27,7 @@ const MOCK_GAMES: SteamGame[] = [
     name: 'Counter-Strike 2',
     playtimeForever: '200h',
     playtime2Weeks: '3h',
+    minutes2Weeks: 180,
     iconUrl: null,
     storeUrl: 'https://store.steampowered.com/app/730',
   },
@@ -30,6 +36,7 @@ const MOCK_GAMES: SteamGame[] = [
     name: 'Dota 2',
     playtimeForever: '80h',
     playtime2Weeks: '1h',
+    minutes2Weeks: 60,
     iconUrl: null,
     storeUrl: 'https://store.steampowered.com/app/570',
   },
@@ -38,6 +45,7 @@ const MOCK_GAMES: SteamGame[] = [
     name: 'Apex Legends',
     playtimeForever: '40h',
     playtime2Weeks: '0m',
+    minutes2Weeks: 0,
     iconUrl: null,
     storeUrl: 'https://store.steampowered.com/app/1172470',
   },
@@ -99,7 +107,7 @@ export async function getRecentGames(): Promise<SteamResult> {
   const steamId = process.env.STEAM_ID;
 
   if (!apiKey || !steamId) {
-    return { games: MOCK_GAMES };
+    return { games: MOCK_GAMES, accent: MOCK_ACCENT };
   }
 
   try {
@@ -125,14 +133,19 @@ export async function getRecentGames(): Promise<SteamResult> {
         name: g.name as string,
         playtimeForever: formatPlaytime(g.playtime_forever as number),
         playtime2Weeks: formatPlaytime((g.playtime_2weeks as number) ?? 0),
+        minutes2Weeks: (g.playtime_2weeks as number) ?? 0,
         iconUrl: await resolveImageUrl(g.appid as number),
         storeUrl: `https://store.steampowered.com/app/${g.appid}`,
       })),
     );
 
-    return { games };
+    const accent = await getDominantColor(
+      games[0]?.iconUrl?.replace('library_600x900_2x', 'library_600x900'),
+    );
+
+    return { games, accent };
   } catch (err) {
     console.error('[steam] getRecentGames error:', err);
-    return { games: MOCK_GAMES, error: 'Failed to load' };
+    return { games: MOCK_GAMES, accent: MOCK_ACCENT, error: 'Failed to load' };
   }
 }

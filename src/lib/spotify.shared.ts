@@ -9,6 +9,7 @@ export interface SpotifyTopTrack {
 
 export interface SpotifyResult {
   tracks: SpotifyTopTrack[];
+  accent: string | null;
   error?: string;
 }
 

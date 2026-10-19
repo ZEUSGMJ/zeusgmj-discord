@@ -1,6 +1,24 @@
 import 'server-only';
 
+import { getDominantColor } from '@/lib/image-color';
 import type { AllTmdbData, TmdbMovie, TmdbResult } from '@/lib/tmdb.shared';
+
+type RawTmdbResult = Omit<TmdbResult, 'accent'>;
+
+const MOCK_ACCENTS = {
+  movies: '#2ab5b0',
+  tv: '#3f8fd6',
+  anime: '#d6567f',
+} as const;
+
+async function withAccent(
+  result: RawTmdbResult,
+  mockAccent: string,
+): Promise<TmdbResult> {
+  if (result.error) return { ...result, accent: mockAccent };
+  const poster = result.items[0]?.posterUrl?.replace('/w342/', '/w92/');
+  return { ...result, accent: await getDominantColor(poster) };
+}
 
 const dateOptions: Intl.DateTimeFormatOptions = {
   year: 'numeric',
@@ -94,7 +112,7 @@ const MOCK_ANIME: TmdbMovie[] = [
 async function getFavoriteMovies(
   readToken: string,
   accountId: string,
-): Promise<TmdbResult> {
+): Promise<RawTmdbResult> {
   try {
     const url = `https://api.themoviedb.org/3/account/${accountId}/favorite/movies?language=en-US&page=1&sort_by=created_at.desc`;
     const res = await fetch(url, {
@@ -123,7 +141,7 @@ async function getFavoriteMovies(
 async function getFavoriteTVAndAnime(
   readToken: string,
   accountId: string,
-): Promise<{ tv: TmdbResult; anime: TmdbResult }> {
+): Promise<{ tv: RawTmdbResult; anime: RawTmdbResult }> {
   try {
     const url = `https://api.themoviedb.org/3/account/${accountId}/favorite/tv?language=en-US&page=1&sort_by=created_at.desc`;
     const res = await fetch(url, {
@@ -172,7 +190,7 @@ async function getWatchedList(
   type: keyof typeof WATCHED_LIST_IDS,
   label: string,
   mockItems: TmdbMovie[],
-): Promise<TmdbResult> {
+): Promise<RawTmdbResult> {
   try {
     const listId = WATCHED_LIST_IDS[type];
     const res = await fetch(`https://api.themoviedb.org/3/list/${listId}`, {
@@ -205,14 +223,38 @@ export async function getAllTmdbData(): Promise<AllTmdbData> {
     );
     return {
       favorites: {
-        movies: { items: MOCK_MOVIES, label: 'Movie Favorites' },
-        tv: { items: MOCK_TV, label: 'TV Favorites' },
-        anime: { items: MOCK_ANIME, label: 'Anime Favorites' },
+        movies: {
+          items: MOCK_MOVIES,
+          label: 'Movie Favorites',
+          accent: MOCK_ACCENTS.movies,
+        },
+        tv: {
+          items: MOCK_TV,
+          label: 'TV Favorites',
+          accent: MOCK_ACCENTS.tv,
+        },
+        anime: {
+          items: MOCK_ANIME,
+          label: 'Anime Favorites',
+          accent: MOCK_ACCENTS.anime,
+        },
       },
       watched: {
-        movies: { items: MOCK_MOVIES, label: 'Movies Watched' },
-        shows: { items: MOCK_TV, label: 'Shows Watched' },
-        anime: { items: MOCK_ANIME, label: 'Anime Watched' },
+        movies: {
+          items: MOCK_MOVIES,
+          label: 'Movies Watched',
+          accent: MOCK_ACCENTS.movies,
+        },
+        shows: {
+          items: MOCK_TV,
+          label: 'Shows Watched',
+          accent: MOCK_ACCENTS.tv,
+        },
+        anime: {
+          items: MOCK_ANIME,
+          label: 'Anime Watched',
+          accent: MOCK_ACCENTS.anime,
+        },
       },
     };
   }
@@ -226,16 +268,32 @@ export async function getAllTmdbData(): Promise<AllTmdbData> {
       getWatchedList(readToken, 'anime', 'Anime Watched', MOCK_ANIME),
     ]);
 
+  const [
+    favMoviesResult,
+    favTvResult,
+    favAnimeResult,
+    watchedMoviesResult,
+    watchedShowsResult,
+    watchedAnimeResult,
+  ] = await Promise.all([
+    withAccent(favMovies, MOCK_ACCENTS.movies),
+    withAccent(favTVAndAnime.tv, MOCK_ACCENTS.tv),
+    withAccent(favTVAndAnime.anime, MOCK_ACCENTS.anime),
+    withAccent(watchedMovies, MOCK_ACCENTS.movies),
+    withAccent(watchedShows, MOCK_ACCENTS.tv),
+    withAccent(watchedAnime, MOCK_ACCENTS.anime),
+  ]);
+
   return {
     favorites: {
-      movies: favMovies,
-      tv: favTVAndAnime.tv,
-      anime: favTVAndAnime.anime,
+      movies: favMoviesResult,
+      tv: favTvResult,
+      anime: favAnimeResult,
     },
     watched: {
-      movies: watchedMovies,
-      shows: watchedShows,
-      anime: watchedAnime,
+      movies: watchedMoviesResult,
+      shows: watchedShowsResult,
+      anime: watchedAnimeResult,
     },
   };
 }
