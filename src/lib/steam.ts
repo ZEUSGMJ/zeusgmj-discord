@@ -46,6 +46,33 @@ const MOCK_GAMES: SteamGame[] = [
   },
 ];
 
+async function resolveStoreCapsule(appId: number): Promise<string | null> {
+  try {
+    const url = new URL(
+      'https://api.steampowered.com/IStoreBrowseService/GetItems/v1',
+    );
+    url.searchParams.set(
+      'input_json',
+      JSON.stringify({
+        ids: [{ appid: appId }],
+        context: { language: 'english', country_code: 'US' },
+        data_request: { include_assets: true },
+      }),
+    );
+
+    const res = await fetch(url.toString(), { next: { revalidate: 1800 } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const assets = data?.response?.store_items?.[0]?.assets as
+      { asset_url_format?: string; library_capsule_2x?: string } | undefined;
+    if (!assets?.asset_url_format || !assets.library_capsule_2x) return null;
+
+    return `https://shared.steamstatic.com/store_item_assets/${assets.asset_url_format.replace('${FILENAME}', assets.library_capsule_2x)}`;
+  } catch {
+    return null;
+  }
+}
+
 async function resolveImageUrl(appId: number): Promise<string | null> {
   const capsuleUrl = `https://shared.steamstatic.com/store_item_assets/steam/apps/${appId}/library_600x900_2x.jpg`;
 
@@ -56,6 +83,9 @@ async function resolveImageUrl(appId: number): Promise<string | null> {
     });
     if (probe.ok) return capsuleUrl;
   } catch {}
+
+  const storeCapsule = await resolveStoreCapsule(appId);
+  if (storeCapsule) return storeCapsule;
 
   const gridDbKey = process.env.STEAMGRIDDB_API_KEY;
   if (gridDbKey) {
