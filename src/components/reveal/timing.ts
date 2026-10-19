@@ -14,6 +14,8 @@ export const DUR_FOOTER_WORDMARK_ENTER = 0.24;
 export const DUR_FOOTER_MOUNTAIN_EXIT = 0.24;
 export const DUR_FOOTER_WORDMARK_EXIT = 0.2;
 export const DUR_FOOTER_EXIT = 0.1;
+export const DELAY_CONTENT_ENTER = 0.08;
+export const DELAY_CAROUSEL_ENTER = 0.14;
 
 export const LAYOUT_TRANSITION = { duration: DUR_LAYOUT, ease: EASE_OUT };
 export const PROFILE_COMPACT_TRANSITION = {

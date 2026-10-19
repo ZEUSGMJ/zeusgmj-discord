@@ -14,6 +14,7 @@ import { usePresence } from '@/components/presence/presence-provider';
 import { useReveal } from '@/components/reveal/reveal-context';
 import RevealToggle from '@/components/reveal/reveal-toggle';
 import {
+  DELAY_CAROUSEL_ENTER,
   DUR_CARD_EXIT,
   DUR_ITEM,
   EASE_IN,
@@ -288,7 +289,11 @@ export default function ProfilePresenceCard() {
                 initial={{ opacity: 0 }}
                 animate={{
                   opacity: 1,
-                  transition: { duration: DUR_ITEM, ease: EASE_OUT },
+                  transition: {
+                    duration: DUR_ITEM,
+                    delay: reduceMotion ? 0 : DELAY_CAROUSEL_ENTER,
+                    ease: EASE_OUT,
+                  },
                 }}
                 exit={{
                   opacity: 0,

@@ -7,7 +7,12 @@ import DisplayName from '@/components/presence/display-name';
 import { STATUS_LABEL } from '@/components/presence/status-dot';
 import UserFlagBadges from '@/components/presence/user-flag-badges';
 import BioMarkdown from '@/components/presence/bio-markdown';
-import { DUR_MICRO, EASE_OUT } from '@/components/reveal/timing';
+import {
+  DELAY_CONTENT_ENTER,
+  DUR_CARD_EXIT,
+  DUR_ITEM,
+  EASE_OUT,
+} from '@/components/reveal/timing';
 
 interface PresenceIdentityProps {
   user: NormalizedPresence['user'];
@@ -215,9 +220,21 @@ export default function PresenceIdentity(props: PresenceIdentityProps) {
         layout
         className={compact ? 'min-w-0 flex-1' : undefined}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: reduceMotion ? 0 : DUR_MICRO, ease: EASE_OUT }}
+        animate={{
+          opacity: 1,
+          transition: {
+            duration: reduceMotion ? 0 : DUR_ITEM,
+            delay: reduceMotion ? 0 : DELAY_CONTENT_ENTER,
+            ease: EASE_OUT,
+          },
+        }}
+        exit={{
+          opacity: 0,
+          transition: {
+            duration: reduceMotion ? 0 : DUR_CARD_EXIT,
+            ease: EASE_OUT,
+          },
+        }}
       >
         {compact ? (
           <PresenceIdentityCompact {...props} />

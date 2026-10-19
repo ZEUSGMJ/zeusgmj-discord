@@ -4,7 +4,12 @@ import { ChevronDown } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect } from 'react';
 import { useReveal } from '@/components/reveal/reveal-context';
-import { GRID_ID } from '@/components/reveal/timing';
+import {
+  DELAY_CONTENT_ENTER,
+  DUR_ITEM,
+  EASE_OUT,
+  GRID_ID,
+} from '@/components/reveal/timing';
 
 export default function RevealToggle({ compact }: { compact: boolean }) {
   const { targetExpanded, toggle, collapse } = useReveal();
@@ -21,6 +26,15 @@ export default function RevealToggle({ compact }: { compact: boolean }) {
   return (
     <motion.button
       layout="position"
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: 1,
+        transition: {
+          duration: reduceMotion ? 0 : DUR_ITEM,
+          delay: reduceMotion ? 0 : DELAY_CONTENT_ENTER,
+          ease: EASE_OUT,
+        },
+      }}
       type="button"
       onClick={toggle}
       aria-expanded={targetExpanded}
