@@ -3,7 +3,7 @@ interface StatusDotProps {
   className?: string;
 }
 
-const colorMap = {
+export const STATUS_COLOR: Record<StatusDotProps['status'], string> = {
   online: 'bg-online',
   idle: 'bg-yellow-400',
   dnd: 'bg-red-500',
@@ -23,7 +23,7 @@ export default function StatusDot({
 }: StatusDotProps) {
   return (
     <span
-      className={`inline-block rounded-full border-(--dot-ring) ${colorMap[status]} ${className}`}
+      className={`inline-block rounded-full border-(--dot-ring) ${STATUS_COLOR[status]} ${className}`}
       title={STATUS_LABEL[status]}
       aria-label={STATUS_LABEL[status]}
     />

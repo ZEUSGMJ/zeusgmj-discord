@@ -67,6 +67,19 @@ export function normalizeDisplayNameStyles(
   return { effectId, colors };
 }
 
+const DISCORD_EPOCH_MS = 1420070400000;
+const MEMBER_SINCE_FORMAT = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+export function memberSince(userId: string): string | null {
+  const createdAt = Math.floor(Number(userId) / 2 ** 22) + DISCORD_EPOCH_MS;
+  if (!Number.isFinite(createdAt) || createdAt < DISCORD_EPOCH_MS) return null;
+  return MEMBER_SINCE_FORMAT.format(createdAt);
+}
+
 export function intToHex(value: number): string {
   return `#${(value >>> 0).toString(16).padStart(6, '0')}`;
 }

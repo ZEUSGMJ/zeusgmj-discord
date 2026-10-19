@@ -64,6 +64,8 @@ export function buildPresenceTheme(
 
   return {
     background: `linear-gradient(to bottom, ${backgroundColors[0]}, ${backgroundColors[1]})`,
+    '--cft-bg-0': backgroundColors[0],
+    '--cft-bg-1': backgroundColors[1],
     '--cft-hi': cftHi,
     '--cft-mid': cftMid,
     '--cft-lo': cftMid,

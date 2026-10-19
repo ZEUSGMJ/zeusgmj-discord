@@ -141,6 +141,12 @@ export interface NormalizedPresence {
   listeningToSpotify: boolean;
 }
 
+export function hasCustomStatus(
+  customStatus: NormalizedPresence['customStatus'],
+): customStatus is NonNullable<NormalizedPresence['customStatus']> {
+  return Boolean(customStatus && (customStatus.text ?? customStatus.emojiName));
+}
+
 function resolveAssetUrl(assetKey: string, appId: string): string {
   if (assetKey.startsWith('mp:external/')) {
     return `https://media.discordapp.net/external/${assetKey.slice('mp:external/'.length)}`;

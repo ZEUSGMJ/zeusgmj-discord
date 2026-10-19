@@ -29,7 +29,7 @@ function Spoiler({ children }: { children?: ReactNode }) {
       }}
       className={
         revealed
-          ? 'rounded bg-(--cft-badge-bg) px-0.5'
+          ? 'cursor-text rounded bg-(--cft-badge-bg) px-0.5'
           : 'cursor-pointer rounded bg-(--cft-badge-bg) px-0.5 text-transparent select-none'
       }
     >

@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { Gamepad, MonitorPlay } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { LuGamepad, LuMonitorPlay } from 'react-icons/lu';
+import { SiSpotify } from 'react-icons/si';
 import { hideOnError } from '@/components/ui/hide-on-error';
 import type { NormalizedActivity, SpotifyTrack } from '@/lib/lanyard.shared';
 import type {
@@ -101,8 +102,8 @@ function ActivityProgress({ timestamps }: { timestamps: ProgressTimestamps }) {
         role="progressbar"
       >
         <div
-          className="h-full rounded-full bg-(--cft-mid) transition-[width] duration-500 ease-linear"
-          style={{ width: `${progress}%` }}
+          className="h-full origin-left bg-(--cft-mid) transition-transform duration-500 ease-linear motion-reduce:transition-none"
+          style={{ transform: `scaleX(${progress / 100})` }}
         />
       </div>
       <div className="mt-1 flex justify-between text-[10px] font-medium text-(--cft-lo) tabular-nums">
@@ -114,7 +115,7 @@ function ActivityProgress({ timestamps }: { timestamps: ProgressTimestamps }) {
 }
 
 const TILE_CLASS =
-  'relative size-19 shrink-0 rounded-xl bg-(--cft-img-fb) lg:size-29 lg:rounded-2xl';
+  'relative size-19 shrink-0 rounded-xl bg-(--cft-img-fb) lg:size-30 lg:rounded-2xl';
 const LABEL_CLASS =
   'text-[11px] leading-3.5 font-semibold tracking-[0.06em] text-(--cft-mid) uppercase lg:text-xs lg:leading-4';
 const TITLE_CLASS =
@@ -145,11 +146,14 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
             />
           ) : (
             <div className="flex size-full items-center justify-center">
-              <span className="text-xl text-online">♫</span>
+              <SiSpotify
+                aria-hidden="true"
+                className="size-6 text-online lg:size-8"
+              />
             </div>
           )}
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5 lg:gap-[3px]">
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <p className={LABEL_CLASS}>{label}</p>
           <p title={data.songTitle} className={TITLE_CLASS}>
             {data.songTitle}
@@ -165,7 +169,7 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
 
   const { data } = item;
   const activityLabel = data.type === 3 ? 'Watching' : 'Playing';
-  const ActivityIcon = data.type === 3 ? MonitorPlay : Gamepad;
+  const ActivityIcon = data.type === 3 ? LuMonitorPlay : LuGamepad;
   const timestamps =
     data.type === 3 ? getValidTimestamps(data.timestamps) : null;
 
@@ -182,7 +186,7 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
           />
         ) : (
           <div className="flex size-full items-center justify-center">
-            <ActivityIcon className="size-6 text-(--cft-dim)" />
+            <ActivityIcon className="size-6 text-(--cft-dim) lg:size-8" />
           </div>
         )}
         {data.largeImageUrl && data.smallImageUrl && (
@@ -196,7 +200,7 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
           />
         )}
       </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5 lg:gap-[3px]">
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <p className={LABEL_CLASS}>{activityLabel}</p>
         <p title={data.name} className={TITLE_CLASS}>
           {data.name}

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import ActivityRow, {
   type CarouselItem,
 } from '@/components/presence/activity-row';
@@ -9,7 +10,7 @@ import { DUR_ITEM, DUR_MICRO, EASE_OUT } from '@/components/reveal/timing';
 
 const SLIDE_OFFSET = 16;
 const ARROW_CLASS =
-  '-my-3 w-3.5 shrink-0 py-3 text-center text-xl leading-none text-(--cft-hi) transition-[color,opacity,transform] hover:text-(--cft-mid) active:scale-90 disabled:cursor-default disabled:opacity-30 disabled:hover:text-(--cft-hi) lg:w-5 lg:text-[22px]';
+  '-my-3 flex shrink-0 items-center justify-center py-3 text-(--cft-hi) transition-[color,opacity,transform] hover:text-(--cft-mid) active:scale-90 disabled:cursor-default disabled:opacity-30 disabled:hover:text-(--cft-hi)';
 
 export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
   const [position, setPosition] = useState({ index: 0, direction: 1 });
@@ -59,7 +60,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
           className={ARROW_CLASS}
           aria-label="Previous activity"
         >
-          ‹
+          <LuChevronLeft aria-hidden="true" className="size-5" />
         </button>
         <div className="relative min-w-0 flex-1">
           <AnimatePresence
@@ -96,7 +97,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
           className={ARROW_CLASS}
           aria-label="Next activity"
         >
-          ›
+          <LuChevronRight aria-hidden="true" className="size-5" />
         </button>
       </div>
       <div className="flex gap-[7px] lg:gap-2">

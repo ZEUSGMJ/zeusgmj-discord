@@ -3,19 +3,14 @@ import { motion } from 'motion/react';
 import type { CSSProperties } from 'react';
 import type { NormalizedPresence } from '@/lib/lanyard.shared';
 import { hideOnError } from '@/components/ui/hide-on-error';
-import StatusDot, { STATUS_LABEL } from '@/components/presence/status-dot';
+import StatusBubble from '@/components/presence/status-bubble';
+import StatusDot from '@/components/presence/status-dot';
 import { LAYOUT_TRANSITION } from '@/components/reveal/timing';
-
-const statusBadge: Record<NormalizedPresence['status'], string> = {
-  online: 'bg-[#17302a] text-[#46d68c]',
-  idle: 'bg-yellow-950/60 text-yellow-400',
-  dnd: 'bg-red-950/60 text-red-400',
-  offline: 'bg-zinc-800 text-zinc-400',
-};
 
 interface PresenceHeaderProps {
   user: NormalizedPresence['user'];
   status: NormalizedPresence['status'];
+  customStatus: NormalizedPresence['customStatus'];
   discordUserId: string | undefined;
   accentColor: string | null;
   compact?: boolean;
@@ -24,6 +19,7 @@ interface PresenceHeaderProps {
 export default function PresenceHeader({
   user,
   status,
+  customStatus,
   discordUserId,
   accentColor,
   compact = false,
@@ -35,7 +31,7 @@ export default function PresenceHeader({
       className={
         compact
           ? 'flex shrink-0 items-center'
-          : '-mt-[52px] flex items-end justify-between lg:-mt-[72px]'
+          : '-mt-[52px] flex items-start lg:-mt-16'
       }
     >
       <motion.div
@@ -48,8 +44,8 @@ export default function PresenceHeader({
         }
         className={
           compact
-            ? 'relative size-12 shrink-0 lg:size-13'
-            : 'relative size-26 shrink-0 lg:size-36'
+            ? 'relative size-12 shrink-0'
+            : 'relative size-26 shrink-0 lg:size-32'
         }
       >
         <motion.div
@@ -58,7 +54,7 @@ export default function PresenceHeader({
           className={
             compact
               ? 'relative z-10 size-full rounded-full bg-surface-raised'
-              : 'relative z-10 size-full rounded-full border-[6px] border-(--cft-ring) bg-(--cft-ring) lg:border-8'
+              : 'relative z-10 size-full rounded-full border-[6px] border-(--cft-ring) bg-(--cft-ring) lg:border-[7px]'
           }
         >
           <Image
@@ -72,12 +68,12 @@ export default function PresenceHeader({
           />
         </motion.div>
         {!compact && user.avatarDecorationUrl && (
-          <div className="pointer-events-none absolute -inset-3 z-20 lg:-inset-4">
+          <div className="pointer-events-none absolute -inset-3 z-20 lg:-inset-3.5">
             <Image
               src={user.avatarDecorationUrl}
               alt=""
               fill
-              sizes="(max-width: 1024px) 128px, 176px"
+              sizes="(max-width: 1024px) 128px, 160px"
               className="object-contain"
               aria-hidden={true}
               onError={hideOnError}
@@ -95,25 +91,23 @@ export default function PresenceHeader({
             status={status}
             className={
               compact
-                ? 'size-4 border-[3px] lg:size-[18px] lg:border-4'
-                : 'size-[26px] border-[5px] lg:size-8 lg:border-[6px]'
+                ? 'size-4 border-[3px]'
+                : 'size-[26px] border-[5px] lg:size-7'
             }
           />
         </div>
       </motion.div>
 
       {!compact && (
-        <div className="flex flex-col items-end gap-1.5 lg:gap-2">
-          <span
-            className={`hidden rounded-full px-3.5 py-1 text-[13px] leading-[18px] font-semibold lg:block ${statusBadge[status]}`}
-          >
-            {STATUS_LABEL[status]}
-          </span>
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-2 self-stretch pl-6 lg:flex-row lg:justify-between lg:gap-3">
+          <div className="mt-8 min-w-0 lg:mt-11">
+            <StatusBubble customStatus={customStatus} />
+          </div>
           <a
             href={`https://discord.com/users/${discordUserId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-[10px] px-3.5 py-2 text-[13px] leading-[18px] font-semibold text-white transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97] lg:px-[18px] lg:py-[9px] lg:text-[15px] lg:leading-5"
+            className="mt-auto ml-auto shrink-0 rounded-[10px] px-3.5 py-2 text-[13px] leading-[18px] font-semibold text-white transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97] lg:px-4 lg:text-sm lg:leading-5"
             style={{
               backgroundColor: accentColor ? `${accentColor}99` : '#27272a',
             }}
