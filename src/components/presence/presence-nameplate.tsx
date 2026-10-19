@@ -95,7 +95,7 @@ export default function PresenceNameplate({
           <source src={nameplate.animatedUrl} type="video/webm" />
         </video>
       )}
-      <div className="absolute inset-0 z-10 bg-linear-to-r from-black/75 via-black/35 to-black/5" />
+      <div className="absolute inset-0 z-10 bg-linear-to-r from-black/80 via-black/55 to-black/25" />
     </motion.div>
   );
 }

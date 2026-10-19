@@ -63,7 +63,7 @@ function BioImage({ src, alt }: ComponentPropsWithoutRef<'img'>) {
 
 export default function BioMarkdown({ bio }: { bio: string }) {
   return (
-    <div className="mt-1 space-y-1">
+    <div className="space-y-1.5 lg:space-y-2.5">
       <Markdown
         remarkPlugins={[
           remarkDiscordConstructs,
@@ -98,7 +98,7 @@ export default function BioMarkdown({ bio }: { bio: string }) {
             </a>
           ),
           p: ({ children }) => (
-            <p className="text-sm wrap-break-word text-(--cft-lo)">
+            <p className="text-[15px] leading-[22px] wrap-break-word text-(--cft-hi) lg:text-base">
               {children}
             </p>
           ),

@@ -7,6 +7,8 @@ interface DisplayNameProps {
   className?: string;
 }
 
+const PLAIN_CLASS = 'inline-block max-w-full truncate align-bottom';
+
 export default function DisplayName({
   name,
   styles,
@@ -14,7 +16,12 @@ export default function DisplayName({
 }: DisplayNameProps) {
   const resolved = resolveDisplayName(styles);
 
-  if (!resolved) return <span className={className}>{name}</span>;
+  if (!resolved)
+    return (
+      <span className={className ? `${PLAIN_CLASS} ${className}` : PLAIN_CLASS}>
+        {name}
+      </span>
+    );
 
   return (
     <span

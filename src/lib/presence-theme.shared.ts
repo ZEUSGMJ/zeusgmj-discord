@@ -48,11 +48,11 @@ export function buildPresenceTheme(
   const cftSurf =
     textDir === 'light'
       ? {
-          badgeBg: 'rgba(39,39,42,0.8)',
-          statusBg: '#09090b',
-          separator: 'rgba(39,39,42,0.6)',
-          progTrack: 'rgba(39,39,42,0.8)',
-          imgFallBg: 'rgba(39,39,42,1)',
+          badgeBg: 'rgba(10,10,25,0.5)',
+          statusBg: 'rgba(8,8,20,0.65)',
+          separator: 'rgba(255,255,255,0.12)',
+          progTrack: 'rgba(255,255,255,0.16)',
+          imgFallBg: '#26282f',
         }
       : {
           badgeBg: 'rgba(255,255,255,0.6)',
@@ -74,5 +74,6 @@ export function buildPresenceTheme(
     '--cft-prog-trk': cftSurf.progTrack,
     '--cft-img-fb': cftSurf.imgFallBg,
     '--cft-dot-hover': cftMid,
+    '--cft-ring': `color-mix(in srgb, ${backgroundColors[0]} 62%, black)`,
   } as CSSProperties;
 }

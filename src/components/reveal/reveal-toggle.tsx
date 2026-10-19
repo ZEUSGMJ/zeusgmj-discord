@@ -28,8 +28,8 @@ export default function RevealToggle({ compact }: { compact: boolean }) {
       aria-label={targetExpanded ? 'Hide details' : 'Show details'}
       className={
         compact
-          ? 'relative z-30 flex size-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-300 backdrop-blur-sm transition-colors hover:text-zinc-100'
-          : 'absolute top-4 right-4 z-30 flex size-9 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-300 backdrop-blur-sm transition-colors hover:text-zinc-100'
+          ? 'relative z-30 flex size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-ink backdrop-blur-md transition-colors hover:bg-white/16 lg:size-9'
+          : 'absolute top-3 right-3 z-30 flex size-8 items-center justify-center rounded-full bg-[#0a0a14]/55 text-ink backdrop-blur-sm transition-colors hover:bg-[#0a0a14]/70 lg:top-5 lg:right-5 lg:size-10'
       }
       whileHover={reduceMotion ? undefined : { scale: 1.04 }}
       whileTap={reduceMotion ? undefined : { scale: 0.97 }}
