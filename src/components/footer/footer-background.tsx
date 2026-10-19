@@ -14,6 +14,7 @@ import {
   EASE_IN,
   EASE_OUT,
   FOOTER_REVEAL_DELAY,
+  translatePx,
 } from '@/components/reveal/timing';
 
 class ShaderBoundary extends Component<
@@ -136,6 +137,7 @@ export default function FooterBackground() {
   const exitDuration = reduceMotion ? 0 : DUR_FOOTER_EXIT;
   const mountainVisible = readyToReveal && !footerExitPending;
   const wordmarkVisible = readyToReveal && !footerExitPending;
+  const hiddenOffset = reduceMotion ? translatePx() : translatePx(0, 48);
 
   return (
     <>
@@ -161,10 +163,10 @@ export default function FooterBackground() {
             style={{ aspectRatio: '1920 / 547' }}
           >
             <motion.div
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 48 }}
+              initial={{ opacity: 0, transform: hiddenOffset }}
               animate={{
                 opacity: mountainVisible ? 1 : 0,
-                y: mountainVisible || reduceMotion ? 0 : 48,
+                transform: mountainVisible ? translatePx() : hiddenOffset,
                 transition: {
                   duration: footerExitPending
                     ? mountainExitDuration
@@ -188,10 +190,10 @@ export default function FooterBackground() {
               />
             </motion.div>
             <motion.span
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 48 }}
+              initial={{ opacity: 0, transform: hiddenOffset }}
               animate={{
                 opacity: wordmarkVisible ? 1 : 0,
-                y: wordmarkVisible || reduceMotion ? 0 : 48,
+                transform: wordmarkVisible ? translatePx() : hiddenOffset,
                 transition: {
                   duration: footerExitPending
                     ? wordmarkExitDuration

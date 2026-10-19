@@ -17,7 +17,14 @@ export const DUR_FOOTER_EXIT = 0.1;
 export const DELAY_CONTENT_ENTER = 0.08;
 export const DELAY_CAROUSEL_ENTER = 0.14;
 
+export const translatePx = (x = 0, y = 0) => `translate(${x}px, ${y}px)`;
+
 export const LAYOUT_TRANSITION = { duration: DUR_LAYOUT, ease: EASE_OUT };
+export const CONTENT_ENTER_TRANSITION = {
+  duration: DUR_ITEM,
+  delay: DELAY_CONTENT_ENTER,
+  ease: EASE_OUT,
+};
 export const PROFILE_COMPACT_TRANSITION = {
   type: 'spring' as const,
   duration: 0.28,

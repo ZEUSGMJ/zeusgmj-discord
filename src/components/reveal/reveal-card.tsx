@@ -16,6 +16,7 @@ import {
   EASE_OUT,
   PROFILE_SETTLE_TRANSITION,
   SHELL_SETTLE_DELAY,
+  translatePx,
   type CardWave,
 } from '@/components/reveal/timing';
 
@@ -85,11 +86,14 @@ export default function RevealCard({
     };
   }, [generation, profileSettle, pulseControls, reduceMotion, targetExpanded]);
 
+  const offscreen = reduceMotion
+    ? translatePx()
+    : translatePx(wave.from.x, wave.from.y);
+
   const variants: Variants = {
     initial: {
       opacity: 0,
-      x: reduceMotion ? 0 : (wave.from.x ?? 0),
-      y: reduceMotion ? 0 : (wave.from.y ?? 0),
+      transform: offscreen,
       transition: {
         duration: reduceMotion ? DUR_MICRO : DUR_CARD_EXIT,
         ease: EASE_IN,
@@ -97,8 +101,7 @@ export default function RevealCard({
     },
     visible: {
       opacity: 1,
-      x: 0,
-      y: 0,
+      transform: translatePx(),
       transition: {
         duration: reduceMotion ? DUR_MICRO : DUR_CARD_ENTER,
         delay: reduceMotion ? 0 : wave.delay,
@@ -107,8 +110,7 @@ export default function RevealCard({
     },
     exit: {
       opacity: 0,
-      x: reduceMotion ? 0 : (wave.from.x ?? 0),
-      y: reduceMotion ? 0 : (wave.from.y ?? 0),
+      transform: offscreen,
       transition: {
         duration: reduceMotion ? DUR_MICRO : DUR_CARD_EXIT,
         ease: EASE_IN,
