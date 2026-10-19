@@ -107,14 +107,14 @@ export default function RevealStage({
       id={GRID_ID}
       className={
         layoutExpanded
-          ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
+          ? 'grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4'
           : 'flex justify-center'
       }
     >
       <motion.div
         layout
         transition={LAYOUT_TRANSITION}
-        className={layoutExpanded ? 'sm:col-span-2' : 'w-full max-w-md'}
+        className={layoutExpanded ? 'lg:col-span-7' : 'w-full max-w-[540px]'}
       >
         {presence}
       </motion.div>
@@ -130,7 +130,8 @@ export default function RevealStage({
             cardId="column"
             generation={intentGeneration}
             wave={cardWaves.column}
-            className="flex h-full flex-col gap-4"
+            className="flex h-full flex-col gap-3 lg:gap-4"
+            outerClassName="lg:col-span-5"
             onEnterComplete={handleCardEnterComplete}
           >
             <div>{links}</div>
@@ -144,6 +145,7 @@ export default function RevealStage({
             cardId="tracks"
             generation={intentGeneration}
             wave={cardWaves.tracks}
+            outerClassName="lg:col-span-12"
             onEnterComplete={handleCardEnterComplete}
           >
             {tracks}
@@ -156,6 +158,7 @@ export default function RevealStage({
             cardId="games"
             generation={intentGeneration}
             wave={cardWaves.games}
+            outerClassName="lg:col-span-6"
             onEnterComplete={handleCardEnterComplete}
           >
             {games}
@@ -168,6 +171,7 @@ export default function RevealStage({
             cardId="media"
             generation={intentGeneration}
             wave={cardWaves.media}
+            outerClassName="lg:col-span-6"
             onEnterComplete={handleCardEnterComplete}
           >
             {media}

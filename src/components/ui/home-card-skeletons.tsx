@@ -19,13 +19,13 @@ function SkeletonCardHeader({
 
 export function ProfileCardSkeleton() {
   return (
-    <div className="h-full min-h-52 animate-pulse rounded-3xl border border-zinc-800/50 bg-zinc-900" />
+    <div className="h-full min-h-52 animate-pulse rounded-[28px] bg-surface lg:rounded-tile" />
   );
 }
 
 export function LinksCardSkeleton() {
   return (
-    <div className="rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+    <div className="rounded-[28px] bg-surface p-5 lg:rounded-tile">
       <SkeletonCardHeader titleWidth="w-12" className="mb-2" />
       <ul className="space-y-2">
         {[0, 1, 2, 3, 4, 5].map((item) => (
@@ -44,13 +44,13 @@ export function LinksCardSkeleton() {
 
 export function YearProgressCardSkeleton() {
   return (
-    <div className="h-full min-h-44 animate-pulse rounded-3xl border border-zinc-800/50 bg-zinc-900" />
+    <div className="h-full min-h-44 animate-pulse rounded-[28px] bg-surface lg:rounded-tile" />
   );
 }
 
 export function SpotifyCardSkeleton() {
   return (
-    <div className="h-full rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+    <div className="h-full rounded-[28px] bg-surface p-5 lg:rounded-tile">
       <SkeletonCardHeader titleWidth="w-36" className="mb-4" />
       <ol className="space-y-3">
         {[0, 1, 2, 3, 4].map((item) => (
@@ -70,7 +70,7 @@ export function SpotifyCardSkeleton() {
 
 export function SteamCardSkeleton() {
   return (
-    <div className="h-full rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+    <div className="h-full rounded-[28px] bg-surface p-5 lg:rounded-tile">
       <SkeletonCardHeader titleWidth="w-28" className="mb-4" />
       <ul className="space-y-3">
         {[0, 1, 2, 3, 4].map((item) => (
@@ -89,7 +89,7 @@ export function SteamCardSkeleton() {
 
 export function MediaCardSkeleton() {
   return (
-    <div className="h-full rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+    <div className="h-full rounded-[28px] bg-surface p-5 lg:rounded-tile">
       <SkeletonCardHeader titleWidth="w-12" className="mb-3" />
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-6 w-20 rounded-lg" />
@@ -113,20 +113,28 @@ export function MediaCardSkeleton() {
 export function HomePageLoadingGrid() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-4xl">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="sm:col-span-2">
+      <div className="w-full max-w-[1200px]">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4">
+          <div className="lg:col-span-7">
             <ProfileCardSkeleton />
           </div>
-          <div className="flex h-full flex-col gap-4">
-            <LinksCardSkeleton />
-            <div className="min-h-44 flex-1">
+          <div className="flex h-full flex-col gap-3 lg:col-span-5 lg:gap-4">
+            <div className="min-h-44">
               <YearProgressCardSkeleton />
             </div>
+            <div className="flex-1">
+              <SpotifyCardSkeleton />
+            </div>
           </div>
-          <SpotifyCardSkeleton />
-          <SteamCardSkeleton />
-          <MediaCardSkeleton />
+          <div className="lg:col-span-12">
+            <LinksCardSkeleton />
+          </div>
+          <div className="lg:col-span-6">
+            <SteamCardSkeleton />
+          </div>
+          <div className="lg:col-span-6">
+            <MediaCardSkeleton />
+          </div>
         </div>
       </div>
     </main>

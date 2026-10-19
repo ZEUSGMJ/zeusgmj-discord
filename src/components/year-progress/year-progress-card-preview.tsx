@@ -24,7 +24,7 @@ export default function YearProgressCardPreview({
   }
 
   return (
-    <div className="shine-edge flex h-full min-h-44 flex-1 flex-col rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+    <div className="flex h-full min-h-44 flex-1 flex-col rounded-[28px] bg-surface p-[22px] lg:rounded-tile lg:p-7">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex min-w-0 items-baseline gap-2">
           <h3 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">

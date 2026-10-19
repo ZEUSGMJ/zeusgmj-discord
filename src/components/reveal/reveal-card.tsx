@@ -25,6 +25,7 @@ interface RevealCardProps {
   generation: number;
   wave: CardWave;
   className?: string;
+  outerClassName?: string;
   onEnterComplete: (cardId: RevealCardId, generation: number) => void;
 }
 
@@ -36,6 +37,7 @@ export default function RevealCard({
   generation,
   wave,
   className,
+  outerClassName,
   onEnterComplete,
 }: RevealCardProps) {
   const { targetExpanded, profileSettle } = useReveal();
@@ -117,7 +119,9 @@ export default function RevealCard({
   return (
     <motion.div
       data-reveal={reveal}
-      className={className ? 'h-full' : undefined}
+      className={[className ? 'h-full' : '', outerClassName ?? '']
+        .filter(Boolean)
+        .join(' ')}
       variants={variants}
       initial="initial"
       animate={targetExpanded ? 'visible' : 'exit'}

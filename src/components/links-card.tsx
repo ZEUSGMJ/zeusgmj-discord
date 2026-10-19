@@ -42,7 +42,7 @@ const LINKS: LinkItem[] = [
 
 export default function LinksCard() {
   return (
-    <div className="shine-edge rounded-3xl border border-zinc-800/50 bg-zinc-900 p-5">
+    <div className="rounded-[28px] bg-surface p-[22px] lg:rounded-tile lg:p-7">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
           Links
