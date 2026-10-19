@@ -107,7 +107,7 @@ export default function RevealStage({
       id={GRID_ID}
       className={
         layoutExpanded
-          ? 'grid grid-cols-1 gap-3 pb-[calc(22.29vw+53px)] lg:grid-cols-12 lg:gap-4 lg:pb-[calc(22.29vw+39px)]'
+          ? 'grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4'
           : 'flex justify-center'
       }
     >
