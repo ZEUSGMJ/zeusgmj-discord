@@ -60,6 +60,8 @@ src/
       profile-presence-card.tsx # 'use client' - wires usePresence + theme to presentation
       presence-provider.tsx     # 'use client' - PresenceProvider/usePresence context wrapping useLanyardPresence
       status-dot.tsx            # Presentational - Discord status indicator dot
+      status-emoji.tsx          # Presentational - custom-status emoji image or unicode
+      status-bubble.tsx         # Presentational - Discord-style thought bubble for the custom status
       presence-header.tsx       # Presentational - banner/avatar/status for ProfilePresenceCard
       presence-identity.tsx     # Presentational - name/badges/bio for ProfilePresenceCard
       user-flag-badges.tsx      # Presentational - text badges from Discord public flags
@@ -75,12 +77,16 @@ src/
       reveal-context.tsx       # 'use client' - expand/collapse intent, layout and footer sequencing
       reveal-toggle.tsx        # 'use client' - expand/collapse button (compact + banner variants)
       timing.ts                # Durations, easings, CARD_WAVES - reuse these, do not invent new curves
+    icons/
+      stats-fm-icon.tsx        # Presentational - Stats.fm logo as an SVG component (currentColor)
     footer/
       footer-background.tsx    # 'use client' - halftone mountain + wordmark, reveal-gated; pre-warms the shader at idle
     ui/
       home-card-skeletons.tsx  # Presentational - loading skeletons for every home card
       card-error-boundary.tsx  # 'use client' - per-card error boundary
       hide-on-error.ts         # onError handler that hides failed decorative images
+      liquid-glass-defs.tsx    # Static - hidden SVG with the #liquid-glass refraction filter
+      liquid-glass-support.tsx # 'use client' - sets html[data-liquid-glass] in Chromium
   hooks/
     use-lanyard-presence.ts  # 'use client' - Lanyard WebSocket + Spotify fallback caching
   lib/
@@ -159,7 +165,7 @@ Remote image domains are declared in `next.config.ts` under `remotePatterns`. Al
 **Lanyard vs dcdn**: Lanyard's WebSocket payload does not include `banner` or `banner_color` for the Discord user. Fetch the banner hash from dcdn (`/api/discord-profile` -> `bannerHash`) and construct the URL in the component. dcdn can fail - always fall back gracefully (banner color -> hardcoded default).
 
 ## Tailwind v4
-Uses `@import "tailwindcss"` and `@theme inline { }` - not the v3 `tailwind.config.js` approach. Custom colors are declared in `globals.css` under `@theme inline` and used as utilities: `bg-background` (`#07080A`), `bg-surface` / `bg-surface-raised` / `bg-hairline`, `text-ink` / `text-ink-muted` / `text-ink-dim`, `bg-online`, plus `rounded-tile` (32px; mobile tiles use 28px).
+Uses `@import "tailwindcss"` and `@theme inline { }` - not the v3 `tailwind.config.js` approach. Custom colors are declared in `globals.css` under `@theme inline` and used as utilities: `bg-background` (`#07080A`), `bg-surface` / `bg-surface-raised` / `bg-hairline`, `text-ink` / `text-ink-muted` / `text-ink-dim`, `bg-online`, plus `rounded-tile` (28px).
 
 ## Tiles and tints
 Tracks, games and media tiles take their gradient from the dominant colour of their first item: the server component passes `accent` through `deriveTileColors(accent, kind)` and sets `--tile-tint` / `--tile-glow` / `--tile-label` with `tileStyle()`. Always keep the static fallbacks (violet, ember, teal) working when `accent` is `null`. The media tile renders one tint layer per list and cross-fades by opacity - never animate the gradient itself.
@@ -169,6 +175,12 @@ Tracks, games and media tiles take their gradient from the dominant colour of th
 
 ## Display names
 `DisplayName` renders `display_name_styles` (colour + effect: 1 solid, 2 gradient, 3 neon, 4 toon, 5 pop, 6 glow; others fall back to solid). Only the default font is used - never load or bundle Discord's fonts, and write effect CSS ourselves. One-shot effect motion lives inside `prefers-reduced-motion: no-preference`.
+
+## Liquid glass
+The toggle and status bubble use real refraction (`backdrop-filter: url(#liquid-glass)`) only where it renders (Chromium), switched on by `html[data-liquid-glass]` and skipped under `prefers-reduced-transparency: reduce`. Their normal blur styles are the fallback elsewhere. A glass surface adds the `liquid-glass` class and a `--glass-tint` custom property; the filter strength is `scale` in `liquid-glass-defs.tsx`.
+
+## Icons
+Icons come from `react-icons` (`react-icons/lu` for UI, `react-icons/si` for brands) - never hard-coded glyphs like arrows or chevrons. Stats.fm has no react-icons entry, so it uses `components/icons/stats-fm-icon.tsx`. Link icons are tinted with `--theme-accent-ink`. Install with `pnpm` (the repo has `pnpm-lock.yaml`; `npm install` fails on the symlinked tree).
 
 ## Dependencies
 `sharp` is kept on the same 0.34.x line Next bundles (`^0.34.5`). A second sharp version in the graph loads two libvips builds in one process and breaks `/icon` and image routes on Windows - bump it only together with Next.

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Gamepad } from 'lucide-react';
+import { LuGamepad } from 'react-icons/lu';
 import { randomInt } from 'node:crypto';
 import { getRecentGames, type SteamGame } from '@/lib/steam';
 import { deriveTileColors, tileStyle } from '@/lib/tile-color.shared';
@@ -18,7 +18,7 @@ const PLACEHOLDER = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" 
 function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
   return (
     <li
-      className={`shrink-0 ${lead ? 'w-[130px] lg:w-[200px]' : 'w-20 lg:w-[150px]'}`}
+      className={`shrink-0 ${lead ? 'w-[130px] lg:w-auto lg:max-w-[200px] lg:min-w-0 lg:flex-[1.35_1_0%]' : 'w-20 lg:w-auto lg:max-w-[150px] lg:min-w-0 lg:flex-[1_1_0%]'}`}
     >
       <a
         href={game.storeUrl}
@@ -29,8 +29,8 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
         <span
           className={`relative block overflow-hidden border border-white/10 bg-[#26282f] transition-transform duration-200 ease-out group-hover:-translate-y-0.5 ${
             lead
-              ? 'h-[195px] rounded-xl border-white/12 lg:h-[260px] lg:rounded-[14px]'
-              : 'h-[120px] rounded-[10px] lg:h-[195px] lg:rounded-xl'
+              ? 'h-[195px] rounded-xl border-white/12 lg:h-[220px] lg:rounded-[14px]'
+              : 'h-[120px] rounded-[10px] lg:h-[164px] lg:rounded-xl'
           }`}
         >
           {game.iconUrl ? (
@@ -40,8 +40,8 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
               fill
               sizes={
                 lead
-                  ? '(max-width: 1024px) 130px, 200px'
-                  : '(max-width: 1024px) 80px, 150px'
+                  ? '(max-width: 1024px) 130px, 168px'
+                  : '(max-width: 1024px) 80px, 124px'
               }
               className="object-cover"
               placeholder={PLACEHOLDER}
@@ -49,7 +49,7 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
             />
           ) : (
             <span className="flex size-full items-center justify-center">
-              <Gamepad className="size-5 text-ink-dim" aria-hidden="true" />
+              <LuGamepad className="size-5 text-ink-dim" aria-hidden="true" />
             </span>
           )}
         </span>
@@ -57,19 +57,13 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
           <span
             className={`truncate text-ink ${
               lead
-                ? 'text-sm leading-5 font-semibold lg:text-base lg:leading-[22px]'
-                : 'text-xs leading-4 font-medium lg:text-sm lg:leading-5'
+                ? 'text-sm leading-5 font-semibold'
+                : 'text-xs leading-4 font-medium'
             }`}
           >
             {game.name}
           </span>
-          <span
-            className={`truncate text-ink-muted ${
-              lead
-                ? 'text-[11px] leading-3.5 lg:text-[13px] lg:leading-[18px]'
-                : 'text-[11px] leading-3.5 lg:text-xs lg:leading-4'
-            }`}
-          >
+          <span className="truncate text-[11px] leading-3.5 text-ink-muted">
             {formatHours(game.minutes2Weeks)}
             {lead && ` · ${formatHours(game.minutesForever)} total`}
           </span>
@@ -95,14 +89,14 @@ export default async function SteamCard() {
     <section
       aria-label="Recent games"
       style={tileStyle(colors)}
-      className="flex h-full flex-col gap-4 overflow-hidden rounded-[28px] bg-surface bg-linear-200/oklab from-(--tile-tint) from-0% to-surface to-65% p-[22px] lg:min-h-[400px] lg:justify-between lg:rounded-tile lg:p-7"
+      className="flex h-full flex-col gap-4 overflow-hidden rounded-tile bg-surface bg-linear-200/oklab from-(--tile-tint) from-0% to-surface to-65% p-[22px] lg:min-h-[340px] lg:justify-between lg:p-6"
     >
       <div className="flex items-baseline justify-between">
-        <h3 className="text-xs leading-4 font-medium text-(--tile-label) lg:text-[13px] lg:leading-[18px]">
+        <h3 className="text-xs leading-4 font-medium text-(--tile-label)">
           Recent games · 2 weeks
         </h3>
         {lead && (
-          <p className="text-xs leading-4 text-ink-muted lg:text-[13px] lg:leading-[18px]">
+          <p className="text-xs leading-4 text-ink-muted">
             {formatHours(totalMinutes)}
           </p>
         )}

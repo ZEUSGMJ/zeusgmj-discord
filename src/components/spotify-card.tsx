@@ -13,9 +13,9 @@ export default async function SpotifyCard() {
     <section
       aria-label="Top tracks"
       style={tileStyle(colors)}
-      className="flex flex-1 flex-col gap-3.5 rounded-[28px] bg-surface bg-linear-160/oklab from-(--tile-tint) from-0% to-surface to-60% p-[22px] lg:gap-4 lg:rounded-tile lg:p-7"
+      className="flex flex-1 flex-col gap-3.5 rounded-tile bg-surface bg-linear-160/oklab from-(--tile-tint) from-0% to-surface to-60% p-[22px] lg:gap-4 lg:p-6"
     >
-      <h3 className="text-xs leading-4 font-medium text-(--tile-label) lg:text-[13px] lg:leading-[18px]">
+      <h3 className="text-xs leading-4 font-medium text-(--tile-label)">
         Top tracks · 4 weeks
       </h3>
 
@@ -23,18 +23,18 @@ export default async function SpotifyCard() {
         <p className="text-sm text-ink-dim italic">No recent tracks</p>
       ) : (
         <>
-          <div className="flex items-center gap-3.5 lg:gap-4">
+          <div className="group relative -m-2 flex items-center gap-3.5 rounded-2xl p-2 transition-colors duration-150 hover:bg-white/10 has-focus-visible:bg-white/10 lg:gap-4">
             {featured.albumArtUrl ? (
               <Image
                 src={featured.albumArtUrl}
                 alt={featured.albumName}
                 width={280}
                 height={280}
-                className="size-24 shrink-0 rounded-xl object-cover lg:size-35 lg:rounded-[14px]"
+                className="size-24 shrink-0 rounded-xl object-cover transition-transform duration-150 group-hover:scale-[1.03] motion-reduce:transform-none lg:size-28 lg:rounded-[14px]"
                 placeholder={PLACEHOLDER}
               />
             ) : (
-              <div className="size-24 shrink-0 rounded-xl bg-[#2a2e38] lg:size-35 lg:rounded-[14px]" />
+              <div className="size-24 shrink-0 rounded-xl bg-[#2a2e38] lg:size-28 lg:rounded-[14px]" />
             )}
             <div className="flex min-w-0 flex-col gap-0.5">
               <a
@@ -42,13 +42,13 @@ export default async function SpotifyCard() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={featured.name}
-                className="line-clamp-2 text-xl leading-[26px] font-bold tracking-[-0.01em] text-ink transition-opacity hover:opacity-80 lg:text-[26px] lg:leading-8"
+                className="line-clamp-2 text-xl leading-[26px] font-bold tracking-[-0.01em] text-ink transition-colors group-hover:text-(--tile-label) after:absolute after:inset-0 after:content-[''] lg:text-[22px] lg:leading-7"
               >
                 {featured.name}
               </a>
               <p
                 title={featured.artists.join(', ')}
-                className="truncate text-[13px] leading-[18px] text-ink-muted select-none lg:text-sm lg:leading-5"
+                className="truncate text-[13px] leading-[18px] text-ink-muted select-none"
               >
                 {featured.artists.join(', ')}
               </p>
@@ -56,9 +56,12 @@ export default async function SpotifyCard() {
           </div>
 
           {rest.length > 0 && (
-            <ol start={2} className="flex flex-col gap-2.5 lg:gap-3">
+            <ol start={2} className="flex flex-1 flex-col justify-between">
               {rest.map((track, index) => (
-                <li key={track.id} className="flex items-center gap-3">
+                <li
+                  key={track.id}
+                  className="group relative -mx-2.5 flex items-center gap-3 rounded-xl px-2.5 py-[5px] transition-colors duration-150 hover:bg-white/10 has-focus-visible:bg-white/10 lg:py-1.5"
+                >
                   <span className="w-[18px] shrink-0 text-xs leading-4 font-medium text-ink-dim tabular-nums">
                     {String(index + 2).padStart(2, '0')}
                   </span>
@@ -68,11 +71,11 @@ export default async function SpotifyCard() {
                       alt={track.albumName}
                       width={96}
                       height={96}
-                      className="size-10 shrink-0 rounded-md object-cover lg:size-11"
+                      className="size-10 shrink-0 rounded-md object-cover transition-transform duration-150 group-hover:scale-105 motion-reduce:transform-none"
                       placeholder={PLACEHOLDER}
                     />
                   ) : (
-                    <div className="size-10 shrink-0 rounded-md bg-[#2a2e38] lg:size-11" />
+                    <div className="size-10 shrink-0 rounded-md bg-[#2a2e38]" />
                   )}
                   <div className="flex min-w-0 flex-1 flex-col lg:flex-row lg:items-center lg:gap-3">
                     <a
@@ -80,13 +83,13 @@ export default async function SpotifyCard() {
                       target="_blank"
                       rel="noopener noreferrer"
                       title={track.name}
-                      className="min-w-0 truncate text-sm leading-5 font-medium text-ink transition-opacity hover:opacity-80 lg:flex-1"
+                      className="min-w-0 truncate text-sm leading-5 font-medium text-ink transition-colors group-hover:text-(--tile-label) after:absolute after:inset-0 after:content-[''] lg:flex-1"
                     >
                       {track.name}
                     </a>
                     <p
                       title={track.artists.join(', ')}
-                      className="truncate text-xs leading-4 text-ink-muted select-none lg:max-w-[45%] lg:shrink-0 lg:text-[13px] lg:leading-[18px]"
+                      className="truncate text-xs leading-4 text-ink-muted select-none lg:max-w-[45%] lg:shrink-0"
                     >
                       {track.artists.join(', ')}
                     </p>

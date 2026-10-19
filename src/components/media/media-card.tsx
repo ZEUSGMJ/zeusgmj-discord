@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ChevronsUpDown } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { AllTmdbData, TmdbMovie, TmdbResult } from '@/lib/tmdb.shared';
 import {
@@ -10,7 +9,7 @@ import {
   deriveTileColors,
   tileStyle,
 } from '@/lib/tile-color.shared';
-import { DUR_MICRO, EASE_OUT } from '@/components/reveal/timing';
+import { DUR_MICRO, EASE_OUT, translatePx } from '@/components/reveal/timing';
 
 type Category = 'movies' | 'tv' | 'anime';
 type Mode = 'favorites' | 'watched';
@@ -25,7 +24,10 @@ const CATEGORIES: { id: Category; label: string }[] = [
   { id: 'anime', label: 'Anime' },
 ];
 
-const MODES: Mode[] = ['favorites', 'watched'];
+const MODES: { id: Mode; label: string }[] = [
+  { id: 'favorites', label: 'Favorites' },
+  { id: 'watched', label: 'Watched' },
+];
 
 function getResult(
   data: AllTmdbData,
@@ -48,13 +50,13 @@ function Poster({ item, index }: { item: TmdbMovie; index: number }) {
         rel="noopener noreferrer"
         className="group flex flex-col gap-2"
       >
-        <span className="relative block h-[150px] overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 lg:h-[232px] lg:rounded-xl">
+        <span className="relative block h-[150px] overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 lg:h-[196px] lg:rounded-xl">
           {item.posterUrl && (
             <Image
               src={item.posterUrl}
               alt=""
               fill
-              sizes="(max-width: 1024px) 33vw, 125px"
+              sizes="(max-width: 1024px) 33vw, 110px"
               onLoad={() => setLoaded(true)}
               className={`object-cover transition-opacity duration-300 ${
                 loaded ? 'opacity-100' : 'opacity-0'
@@ -64,7 +66,7 @@ function Poster({ item, index }: { item: TmdbMovie; index: number }) {
         </span>
         <span
           title={item.title}
-          className="line-clamp-2 text-xs leading-4 font-medium text-ink lg:text-[13px] lg:leading-[18px]"
+          className="line-clamp-2 text-xs leading-4 font-medium text-ink"
         >
           {item.title}
         </span>
@@ -81,9 +83,8 @@ export default function MediaCard({ data }: Props) {
   const result = getResult(data, mode, category);
   const activeKey = `${mode}-${category}`;
   const activeColors = deriveTileColors(result.accent, 'media');
-  const otherMode: Mode = mode === 'favorites' ? 'watched' : 'favorites';
 
-  const layers = MODES.flatMap((layerMode) =>
+  const layers = MODES.flatMap(({ id: layerMode }) =>
     CATEGORIES.map(({ id }) => ({
       key: `${layerMode}-${id}`,
       tint: deriveTileColors(getResult(data, layerMode, id).accent, 'media')
@@ -95,7 +96,7 @@ export default function MediaCard({ data }: Props) {
     <section
       aria-label="Media"
       style={tileStyle(activeColors)}
-      className="relative flex h-full flex-col justify-between gap-4 overflow-hidden rounded-[28px] bg-surface p-[22px] lg:min-h-[400px] lg:rounded-tile lg:p-7"
+      className="relative flex h-full flex-col justify-between gap-4 overflow-hidden rounded-tile bg-surface p-[22px] lg:min-h-[340px] lg:p-6"
     >
       {layers.map((layer) => (
         <div
@@ -111,23 +112,35 @@ export default function MediaCard({ data }: Props) {
       ))}
 
       <div className="relative flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={() => setMode(otherMode)}
-          aria-label={`Showing ${mode}. Switch to ${otherMode}.`}
-          className="group flex shrink-0 items-center gap-1 rounded-md text-xs leading-4 font-medium whitespace-nowrap text-(--tile-label) transition-[color,opacity,transform] duration-240 hover:opacity-80 active:scale-[0.97] lg:text-[13px] lg:leading-[18px]"
+        <div
+          role="group"
+          aria-label="Media list"
+          className="flex shrink-0 items-center gap-3"
         >
-          Media · {mode}
-          <ChevronsUpDown
-            aria-hidden="true"
-            className="size-3 opacity-60 transition-opacity group-hover:opacity-100"
-          />
-        </button>
+          {MODES.map(({ id, label }) => {
+            const selected = id === mode;
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => setMode(id)}
+                className={`rounded-md text-xs leading-4 whitespace-nowrap transition-[color,transform] duration-150 active:scale-[0.97] ${
+                  selected
+                    ? 'font-semibold text-(--tile-label)'
+                    : 'font-medium text-ink-dim hover:text-ink-muted'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
 
         <div
           role="group"
           aria-label="Media category"
-          className="flex gap-0.5 rounded-full bg-background/50 p-[3px] lg:gap-1 lg:p-1"
+          className="flex gap-0.5 rounded-full bg-background/50 p-[3px]"
         >
           {CATEGORIES.map(({ id, label }) => {
             const selected = id === category;
@@ -137,9 +150,9 @@ export default function MediaCard({ data }: Props) {
                 type="button"
                 aria-pressed={selected}
                 onClick={() => setCategory(id)}
-                className={`rounded-full px-2.5 py-[5px] text-xs leading-4 transition-[background-color,color,transform] duration-150 active:scale-[0.97] lg:px-3.5 lg:py-1.5 ${
+                className={`rounded-full px-2.5 py-[5px] text-xs leading-4 transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
                   selected
-                    ? 'bg-(--theme-accent-ink,#7c8cff) px-3 font-semibold text-(--theme-accent-on,#07080a) lg:px-3.5'
+                    ? 'bg-(--theme-accent-ink,#7c8cff) px-3 font-semibold text-(--theme-accent-on,#07080a)'
                     : 'font-medium text-ink-muted hover:text-ink'
                 }`}
               >
@@ -157,8 +170,11 @@ export default function MediaCard({ data }: Props) {
           <AnimatePresence mode="wait" initial={false}>
             <motion.ul
               key={activeKey}
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 4 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{
+                opacity: 0,
+                transform: reduceMotion ? translatePx() : translatePx(0, 4),
+              }}
+              animate={{ opacity: 1, transform: translatePx() }}
               exit={{ opacity: 0 }}
               transition={{ duration: DUR_MICRO, ease: EASE_OUT }}
               className="flex items-start gap-2.5 lg:gap-3"

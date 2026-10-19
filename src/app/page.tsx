@@ -22,7 +22,7 @@ export default function Home() {
       <main className="relative isolate flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 py-12 sm:px-6 lg:px-8">
         <RevealProvider>
           <PresenceProvider>
-            <div className="relative z-10 w-full max-w-[1200px]">
+            <div className="relative z-10 w-full max-w-[1040px]">
               <RevealStage
                 presence={
                   <CardErrorBoundary title="Presence">
