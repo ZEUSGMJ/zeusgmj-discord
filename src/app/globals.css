@@ -138,3 +138,136 @@ body {
     animation: none;
   }
 }
+
+.display-name {
+  --dn-pad: 0.7em;
+  position: relative;
+  display: inline-block;
+  max-width: calc(100% + var(--dn-pad) * 2);
+  margin: calc(var(--dn-pad) * -1);
+  padding: var(--dn-pad);
+  overflow: hidden;
+  isolation: isolate;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.display-name::before {
+  content: attr(data-text);
+  content: attr(data-text) / '';
+  position: absolute;
+  inset-block: calc(var(--dn-pad) - 0.2em);
+  inset-inline: var(--dn-pad);
+  z-index: -1;
+  padding-block: 0.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.display-name[data-effect='solid'] {
+  color: var(--dn-base);
+}
+
+.display-name[data-effect='solid']::before,
+.display-name[data-effect='gradient']::before,
+.display-name[data-effect='glow']::before {
+  content: none;
+}
+
+.display-name[data-effect='gradient'] {
+  color: transparent;
+  background-image: linear-gradient(90deg, var(--dn-from), var(--dn-to));
+  background-origin: content-box;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.display-name[data-effect='glow'] {
+  color: var(--dn-base);
+  text-shadow:
+    0 0 0.35em color-mix(in srgb, var(--dn-base) 70%, transparent),
+    0 0 0.6em color-mix(in srgb, var(--dn-base) 40%, transparent);
+}
+
+.display-name[data-effect='neon'] {
+  color: var(--dn-light);
+  text-shadow:
+    0 0 0.12em var(--dn-light),
+    0 0 0.3em var(--dn-base);
+}
+
+.display-name[data-effect='neon']::before {
+  color: var(--dn-base);
+  opacity: 0.9;
+  filter: blur(0.35em);
+}
+
+.display-name[data-effect='toon'] {
+  color: var(--dn-base);
+  -webkit-text-stroke: 0.05em var(--dn-dark);
+  paint-order: stroke fill;
+}
+
+.display-name[data-effect='toon']::before {
+  color: var(--dn-dark);
+  -webkit-text-stroke: 0.05em var(--dn-dark);
+  paint-order: stroke fill;
+  transform: translate(0.06em, 0.06em);
+}
+
+.display-name[data-effect='pop'] {
+  color: var(--dn-light);
+  -webkit-text-stroke: 0.06em var(--dn-dark);
+  paint-order: stroke fill;
+}
+
+.display-name[data-effect='pop']::before {
+  color: transparent;
+  background-image: linear-gradient(90deg, var(--dn-from), var(--dn-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 0.06em var(--dn-dark);
+  paint-order: stroke fill;
+  transform: translateY(0.09em);
+}
+
+@keyframes display-name-pop-settle {
+  from {
+    transform: translateY(0);
+  }
+}
+
+@keyframes display-name-neon-on {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  18% {
+    opacity: 0.25;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  38% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .display-name[data-effect='pop']::before {
+    animation: display-name-pop-settle 320ms var(--ease-out) both;
+  }
+
+  .display-name[data-effect='neon']::before {
+    animation: display-name-neon-on 600ms linear both;
+  }
+}
