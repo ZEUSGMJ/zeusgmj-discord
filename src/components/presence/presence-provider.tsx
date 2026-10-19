@@ -13,7 +13,13 @@ import {
 } from '@/hooks/use-lanyard-presence';
 import type { DiscordProfileData } from '@/lib/discord-profile.shared';
 import { intToHex } from '@/lib/discord-profile.shared';
-import { HEX_COLOR } from '@/lib/contrast.shared';
+import {
+  HEX_COLOR,
+  hexToLuminance,
+  liftToContrast,
+  readableOn,
+} from '@/lib/contrast.shared';
+import { TILE_SURFACE } from '@/lib/tile-color.shared';
 
 interface PresenceContextValue {
   state: LoadState;
@@ -58,8 +64,17 @@ export function PresenceProvider({ children }: { children: ReactNode }) {
   const themeColor2 = profileColor2 ?? themeColor;
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--theme-primary', themeColor);
-    document.documentElement.style.setProperty('--theme-accent', themeColor2);
+    const root = document.documentElement.style;
+    const accentInk = HEX_COLOR.test(themeColor2)
+      ? liftToContrast(themeColor2, [hexToLuminance(TILE_SURFACE)], 3)
+      : themeColor2;
+    root.setProperty('--theme-primary', themeColor);
+    root.setProperty('--theme-accent', themeColor2);
+    root.setProperty('--theme-accent-ink', accentInk);
+    root.setProperty(
+      '--theme-accent-on',
+      HEX_COLOR.test(accentInk) ? readableOn(accentInk) : '#07080a',
+    );
   }, [themeColor, themeColor2]);
 
   return (
