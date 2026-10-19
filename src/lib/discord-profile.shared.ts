@@ -28,6 +28,11 @@ export interface DiscordProfileNameplate {
   staticUrl: string;
 }
 
+export interface DisplayNameStyles {
+  effectId: number;
+  colors: number[];
+}
+
 export interface DiscordProfileData {
   badges: DiscordProfileBadge[];
   themeColors: [number, number] | null;
@@ -36,6 +41,30 @@ export interface DiscordProfileData {
   collectibles: {
     nameplate: DiscordProfileNameplate | null;
   };
+  displayNameStyles: DisplayNameStyles | null;
+}
+
+export function normalizeDisplayNameStyles(
+  value: unknown,
+): DisplayNameStyles | null {
+  if (!value || typeof value !== 'object') return null;
+
+  const raw = value as Record<string, unknown>;
+  const effectId = raw.effect_id;
+  if (typeof effectId !== 'number' || !Number.isInteger(effectId)) return null;
+
+  const colors = Array.isArray(raw.colors)
+    ? raw.colors.filter(
+        (color): color is number =>
+          typeof color === 'number' &&
+          Number.isInteger(color) &&
+          color >= 0 &&
+          color <= 0xffffff,
+      )
+    : [];
+  if (colors.length === 0) return null;
+
+  return { effectId, colors };
 }
 
 export function intToHex(value: number): string {

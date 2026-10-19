@@ -5,6 +5,7 @@ import type {
   DiscordProfileData,
   DiscordProfileNameplate,
 } from '@/lib/discord-profile.shared';
+import { normalizeDisplayNameStyles } from '@/lib/discord-profile.shared';
 
 const NAMEPLATE_PALETTES = new Set<DiscordNameplatePalette>([
   'crimson',
@@ -112,5 +113,8 @@ export async function fetchDiscordProfile(
     bio: (userProfile.bio ?? user.bio ?? null) as string | null,
     bannerHash: (userProfile.banner ?? user.banner ?? null) as string | null,
     collectibles: { nameplate },
+    displayNameStyles: normalizeDisplayNameStyles(
+      user.display_name_styles ?? userProfile.display_name_styles,
+    ),
   };
 }
