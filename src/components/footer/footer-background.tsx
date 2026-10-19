@@ -2,7 +2,7 @@
 
 import { HalftoneDots } from '@paper-design/shaders-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Component, type ReactNode } from 'react';
+import { Component, useEffect, useState, type ReactNode } from 'react';
 import { usePresence } from '@/components/presence/presence-provider';
 import { useReveal } from '@/components/reveal/reveal-context';
 import {
@@ -39,6 +39,77 @@ function withAlpha(hex: string, alpha: number) {
     .padStart(2, '0')}`;
 }
 
+const WARMUP_IDLE_TIMEOUT_MS = 2500;
+const WARMUP_LIFETIME_MS = 1500;
+
+function MountainShader({
+  colorFront,
+  className,
+}: {
+  colorFront: string;
+  className: string;
+}) {
+  return (
+    <ShaderBoundary>
+      <HalftoneDots
+        aria-hidden="true"
+        className={className}
+        image="/images/jerry-zhang-mountains.png"
+        colorFront={colorFront}
+        colorBack="#00000000"
+        contrast={0.4}
+        originalColors={false}
+        inverted={false}
+        grid="hex"
+        radius={1.25}
+        size={0.1}
+        scale={1}
+        grainMixer={0}
+        grainOverlay={0}
+        grainSize={0.5}
+        type="classic"
+        fit="cover"
+      />
+    </ShaderBoundary>
+  );
+}
+
+function ShaderWarmup() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    let unmountTimer: ReturnType<typeof setTimeout> | undefined;
+    const start = () => {
+      setMounted(true);
+      unmountTimer = setTimeout(() => setMounted(false), WARMUP_LIFETIME_MS);
+    };
+    const idle = window.requestIdleCallback
+      ? window.requestIdleCallback(start, { timeout: WARMUP_IDLE_TIMEOUT_MS })
+      : window.setTimeout(start, WARMUP_IDLE_TIMEOUT_MS);
+
+    return () => {
+      if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
+      clearTimeout(unmountTimer);
+    };
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <div
+      aria-hidden="true"
+      inert
+      className="pointer-events-none fixed top-0 left-0 size-4 overflow-hidden opacity-0"
+    >
+      <MountainShader
+        colorFront="#ffffff80"
+        className="absolute inset-0 h-full w-full"
+      />
+    </div>
+  );
+}
+
 export default function FooterBackground() {
   const {
     targetExpanded,
@@ -67,98 +138,84 @@ export default function FooterBackground() {
   const wordmarkVisible = readyToReveal && !footerExitPending;
 
   return (
-    <AnimatePresence>
-      {detailsMounted && (
-        <motion.div
-          aria-hidden="true"
-          inert
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: targetExpanded ? 1 : 0,
-            transition: {
-              duration: targetExpanded ? 0 : exitDuration,
-              ease: targetExpanded ? EASE_OUT : EASE_IN,
-            },
-          }}
-          exit={{
-            opacity: 0,
-            transition: { duration: exitDuration, ease: EASE_IN },
-          }}
-          className="pointer-events-none absolute bottom-[-6.1979167vw] left-1/2 z-0 w-screen -translate-x-1/2 overflow-hidden"
-          style={{ aspectRatio: '1920 / 547' }}
-        >
+    <>
+      <ShaderWarmup />
+      <AnimatePresence>
+        {detailsMounted && (
           <motion.div
-            initial={{ opacity: 0, y: reduceMotion ? 0 : 48 }}
+            aria-hidden="true"
+            inert
+            initial={{ opacity: 0 }}
             animate={{
-              opacity: mountainVisible ? 1 : 0,
-              y: mountainVisible || reduceMotion ? 0 : 48,
+              opacity: targetExpanded ? 1 : 0,
               transition: {
-                duration: footerExitPending
-                  ? mountainExitDuration
-                  : mountainVisible
-                    ? mountainDuration
-                    : exitDuration,
-                delay: footerExitPending
-                  ? wordmarkExitDuration
-                  : mountainVisible
-                    ? revealDelay
-                    : 0,
-                ease:
-                  mountainVisible && !footerExitPending ? EASE_OUT : EASE_IN,
+                duration: targetExpanded ? 0 : exitDuration,
+                ease: targetExpanded ? EASE_OUT : EASE_IN,
               },
             }}
-            className="absolute inset-x-0 top-0 h-[78.24497%] w-full"
+            exit={{
+              opacity: 0,
+              transition: { duration: exitDuration, ease: EASE_IN },
+            }}
+            className="pointer-events-none absolute bottom-[-6.1979167vw] left-1/2 z-0 w-screen -translate-x-1/2 overflow-hidden"
+            style={{ aspectRatio: '1920 / 547' }}
           >
-            <ShaderBoundary>
-              <HalftoneDots
-                aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-full w-full"
-                image="/images/jerry-zhang-mountains.png"
+            <motion.div
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 48 }}
+              animate={{
+                opacity: mountainVisible ? 1 : 0,
+                y: mountainVisible || reduceMotion ? 0 : 48,
+                transition: {
+                  duration: footerExitPending
+                    ? mountainExitDuration
+                    : mountainVisible
+                      ? mountainDuration
+                      : exitDuration,
+                  delay: footerExitPending
+                    ? wordmarkExitDuration
+                    : mountainVisible
+                      ? revealDelay
+                      : 0,
+                  ease:
+                    mountainVisible && !footerExitPending ? EASE_OUT : EASE_IN,
+                },
+              }}
+              className="absolute inset-x-0 top-0 h-[78.24497%] w-full"
+            >
+              <MountainShader
                 colorFront={withAlpha(accentColor, 0.5)}
-                colorBack="#00000000"
-                contrast={0.4}
-                originalColors={false}
-                inverted={false}
-                grid="hex"
-                radius={1.25}
-                size={0.1}
-                scale={1}
-                grainMixer={0}
-                grainOverlay={0}
-                grainSize={0.5}
-                type="classic"
-                fit="cover"
+                className="absolute inset-x-0 top-0 h-full w-full"
               />
-            </ShaderBoundary>
+            </motion.div>
+            <motion.span
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 48 }}
+              animate={{
+                opacity: wordmarkVisible ? 1 : 0,
+                y: wordmarkVisible || reduceMotion ? 0 : 48,
+                transition: {
+                  duration: footerExitPending
+                    ? wordmarkExitDuration
+                    : wordmarkVisible
+                      ? wordmarkDuration
+                      : exitDuration,
+                  delay: wordmarkVisible ? revealDelay + mountainDuration : 0,
+                  ease:
+                    wordmarkVisible && !footerExitPending ? EASE_OUT : EASE_IN,
+                },
+              }}
+              className="absolute top-[35.6481%] left-0 w-full text-center font-sans leading-none font-semibold text-transparent select-none"
+              style={{
+                color: 'transparent',
+                fontSize: '20.4167vw',
+                lineHeight: '20.2083vw',
+                WebkitTextStroke: `0.416667vw ${accentColor}`,
+              }}
+            >
+              ZEUSGMJ
+            </motion.span>
           </motion.div>
-          <motion.span
-            initial={{ opacity: 0, y: reduceMotion ? 0 : 48 }}
-            animate={{
-              opacity: wordmarkVisible ? 1 : 0,
-              y: wordmarkVisible || reduceMotion ? 0 : 48,
-              transition: {
-                duration: footerExitPending
-                  ? wordmarkExitDuration
-                  : wordmarkVisible
-                    ? wordmarkDuration
-                    : exitDuration,
-                delay: wordmarkVisible ? revealDelay + mountainDuration : 0,
-                ease:
-                  wordmarkVisible && !footerExitPending ? EASE_OUT : EASE_IN,
-              },
-            }}
-            className="absolute top-[35.6481%] left-0 w-full text-center font-sans leading-none font-semibold text-transparent select-none"
-            style={{
-              color: 'transparent',
-              fontSize: '20.4167vw',
-              lineHeight: '20.2083vw',
-              WebkitTextStroke: `0.416667vw ${accentColor}`,
-            }}
-          >
-            ZEUSGMJ
-          </motion.span>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
