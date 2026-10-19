@@ -5,6 +5,7 @@ import type { DiscordProfileBadge } from '@/lib/discord-profile.shared';
 import DiscordBadge from '@/components/presence/discord-badge';
 import DisplayName from '@/components/presence/display-name';
 import { STATUS_LABEL } from '@/components/presence/status-dot';
+import { hideOnError } from '@/components/ui/hide-on-error';
 import UserFlagBadges from '@/components/presence/user-flag-badges';
 import BioMarkdown from '@/components/presence/bio-markdown';
 import {
@@ -52,6 +53,7 @@ function GuildTag({
               : 'size-3 rounded-[3px]'
           }
           aria-hidden
+          onError={hideOnError}
         />
       )}
       {primaryGuild.tag}
@@ -76,6 +78,7 @@ function StatusEmoji({
         className={`shrink-0 ${className}`}
         loading="lazy"
         unoptimized
+        onError={hideOnError}
       />
     );
   }
@@ -117,7 +120,7 @@ function PresenceIdentityCompact({
           <DiscordBadge
             key={badge.id}
             badge={badge}
-            className="size-3.5 shrink-0 lg:size-4"
+            className="size-3.5 shrink-0 max-[379px]:hidden lg:size-4"
           />
         ))}
       </div>
@@ -135,7 +138,10 @@ function PresenceIdentityCompact({
             />
           )}
           {statusText && (
-            <p className="min-w-0 truncate text-xs leading-4 text-ink-muted lg:text-[13px] lg:leading-[18px]">
+            <p
+              title={statusText}
+              className="min-w-0 truncate text-xs leading-4 text-ink-muted lg:text-[13px] lg:leading-[18px]"
+            >
               {statusText}
             </p>
           )}
@@ -184,7 +190,7 @@ function PresenceIdentityExpanded({
             <UserFlagBadges publicFlags={user.publicFlags} />
           )}
         </div>
-        <p className="text-sm leading-[18px] text-(--cft-mid) lg:text-[15px] lg:leading-5">
+        <p className="text-sm leading-[18px] wrap-anywhere text-(--cft-mid) lg:text-[15px] lg:leading-5">
           @{user.username}
           <span className="lg:hidden"> · {STATUS_LABEL[status]}</span>
         </p>

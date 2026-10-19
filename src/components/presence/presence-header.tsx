@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { motion } from 'motion/react';
 import type { CSSProperties } from 'react';
 import type { NormalizedPresence } from '@/lib/lanyard.shared';
+import { hideOnError } from '@/components/ui/hide-on-error';
 import StatusDot, { STATUS_LABEL } from '@/components/presence/status-dot';
 import { LAYOUT_TRANSITION } from '@/components/reveal/timing';
 
@@ -79,6 +80,7 @@ export default function PresenceHeader({
               sizes="(max-width: 1024px) 128px, 176px"
               className="object-contain"
               aria-hidden={true}
+              onError={hideOnError}
             />
           </div>
         )}

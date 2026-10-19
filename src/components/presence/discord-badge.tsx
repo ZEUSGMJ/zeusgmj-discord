@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import type { DiscordProfileBadge } from '@/lib/discord-profile.shared';
+import { hideOnError } from '@/components/ui/hide-on-error';
 
 export default function DiscordBadge({
   badge,
@@ -16,6 +17,7 @@ export default function DiscordBadge({
       height={44}
       title={badge.description}
       className={className}
+      onError={hideOnError}
     />
   );
 

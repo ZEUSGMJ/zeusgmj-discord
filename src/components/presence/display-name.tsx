@@ -18,13 +18,17 @@ export default function DisplayName({
 
   if (!resolved)
     return (
-      <span className={className ? `${PLAIN_CLASS} ${className}` : PLAIN_CLASS}>
+      <span
+        title={name}
+        className={className ? `${PLAIN_CLASS} ${className}` : PLAIN_CLASS}
+      >
         {name}
       </span>
     );
 
   return (
     <span
+      title={name}
       className={className ? `display-name ${className}` : 'display-name'}
       data-effect={resolved.effect}
       data-text={name}

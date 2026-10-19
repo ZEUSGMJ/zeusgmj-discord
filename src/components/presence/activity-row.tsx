@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Gamepad, MonitorPlay } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { hideOnError } from '@/components/ui/hide-on-error';
 import type { NormalizedActivity, SpotifyTrack } from '@/lib/lanyard.shared';
 import type {
   SpotifyCurrentTrack,
@@ -150,8 +151,12 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-0.5 lg:gap-[3px]">
           <p className={LABEL_CLASS}>{label}</p>
-          <p className={TITLE_CLASS}>{data.songTitle}</p>
-          <p className={DETAIL_CLASS}>{data.artistLine}</p>
+          <p title={data.songTitle} className={TITLE_CLASS}>
+            {data.songTitle}
+          </p>
+          <p title={data.artistLine} className={DETAIL_CLASS}>
+            {data.artistLine}
+          </p>
           {timestamps && <ActivityProgress timestamps={timestamps} />}
         </div>
       </div>
@@ -187,15 +192,24 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
             width={88}
             height={88}
             className="absolute -right-2 -bottom-2 size-8 rounded-full border-[3px] border-(--cft-ring) bg-(--cft-ring) lg:-right-3 lg:-bottom-3 lg:size-11"
+            onError={hideOnError}
           />
         )}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-0.5 lg:gap-[3px]">
         <p className={LABEL_CLASS}>{activityLabel}</p>
-        <p className={TITLE_CLASS}>{data.name}</p>
-        {data.details && <p className={DETAIL_CLASS}>{data.details}</p>}
+        <p title={data.name} className={TITLE_CLASS}>
+          {data.name}
+        </p>
+        {data.details && (
+          <p title={data.details} className={DETAIL_CLASS}>
+            {data.details}
+          </p>
+        )}
         {data.state && (
-          <p className={`${DETAIL_CLASS} text-(--cft-lo)`}>{data.state}</p>
+          <p title={data.state} className={`${DETAIL_CLASS} text-(--cft-lo)`}>
+            {data.state}
+          </p>
         )}
         {timestamps && <ActivityProgress timestamps={timestamps} />}
       </div>
