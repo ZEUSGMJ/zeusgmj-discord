@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { getSiteUrl } from '@/lib/site';
 import { fetchDiscordProfile } from '@/lib/discord-profile';
 import { intToHex } from '@/lib/discord-profile.shared';
@@ -73,6 +74,7 @@ export default function RootLayout({
         <LiquidGlassDefs />
         <LiquidGlassSupport />
         {children}
+        <Analytics />
       </body>
     </html>
   );
