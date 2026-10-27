@@ -197,6 +197,7 @@ body {
   --dn-pad: 0.7em;
   position: relative;
   display: inline-block;
+  vertical-align: bottom;
   max-width: calc(100% + var(--dn-pad) * 2);
   margin: calc(var(--dn-pad) * -1);
   padding: var(--dn-pad);
