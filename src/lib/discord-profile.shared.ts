@@ -3,6 +3,14 @@ export interface DiscordProfileBadge {
   description: string;
   icon: string;
   link?: string;
+  simpleIconUrl?: string;
+}
+
+export function badgeIconUrl(badge: DiscordProfileBadge): string {
+  return (
+    badge.simpleIconUrl ??
+    `https://cdn.discordapp.com/badge-icons/${badge.icon}.png`
+  );
 }
 
 export type DiscordNameplatePalette =

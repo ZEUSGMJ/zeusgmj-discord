@@ -59,6 +59,19 @@ function normalizeNameplate(value: unknown): DiscordProfileNameplate | null {
   };
 }
 
+function normalizeSimpleIconUrl(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.hostname === 'cdn.discordapp.com'
+      ? url.toString()
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function fetchDiscordProfile(
   userId: string,
 ): Promise<DiscordProfileData> {
@@ -106,6 +119,7 @@ export async function fetchDiscordProfile(
           description: badge.description,
           icon: badge.icon,
           link: typeof badge.link === 'string' ? badge.link : undefined,
+          simpleIconUrl: normalizeSimpleIconUrl(badge.simple_icon_url),
         },
       ];
     }),

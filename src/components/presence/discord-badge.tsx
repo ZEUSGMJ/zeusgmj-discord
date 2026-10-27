@@ -1,5 +1,8 @@
 import Image from 'next/image';
-import type { DiscordProfileBadge } from '@/lib/discord-profile.shared';
+import {
+  badgeIconUrl,
+  type DiscordProfileBadge,
+} from '@/lib/discord-profile.shared';
 import { hideOnError } from '@/components/ui/hide-on-error';
 
 export default function DiscordBadge({
@@ -11,10 +14,10 @@ export default function DiscordBadge({
 }) {
   const img = (
     <Image
-      src={`https://cdn.discordapp.com/badge-icons/${badge.icon}.png`}
+      src={badgeIconUrl(badge)}
       alt={badge.description}
-      width={44}
-      height={44}
+      width={80}
+      height={80}
       title={badge.description}
       className={className}
       onError={hideOnError}

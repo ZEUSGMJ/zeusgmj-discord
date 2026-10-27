@@ -157,7 +157,7 @@ Remote image domains are declared in `next.config.ts` under `remotePatterns`. Al
 
 **Animated images**: Use `unoptimized` (not a `.gif` URL) when the image may be animated. Discord signals animated assets with an `a_` hash prefix. For Discord CDN URLs, use `.webp?animated=true` (per Discord's docs) and set `unoptimized={url.includes('animated=true')}` on the `<Image>`.
 
-**Badge icons**: Discord badge icons are `.png` only - `https://cdn.discordapp.com/badge-icons/{hash}.png`. Using `.webp` returns 404.
+**Badge icons**: Discord badge icons are `.png` only - `https://cdn.discordapp.com/badge-icons/{hash}.png`. Using `.webp` returns 404. When dcdn supplies `simple_icon_url` (cdn.discordapp.com only, validated in `lib/discord-profile.ts`), `badgeIconUrl()` prefers it over the hash URL.
 
 **LCP images**: Use `preload` for above-the-fold images that should be discovered early. `priority` is deprecated in Next.js 16.
 
