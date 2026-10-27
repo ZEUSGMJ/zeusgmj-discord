@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { LuGamepad, LuMonitorPlay } from 'react-icons/lu';
+import { LuGamepad, LuMonitorPlay, LuMusic } from 'react-icons/lu';
+import type { IconBaseProps } from 'react-icons';
 import { SiSpotify } from 'react-icons/si';
 import { hideOnError } from '@/components/ui/hide-on-error';
 import type { NormalizedActivity, SpotifyTrack } from '@/lib/lanyard.shared';
@@ -32,6 +33,23 @@ export type CarouselItem =
       fromApi: boolean;
       isRecentlyPlayed?: boolean;
     };
+
+export function ActivityGlyph({
+  item,
+  ...props
+}: { item: CarouselItem } & IconBaseProps) {
+  if (item.kind === 'spotify') return <LuMusic {...props} />;
+  return item.data.type === 3 ? (
+    <LuMonitorPlay {...props} />
+  ) : (
+    <LuGamepad {...props} />
+  );
+}
+
+export function carouselItemLabel(item: CarouselItem): string {
+  if (item.kind === 'spotify') return `Listening to ${item.data.songTitle}`;
+  return `${item.data.type === 3 ? 'Watching' : 'Playing'} ${item.data.name}`;
+}
 
 export function normalizeSpotify(
   track: SpotifyTrack | SpotifyCurrentTrack | SpotifyRecentTrack,
@@ -116,7 +134,7 @@ function ActivityProgress({ timestamps }: { timestamps: ProgressTimestamps }) {
 
 const TILE_CLASS =
   'relative size-19 shrink-0 rounded-xl bg-(--cft-img-fb) lg:size-30 lg:rounded-2xl';
-const LABEL_CLASS =
+export const LABEL_CLASS =
   'text-[11px] leading-3.5 font-semibold tracking-[0.06em] text-(--cft-mid) uppercase lg:text-xs lg:leading-4';
 const TITLE_CLASS =
   'truncate text-base leading-[22px] font-bold text-(--cft-hi) lg:text-xl lg:leading-[26px]';
@@ -134,7 +152,7 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
     const timestamps = fromApi ? null : getValidTimestamps(data.timestamps);
 
     return (
-      <div className="flex items-center gap-3.5 lg:gap-5">
+      <div className="flex items-center gap-3 lg:gap-4">
         <div className={TILE_CLASS}>
           {data.artUrl ? (
             <Image
@@ -169,12 +187,11 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
 
   const { data } = item;
   const activityLabel = data.type === 3 ? 'Watching' : 'Playing';
-  const ActivityIcon = data.type === 3 ? LuMonitorPlay : LuGamepad;
   const timestamps =
     data.type === 3 ? getValidTimestamps(data.timestamps) : null;
 
   return (
-    <div className="flex items-center gap-3.5 lg:gap-5">
+    <div className="flex items-center gap-3 lg:gap-4">
       <div className={TILE_CLASS}>
         {data.largeImageUrl ? (
           <Image
@@ -186,7 +203,10 @@ export default function ActivityRow({ item }: { item: CarouselItem }) {
           />
         ) : (
           <div className="flex size-full items-center justify-center">
-            <ActivityIcon className="size-6 text-(--cft-dim) lg:size-8" />
+            <ActivityGlyph
+              item={item}
+              className="size-6 text-(--cft-dim) lg:size-8"
+            />
           </div>
         )}
         {data.largeImageUrl && data.smallImageUrl && (

@@ -175,6 +175,7 @@ export default function ProfilePresenceCard() {
       }
     : theme;
 
+  const bioFromDiscord = Boolean(discordProfile?.bio);
   const bio = discordProfile?.bio ?? TAGLINE;
 
   const carouselItems: CarouselItem[] = [
@@ -186,6 +187,12 @@ export default function ProfilePresenceCard() {
       ? [{ kind: 'spotify' as const, data: spotify, fromApi, isRecentlyPlayed }]
       : []),
   ];
+
+  const firstItem = carouselItems[0] ?? null;
+  const liveActivity =
+    firstItem?.kind === 'spotify' && firstItem.isRecentlyPlayed
+      ? null
+      : firstItem;
 
   return (
     <motion.div
@@ -270,12 +277,12 @@ export default function ProfilePresenceCard() {
 
           <PresenceIdentity
             user={user}
-            status={presence.status}
             primaryGuild={presence.primaryGuild}
             customStatus={presence.customStatus}
             badges={discordProfile?.badges ?? []}
             bio={bio}
-            activityCount={carouselItems.length}
+            bioFromDiscord={bioFromDiscord}
+            liveActivity={liveActivity}
             compact={compact}
           />
 

@@ -49,6 +49,7 @@ export function buildPresenceTheme(
     textDir === 'light'
       ? {
           badgeBg: 'rgba(10,10,25,0.5)',
+          panelBg: 'rgba(10,10,25,0.28)',
           statusBg: 'rgba(8,8,20,0.65)',
           separator: 'rgba(255,255,255,0.12)',
           progTrack: 'rgba(255,255,255,0.16)',
@@ -56,6 +57,7 @@ export function buildPresenceTheme(
         }
       : {
           badgeBg: 'rgba(255,255,255,0.6)',
+          panelBg: 'rgba(255,255,255,0.45)',
           statusBg: 'rgba(255,255,255,0.5)',
           separator: 'rgba(212,212,216,0.6)',
           progTrack: 'rgba(212,212,216,0.8)',
@@ -71,6 +73,7 @@ export function buildPresenceTheme(
     '--cft-lo': cftMid,
     '--cft-dim': cftDim,
     '--cft-badge-bg': cftSurf.badgeBg,
+    '--cft-panel-bg': cftSurf.panelBg,
     '--cft-status-bg': cftSurf.statusBg,
     '--cft-sep': cftSurf.separator,
     '--cft-prog-trk': cftSurf.progTrack,

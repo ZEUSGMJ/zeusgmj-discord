@@ -1,18 +1,20 @@
 import Image from 'next/image';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { hasCustomStatus, type NormalizedPresence } from '@/lib/lanyard.shared';
-import { SiDiscord } from 'react-icons/si';
-import {
-  memberSince,
-  type DiscordProfileBadge,
-} from '@/lib/discord-profile.shared';
+import type { DiscordProfileBadge } from '@/lib/discord-profile.shared';
 import DiscordBadge from '@/components/presence/discord-badge';
 import DisplayName from '@/components/presence/display-name';
 import StatusEmoji from '@/components/presence/status-emoji';
-import { STATUS_COLOR, STATUS_LABEL } from '@/components/presence/status-dot';
 import { hideOnError } from '@/components/ui/hide-on-error';
 import UserFlagBadges from '@/components/presence/user-flag-badges';
 import BioMarkdown from '@/components/presence/bio-markdown';
+import MemberSince from '@/components/presence/member-since';
+import {
+  ActivityGlyph,
+  LABEL_CLASS,
+  carouselItemLabel,
+  type CarouselItem,
+} from '@/components/presence/activity-row';
 import {
   CONTENT_ENTER_TRANSITION,
   DUR_CARD_EXIT,
@@ -21,13 +23,22 @@ import {
 
 interface PresenceIdentityProps {
   user: NormalizedPresence['user'];
-  status: NormalizedPresence['status'];
   primaryGuild: NormalizedPresence['primaryGuild'];
   customStatus: NormalizedPresence['customStatus'];
   badges: DiscordProfileBadge[];
   bio: string;
-  activityCount: number;
+  bioFromDiscord: boolean;
+  liveActivity: CarouselItem | null;
   compact?: boolean;
+}
+
+function Divider() {
+  return (
+    <span
+      aria-hidden="true"
+      className="h-2.5 w-px shrink-0 rounded-full bg-(--cft-dim)/70"
+    />
+  );
 }
 
 function GuildTag({
@@ -68,7 +79,7 @@ function PresenceIdentityCompact({
   primaryGuild,
   customStatus,
   badges,
-  activityCount,
+  liveActivity,
 }: PresenceIdentityProps) {
   const statusText = customStatus?.text ?? null;
   const hasStatus = hasCustomStatus(customStatus);
@@ -91,11 +102,18 @@ function PresenceIdentityCompact({
           />
         ))}
       </div>
-      {(activityCount > 0 || hasStatus) && (
+      {(liveActivity || hasStatus) && (
         <div className="flex min-w-0 items-center gap-1.5 lg:gap-2">
-          {activityCount > 0 && (
-            <span className="shrink-0 rounded-[5px] bg-online/16 px-[5px] py-px text-[10px] leading-3.5 font-bold text-[#46d68c]">
-              +{activityCount}
+          {liveActivity && (
+            <span
+              title={carouselItemLabel(liveActivity)}
+              className="flex shrink-0 items-center rounded-[5px] bg-online/16 px-[5px] py-0.5 text-[#46d68c]"
+            >
+              <ActivityGlyph
+                item={liveActivity}
+                aria-label={carouselItemLabel(liveActivity)}
+                className="size-3"
+              />
             </span>
           )}
           {customStatus && (
@@ -120,13 +138,11 @@ function PresenceIdentityCompact({
 
 function PresenceIdentityExpanded({
   user,
-  status,
   primaryGuild,
   badges,
   bio,
+  bioFromDiscord,
 }: PresenceIdentityProps) {
-  const since = memberSince(user.id);
-
   return (
     <div className="flex flex-col gap-3 lg:gap-3.5">
       <div className="flex flex-col gap-1">
@@ -150,32 +166,19 @@ function PresenceIdentityExpanded({
             <UserFlagBadges publicFlags={user.publicFlags} />
           )}
         </div>
-        <p className="flex flex-wrap items-center gap-x-1.5 text-sm leading-[18px] text-(--cft-mid)">
+        <div className="flex flex-wrap items-center gap-x-2.5 text-sm leading-[18px] text-(--cft-mid)">
           <span className="wrap-anywhere">@{user.username}</span>
-          <span aria-hidden="true">·</span>
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              aria-hidden="true"
-              className={`inline-block size-2 rounded-full ${STATUS_COLOR[status]}`}
-            />
-            {STATUS_LABEL[status]}
-          </span>
-          {since && (
-            <>
-              <span aria-hidden="true">·</span>
-              <span
-                className="inline-flex items-center gap-1.5"
-                title={`Discord member since ${since}`}
-              >
-                <SiDiscord aria-hidden="true" className="size-3.5 shrink-0" />
-                {since}
-              </span>
-            </>
-          )}
-        </p>
+          <Divider />
+          <MemberSince userId={user.id} />
+        </div>
       </div>
 
-      <BioMarkdown bio={bio} />
+      <div className="flex flex-col gap-1.5 lg:gap-2">
+        {bioFromDiscord && <p className={LABEL_CLASS}>Discord Bio</p>}
+        <div className="rounded-xl bg-(--cft-panel-bg) px-3.5 py-3 lg:px-4 lg:py-3.5">
+          <BioMarkdown bio={bio} />
+        </div>
+      </div>
     </div>
   );
 }

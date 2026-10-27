@@ -65,6 +65,7 @@ src/
       presence-header.tsx       # Presentational - banner/avatar/status for ProfilePresenceCard
       presence-identity.tsx     # Presentational - name/badges/bio for ProfilePresenceCard
       user-flag-badges.tsx      # Presentational - text badges from Discord public flags
+      member-since.tsx          # 'use client' - "Member since" button cycling Discord timestamp styles, date derived from the user snowflake
       activity-row.tsx          # Presentational - single activity or Spotify row + normalizeSpotify
       activity-carousel.tsx     # 'use client' - paginated carousel of activity rows
       discord-badge.tsx         # Presentational - single dcdn Discord badge icon
