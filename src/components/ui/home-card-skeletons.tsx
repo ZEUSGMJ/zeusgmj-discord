@@ -66,9 +66,9 @@ export function SteamCardSkeleton() {
     <div className={`h-full p-5.5 lg:min-h-85 lg:p-6 ${TILE}`}>
       <Skeleton className="mb-4 h-3 w-36 rounded" />
       <div className="flex items-end gap-3 lg:gap-4">
-        <Skeleton className="h-48.75 w-32.5 shrink-0 rounded-xl lg:h-55 lg:w-auto lg:max-w-50 lg:min-w-0 lg:flex-[1.35_1_0%] lg:rounded-[14px]" />
-        <Skeleton className="h-30 w-20 shrink-0 rounded-[10px] lg:h-41 lg:w-auto lg:max-w-37.5 lg:min-w-0 lg:flex-[1_1_0%] lg:rounded-xl" />
-        <Skeleton className="h-30 w-20 shrink-0 rounded-[10px] lg:h-41 lg:w-auto lg:max-w-37.5 lg:min-w-0 lg:flex-[1_1_0%] lg:rounded-xl" />
+        <Skeleton className="aspect-2/3 max-w-45 min-w-0 flex-[1.25_1_0%] rounded-xl lg:w-36.75 lg:max-w-none lg:flex-none lg:rounded-[14px]" />
+        <Skeleton className="aspect-2/3 max-w-36 min-w-0 flex-[1_1_0%] rounded-[10px] lg:rounded-xl" />
+        <Skeleton className="aspect-2/3 max-w-36 min-w-0 flex-[1_1_0%] rounded-[10px] lg:rounded-xl" />
       </div>
     </div>
   );
@@ -85,7 +85,7 @@ export function MediaCardSkeleton() {
         {[0, 1, 2, 3].map((item) => (
           <Skeleton
             key={item}
-            className={`h-37.5 min-w-0 flex-1 rounded-[10px] lg:h-49 lg:rounded-xl ${
+            className={`h-37.5 min-w-0 flex-1 rounded-[10px] sm:aspect-2/3 sm:h-auto lg:aspect-auto lg:h-49 lg:rounded-xl ${
               item === 3 ? 'hidden lg:block' : ''
             }`}
           />
@@ -99,15 +99,15 @@ export function HomePageLoadingGrid() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-260">
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4">
-          <div className="lg:col-span-7">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:gap-4">
+          <div className="sm:col-span-2 lg:col-span-7">
             <ProfileCardSkeleton />
           </div>
-          <div className="flex h-full flex-col gap-3 lg:col-span-5 lg:gap-4">
+          <div className="flex h-full flex-col gap-3 sm:col-span-2 lg:col-span-5 lg:gap-4">
             <YearProgressCardSkeleton />
             <SpotifyCardSkeleton />
           </div>
-          <div className="lg:col-span-12">
+          <div className="sm:col-span-2 lg:col-span-12">
             <LinksCardSkeleton />
           </div>
           <div className="lg:col-span-6">

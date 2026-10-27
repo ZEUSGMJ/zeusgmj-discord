@@ -50,7 +50,7 @@ function Poster({ item, index }: { item: TmdbMovie; index: number }) {
         rel="noopener noreferrer"
         className="group flex flex-col gap-2"
       >
-        <span className="relative block h-37.5 overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] lg:h-49 lg:rounded-xl">
+        <span className="relative block h-37.5 overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] sm:aspect-2/3 sm:h-auto lg:aspect-auto lg:h-49 lg:rounded-xl">
           {item.posterUrl && (
             <Image
               src={item.posterUrl}
@@ -111,7 +111,7 @@ export default function MediaCard({ data }: Props) {
         />
       ))}
 
-      <div className="relative flex items-center justify-between gap-3">
+      <div className="relative flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div
           role="group"
           aria-label="Media list"
@@ -150,9 +150,9 @@ export default function MediaCard({ data }: Props) {
                 type="button"
                 aria-pressed={selected}
                 onClick={() => setCategory(id)}
-                className={`rounded-full px-2.5 py-1.25 text-xs leading-4 transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
+                className={`rounded-full px-2 py-1.25 text-xs leading-4 transition-[background-color,color,transform] duration-150 active:scale-[0.97] lg:px-2.5 ${
                   selected
-                    ? 'bg-(--theme-accent-ink,#7c8cff) px-3 font-semibold text-(--theme-accent-on,#07080a)'
+                    ? 'bg-(--theme-accent-ink,#7c8cff) px-2.5 font-semibold lg:px-3 text-(--theme-accent-on,#07080a)'
                     : 'font-medium text-ink-muted hover:text-ink'
                 }`}
               >

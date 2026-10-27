@@ -18,7 +18,7 @@ const PLACEHOLDER = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" 
 function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
   return (
     <li
-      className={`shrink-0 ${lead ? 'w-32.5 lg:w-auto lg:max-w-50 lg:min-w-0 lg:flex-[1.35_1_0%]' : 'w-20 lg:w-auto lg:max-w-37.5 lg:min-w-0 lg:flex-[1_1_0%]'}`}
+      className={`min-w-0 ${lead ? 'max-w-45 flex-[1.25_1_0%] lg:w-36.75 lg:max-w-none lg:flex-none' : 'max-w-36 flex-[1_1_0%]'}`}
     >
       <a
         href={game.storeUrl}
@@ -29,8 +29,8 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
         <span
           className={`relative block overflow-hidden border border-white/10 bg-[#26282f] transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] ${
             lead
-              ? 'h-48.75 rounded-xl border-white/12 lg:h-55 lg:rounded-[14px]'
-              : 'h-30 rounded-[10px] lg:h-41 lg:rounded-xl'
+              ? 'aspect-2/3 rounded-xl border-white/12 lg:rounded-[14px]'
+              : 'aspect-2/3 rounded-[10px] lg:rounded-xl'
           }`}
         >
           {game.iconUrl ? (
@@ -40,8 +40,8 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
               fill
               sizes={
                 lead
-                  ? '(max-width: 1024px) 130px, 168px'
-                  : '(max-width: 1024px) 80px, 124px'
+                  ? '(max-width: 1024px) 180px, 147px'
+                  : '(max-width: 1024px) 144px, 144px'
               }
               className="object-cover"
               placeholder={PLACEHOLDER}
@@ -89,7 +89,7 @@ export default async function SteamCard() {
     <section
       aria-label="Recent games"
       style={tileStyle(colors)}
-      className="flex h-full flex-col gap-4 overflow-hidden rounded-tile bg-surface bg-linear-200 from-(--tile-tint) from-0% to-surface to-65% p-5.5 lg:min-h-85 lg:justify-between lg:p-6"
+      className="flex h-full flex-col gap-4 overflow-hidden rounded-tile bg-surface bg-linear-200 from-(--tile-tint) from-0% to-surface to-65% p-5.5 sm:justify-between lg:min-h-85 lg:p-6"
     >
       <div className="flex items-baseline justify-between">
         <h3 className="text-xs leading-4 font-medium text-(--tile-label)">

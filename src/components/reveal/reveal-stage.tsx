@@ -107,14 +107,14 @@ export default function RevealStage({
       id={GRID_ID}
       className={
         layoutExpanded
-          ? 'grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4'
+          ? 'grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:gap-4'
           : 'flex justify-center'
       }
     >
       <motion.div
         layout
         transition={LAYOUT_TRANSITION}
-        className={layoutExpanded ? 'lg:col-span-7' : 'w-full max-w-120'}
+        className={layoutExpanded ? 'sm:col-span-2 lg:col-span-7' : 'w-full max-w-120'}
       >
         {presence}
       </motion.div>
@@ -131,7 +131,7 @@ export default function RevealStage({
             generation={intentGeneration}
             wave={cardWaves.column}
             className="flex h-full flex-col gap-3 lg:gap-4"
-            outerClassName="lg:col-span-5"
+            outerClassName="sm:col-span-2 lg:col-span-5"
             onEnterComplete={handleCardEnterComplete}
           >
             {yearProgress}
@@ -145,7 +145,7 @@ export default function RevealStage({
             cardId="links"
             generation={intentGeneration}
             wave={cardWaves.links}
-            outerClassName="lg:col-span-12"
+            outerClassName="sm:col-span-2 lg:col-span-12"
             onEnterComplete={handleCardEnterComplete}
           >
             {links}
