@@ -41,7 +41,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
       role="group"
       aria-roledescription="carousel"
       aria-label="Activity carousel"
-      className="flex flex-col items-center gap-3 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-(--cft-dim) lg:gap-3.5"
+      className="flex flex-col items-center gap-2 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-(--cft-dim) lg:gap-2.5"
       onKeyDown={(e) => {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
@@ -52,7 +52,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
         }
       }}
     >
-      <div className="flex w-full items-center gap-2.5 lg:gap-4">
+      <div className="-mx-2 flex w-[calc(100%+1rem)] items-center gap-1 lg:-mx-3 lg:w-[calc(100%+1.5rem)] lg:gap-1.5">
         <button
           type="button"
           onClick={() => goTo(safeIndex - 1)}
