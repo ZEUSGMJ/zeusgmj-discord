@@ -194,6 +194,10 @@ export default function ProfilePresenceCard() {
     firstItem?.kind === 'spotify' && firstItem.isRecentlyPlayed
       ? null
       : firstItem;
+  const liveCount = carouselItems.filter(
+    (item) => !(item.kind === 'spotify' && item.isRecentlyPlayed),
+  ).length;
+  const extraActivityCount = liveActivity ? Math.max(liveCount - 1, 0) : 0;
 
   return (
     <motion.div
@@ -289,6 +293,7 @@ export default function ProfilePresenceCard() {
             bio={bio}
             bioFromDiscord={bioFromDiscord}
             liveActivity={liveActivity}
+            extraActivityCount={extraActivityCount}
             compact={compact}
           />
 

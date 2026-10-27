@@ -29,6 +29,7 @@ interface PresenceIdentityProps {
   bio: string;
   bioFromDiscord: boolean;
   liveActivity: CarouselItem | null;
+  extraActivityCount: number;
   compact?: boolean;
 }
 
@@ -80,9 +81,15 @@ function PresenceIdentityCompact({
   customStatus,
   badges,
   liveActivity,
+  extraActivityCount,
 }: PresenceIdentityProps) {
   const statusText = customStatus?.text ?? null;
   const hasStatus = hasCustomStatus(customStatus);
+  const activityLabel = liveActivity
+    ? extraActivityCount > 0
+      ? `${carouselItemLabel(liveActivity)} +${extraActivityCount} more`
+      : carouselItemLabel(liveActivity)
+    : '';
 
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-0.75">
@@ -106,14 +113,22 @@ function PresenceIdentityCompact({
         <div className="flex min-w-0 items-center gap-1.5 lg:gap-2">
           {liveActivity && (
             <span
-              title={carouselItemLabel(liveActivity)}
-              className="flex shrink-0 items-center rounded-[5px] bg-online/16 px-1.25 py-0.5 text-[#46d68c]"
+              title={activityLabel}
+              className="flex shrink-0 items-center gap-0.5 rounded-[5px] bg-online/16 px-1.25 py-0.5 text-[#46d68c]"
             >
               <ActivityGlyph
                 item={liveActivity}
-                aria-label={carouselItemLabel(liveActivity)}
+                aria-label={activityLabel}
                 className="size-3"
               />
+              {extraActivityCount > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="text-[10px] leading-3 font-bold"
+                >
+                  +{extraActivityCount}
+                </span>
+              )}
             </span>
           )}
           {customStatus && (
