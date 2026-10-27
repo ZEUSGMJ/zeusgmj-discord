@@ -30,7 +30,7 @@ export default async function SpotifyCard() {
                 alt={featured.albumName}
                 width={280}
                 height={280}
-                className="size-24 shrink-0 rounded-xl object-cover transition-transform duration-150 group-hover:scale-[1.03] motion-reduce:transform-none lg:size-28 lg:rounded-[14px]"
+                className="size-24 shrink-0 rounded-xl object-cover transition-transform duration-150 group-hover:scale-[1.03] group-active:scale-[0.98] motion-reduce:transform-none lg:size-28 lg:rounded-[14px]"
                 placeholder={PLACEHOLDER}
               />
             ) : (
@@ -60,7 +60,7 @@ export default async function SpotifyCard() {
               {rest.map((track, index) => (
                 <li
                   key={track.id}
-                  className="group relative -mx-2.5 flex items-center gap-3 rounded-xl px-2.5 py-[5px] transition-colors duration-150 hover:bg-white/10 has-focus-visible:bg-white/10 lg:py-1.5"
+                  className="group relative -mx-2.5 flex items-center gap-3 rounded-xl px-2.5 py-[5px] transition-[background-color,transform] duration-150 ease-out hover:bg-white/10 has-focus-visible:bg-white/10 active:scale-[0.99] lg:py-1.5"
                 >
                   <span className="w-[18px] shrink-0 text-xs leading-4 font-medium text-ink-dim tabular-nums">
                     {String(index + 2).padStart(2, '0')}

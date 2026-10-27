@@ -50,7 +50,7 @@ function Poster({ item, index }: { item: TmdbMovie; index: number }) {
         rel="noopener noreferrer"
         className="group flex flex-col gap-2"
       >
-        <span className="relative block h-[150px] overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 lg:h-[196px] lg:rounded-xl">
+        <span className="relative block h-[150px] overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] lg:h-[196px] lg:rounded-xl">
           {item.posterUrl && (
             <Image
               src={item.posterUrl}

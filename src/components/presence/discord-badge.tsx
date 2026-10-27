@@ -28,7 +28,7 @@ export default function DiscordBadge({
         target="_blank"
         rel="noopener noreferrer"
         title={badge.description}
-        className="shrink-0"
+        className="shrink-0 transition-transform duration-150 ease-out active:scale-90"
       >
         {img}
       </a>

@@ -27,7 +27,7 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
         className="group flex flex-col gap-2 lg:gap-2.5"
       >
         <span
-          className={`relative block overflow-hidden border border-white/10 bg-[#26282f] transition-transform duration-200 ease-out group-hover:-translate-y-0.5 ${
+          className={`relative block overflow-hidden border border-white/10 bg-[#26282f] transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] ${
             lead
               ? 'h-[195px] rounded-xl border-white/12 lg:h-[220px] lg:rounded-[14px]'
               : 'h-[120px] rounded-[10px] lg:h-[164px] lg:rounded-xl'
