@@ -14,15 +14,18 @@ import {
 interface PresenceNameplateProps {
   nameplate: DiscordProfileNameplate | null;
   visible: boolean;
+  playing: boolean;
 }
 
 export default function PresenceNameplate({
   nameplate,
   visible,
+  playing,
 }: PresenceNameplateProps) {
   const reduceMotion = useReducedMotion() ?? false;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [documentVisible, setDocumentVisible] = useState(true);
+  const [activated, setActivated] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
 
@@ -36,24 +39,33 @@ export default function PresenceNameplate({
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      setActivated(false);
       setVideoReady(false);
       setVideoFailed(false);
     }, 0);
     return () => clearTimeout(timer);
   }, [nameplate?.animatedUrl]);
 
-  const videoVisible = Boolean(
-    nameplate && visible && documentVisible && !reduceMotion && !videoFailed,
+  const shouldPlay = Boolean(
+    nameplate &&
+      playing &&
+      visible &&
+      documentVisible &&
+      !reduceMotion &&
+      !videoFailed,
   );
+
+  if (shouldPlay && !activated) setActivated(true);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!videoVisible) {
-      video?.pause();
-      return;
+    if (!video) return;
+    if (shouldPlay) {
+      void video.play().catch(() => {});
+    } else {
+      video.pause();
     }
-    void video?.play().catch(() => {});
-  }, [videoVisible]);
+  }, [shouldPlay, activated]);
 
   if (!nameplate) return null;
 
@@ -74,19 +86,18 @@ export default function PresenceNameplate({
         fill
         preload
         sizes="(max-width: 640px) calc(100vw - 2rem), 512px"
-        className="object-cover object-left"
+        className={`object-cover object-left ${videoReady ? 'opacity-0' : 'opacity-100'}`}
       />
-      {videoVisible && (
+      {activated && !videoFailed && (
         <video
           ref={videoRef}
-          autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           aria-hidden={true}
-          className={`absolute inset-0 h-full w-full object-cover object-left transition-opacity duration-150 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
-          onCanPlay={() => setVideoReady(true)}
+          className={`absolute inset-0 h-full w-full object-cover object-left ${videoReady ? 'opacity-100' : 'opacity-0'}`}
+          onLoadedData={() => setVideoReady(true)}
           onError={() => {
             setVideoFailed(true);
             setVideoReady(false);

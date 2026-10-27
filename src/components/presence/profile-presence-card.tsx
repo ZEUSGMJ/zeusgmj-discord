@@ -7,7 +7,7 @@ import {
   useAnimationControls,
   useReducedMotion,
 } from 'motion/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { buildPresenceTheme } from '@/lib/presence-theme.shared';
 import { usePresence } from '@/components/presence/presence-provider';
 import { useReveal } from '@/components/reveal/reveal-context';
@@ -54,6 +54,7 @@ export default function ProfilePresenceCard() {
   const reduceMotion = useReducedMotion() ?? false;
   const settleControls = useAnimationControls();
   const lastSettleRevisionRef = useRef(0);
+  const [nameplateHovered, setNameplateHovered] = useState(false);
   const cardRadius = compact ? 22 : 28;
 
   useEffect(() => {
@@ -200,6 +201,10 @@ export default function ProfilePresenceCard() {
       animate={{ borderRadius: cardRadius }}
       transition={compact ? PROFILE_COMPACT_TRANSITION : LAYOUT_TRANSITION}
       onLayoutAnimationComplete={onProfileLayoutAnimationComplete}
+      onPointerEnter={(event) => {
+        if (event.pointerType === 'mouse') setNameplateHovered(true);
+      }}
+      onPointerLeave={() => setNameplateHovered(false)}
       className={compact ? 'relative h-19 lg:h-18' : 'relative h-full'}
     >
       <motion.div
@@ -215,6 +220,7 @@ export default function ProfilePresenceCard() {
         <PresenceNameplate
           nameplate={discordProfile?.collectibles?.nameplate ?? null}
           visible={compact && nameplateVisible}
+          playing={compact && nameplateHovered}
         />
 
         <AnimatePresence mode="popLayout">
