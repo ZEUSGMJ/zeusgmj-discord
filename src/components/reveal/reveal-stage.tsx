@@ -114,7 +114,9 @@ export default function RevealStage({
       <motion.div
         layout
         transition={LAYOUT_TRANSITION}
-        className={layoutExpanded ? 'sm:col-span-2 lg:col-span-7' : 'w-full max-w-120'}
+        className={
+          layoutExpanded ? 'sm:col-span-2 lg:col-span-7' : 'w-full max-w-120'
+        }
       >
         {presence}
       </motion.div>

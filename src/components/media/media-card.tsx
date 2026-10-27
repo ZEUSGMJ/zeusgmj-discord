@@ -152,7 +152,7 @@ export default function MediaCard({ data }: Props) {
                 onClick={() => setCategory(id)}
                 className={`rounded-full px-2 py-1.25 text-xs leading-4 transition-[background-color,color,transform] duration-150 active:scale-[0.97] lg:px-2.5 ${
                   selected
-                    ? 'bg-(--theme-accent-ink,#7c8cff) px-2.5 font-semibold lg:px-3 text-(--theme-accent-on,#07080a)'
+                    ? 'bg-(--theme-accent-ink,#7c8cff) px-2.5 font-semibold text-(--theme-accent-on,#07080a) lg:px-3'
                     : 'font-medium text-ink-muted hover:text-ink'
                 }`}
               >

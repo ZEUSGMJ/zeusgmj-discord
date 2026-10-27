@@ -48,11 +48,11 @@ export default function PresenceNameplate({
 
   const shouldPlay = Boolean(
     nameplate &&
-      playing &&
-      visible &&
-      documentVisible &&
-      !reduceMotion &&
-      !videoFailed,
+    playing &&
+    visible &&
+    documentVisible &&
+    !reduceMotion &&
+    !videoFailed,
   );
 
   if (shouldPlay && !activated) setActivated(true);
