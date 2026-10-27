@@ -66,10 +66,10 @@ export default function LinksCard() {
                   aria-hidden="true"
                   className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-raised text-(--theme-accent-ink,#7c8cff) transition-colors group-hover:bg-hairline lg:size-9"
                 >
-                  <Icon className="size-4 lg:size-[18px]" />
+                  <Icon className="size-4 lg:size-4.5" />
                 </span>
-                <span className="flex min-w-0 flex-1 flex-col lg:[mask-image:linear-gradient(to_right,#000_calc(100%-1rem),transparent)]">
-                  <span className="truncate text-[13px] leading-[18px] font-medium text-ink lg:text-clip">
+                <span className="flex min-w-0 flex-1 flex-col lg:mask-[linear-gradient(to_right,#000_calc(100%-1rem),transparent)]">
+                  <span className="truncate text-[13px] leading-4.5 font-medium text-ink lg:text-clip">
                     {link.label}
                   </span>
                   <span className="truncate text-[11px] leading-3.5 text-ink-muted lg:text-xs lg:leading-4 lg:text-clip">

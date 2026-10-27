@@ -95,7 +95,7 @@ export default function ProfilePresenceCard() {
         transition={compact ? PROFILE_COMPACT_TRANSITION : LAYOUT_TRANSITION}
         onLayoutAnimationComplete={onProfileLayoutAnimationComplete}
         className={
-          compact ? 'relative h-[76px] lg:h-[72px]' : 'relative h-full min-h-96'
+          compact ? 'relative h-19 lg:h-18' : 'relative h-full min-h-96'
         }
       >
         <motion.div
@@ -118,9 +118,9 @@ export default function ProfilePresenceCard() {
             </>
           ) : (
             <>
-              <div className="h-[132px] bg-surface-raised lg:h-48" />
+              <div className="h-33 bg-surface-raised lg:h-48" />
               <div className="px-5 pb-5 lg:px-7 lg:pb-6">
-                <div className="-mt-[52px] mb-4 size-26 shrink-0 rounded-full bg-hairline ring-6 ring-surface lg:-mt-16 lg:size-32" />
+                <div className="-mt-13 mb-4 size-26 shrink-0 rounded-full bg-hairline ring-6 ring-surface lg:-mt-16 lg:size-32" />
                 <div className="space-y-2">
                   <div className="h-6 w-40 rounded bg-surface-raised" />
                   <div className="h-4 w-28 rounded bg-surface-raised" />
@@ -200,7 +200,7 @@ export default function ProfilePresenceCard() {
       animate={{ borderRadius: cardRadius }}
       transition={compact ? PROFILE_COMPACT_TRANSITION : LAYOUT_TRANSITION}
       onLayoutAnimationComplete={onProfileLayoutAnimationComplete}
-      className={compact ? 'relative h-[76px] lg:h-[72px]' : 'relative h-full'}
+      className={compact ? 'relative h-19 lg:h-18' : 'relative h-full'}
     >
       <motion.div
         initial={false}
@@ -232,7 +232,7 @@ export default function ProfilePresenceCard() {
                   opacity: 0,
                   transition: { duration: DUR_CARD_EXIT, ease: EASE_IN },
                 }}
-                className="relative h-[132px] w-full shrink-0 overflow-hidden bg-black/10 lg:h-48"
+                className="relative h-33 w-full shrink-0 overflow-hidden bg-black/10 lg:h-48"
               >
                 <Image
                   src={bannerUrl}
@@ -247,7 +247,7 @@ export default function ProfilePresenceCard() {
             ) : (
               <div
                 key="banner-spacer"
-                className="h-[132px] w-full shrink-0 bg-black/15 lg:h-48"
+                className="h-33 w-full shrink-0 bg-black/15 lg:h-48"
                 style={
                   presence.user.bannerColor
                     ? { backgroundColor: presence.user.bannerColor }

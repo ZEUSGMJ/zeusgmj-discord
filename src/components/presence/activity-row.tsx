@@ -137,9 +137,9 @@ const TILE_CLASS =
 export const LABEL_CLASS =
   'text-[11px] leading-3.5 font-semibold tracking-[0.06em] text-(--cft-mid) uppercase lg:text-xs lg:leading-4';
 const TITLE_CLASS =
-  'truncate text-base leading-[22px] font-bold text-(--cft-hi) lg:text-xl lg:leading-[26px]';
+  'truncate text-base leading-5.5 font-bold text-(--cft-hi) lg:text-xl lg:leading-6.5';
 const DETAIL_CLASS =
-  'truncate text-[13px] leading-[18px] text-(--cft-mid) lg:text-sm lg:leading-5';
+  'truncate text-[13px] leading-4.5 text-(--cft-mid) lg:text-sm lg:leading-5';
 
 export default function ActivityRow({ item }: { item: CarouselItem }) {
   if (item.kind === 'spotify') {

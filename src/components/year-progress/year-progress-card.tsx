@@ -26,14 +26,14 @@ export default function YearProgressCard() {
   return (
     <section
       aria-label={`${year} progress`}
-      className="flex h-33 items-center justify-between rounded-tile bg-surface px-6 py-[22px] lg:h-48 lg:p-6"
+      className="flex h-33 items-center justify-between rounded-tile bg-surface px-6 py-5.5 lg:h-48 lg:p-6"
     >
       <div className="flex h-full flex-col justify-between">
         <p className="text-xs leading-4 font-medium text-ink-muted">
           {year} · Day {dayOfYear} of {daysInYear}
         </p>
         <p className="flex items-baseline">
-          <span className="text-[72px] leading-16 font-bold tracking-[-0.05em] text-ink lg:text-[88px] lg:leading-[80px]">
+          <span className="text-[72px] leading-16 font-bold tracking-tighter text-ink lg:text-[88px] lg:leading-20">
             {percent}
           </span>
           <span className="text-[28px] leading-8 font-bold tracking-[-0.02em] text-(--theme-accent-ink,#7c8cff) lg:text-[32px] lg:leading-9">
@@ -43,12 +43,12 @@ export default function YearProgressCard() {
       </div>
       <div
         aria-hidden="true"
-        className="flex w-11 shrink-0 flex-col gap-[3px] lg:w-12 lg:gap-1"
+        className="flex w-11 shrink-0 flex-col gap-0.75 lg:w-12 lg:gap-1"
       >
         {Array.from({ length: SEGMENTS }, (_, index) => (
           <span
             key={index}
-            className={`h-[9px] rounded-xs lg:h-2.5 lg:rounded-[3px] ${
+            className={`h-2.25 rounded-xs lg:h-2.5 lg:rounded-[3px] ${
               index < filledSegments
                 ? 'bg-(--theme-accent-ink,#7c8cff)'
                 : 'bg-[#232733]'

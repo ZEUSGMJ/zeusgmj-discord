@@ -100,7 +100,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
           <LuChevronRight aria-hidden="true" className="size-5" />
         </button>
       </div>
-      <div className="flex gap-[7px] lg:gap-2">
+      <div className="flex gap-1.75 lg:gap-2">
         {items.map((_, i) => (
           <button
             key={i}
@@ -111,7 +111,7 @@ export default function ActivityCarousel({ items }: { items: CarouselItem[] }) {
             aria-current={i === safeIndex}
           >
             <span
-              className={`block size-[7px] rounded-full transition-colors lg:size-2 ${
+              className={`block size-1.75 rounded-full transition-colors lg:size-2 ${
                 i === safeIndex
                   ? 'bg-(--cft-hi)'
                   : 'bg-(--cft-dim)/60 group-hover:bg-(--cft-dim)'

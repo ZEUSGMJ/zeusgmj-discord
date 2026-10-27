@@ -50,7 +50,7 @@ function Poster({ item, index }: { item: TmdbMovie; index: number }) {
         rel="noopener noreferrer"
         className="group flex flex-col gap-2"
       >
-        <span className="relative block h-[150px] overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] lg:h-[196px] lg:rounded-xl">
+        <span className="relative block h-37.5 overflow-hidden rounded-[10px] border border-white/10 bg-white/5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] lg:h-49 lg:rounded-xl">
           {item.posterUrl && (
             <Image
               src={item.posterUrl}
@@ -96,7 +96,7 @@ export default function MediaCard({ data }: Props) {
     <section
       aria-label="Media"
       style={tileStyle(activeColors)}
-      className="relative flex h-full flex-col justify-between gap-4 overflow-hidden rounded-tile bg-surface p-[22px] lg:min-h-[340px] lg:p-6"
+      className="relative flex h-full flex-col justify-between gap-4 overflow-hidden rounded-tile bg-surface p-5.5 lg:min-h-85 lg:p-6"
     >
       {layers.map((layer) => (
         <div
@@ -105,7 +105,7 @@ export default function MediaCard({ data }: Props) {
           style={{
             backgroundImage: `linear-gradient(in oklab 160deg, ${layer.tint} 0%, ${TILE_SURFACE} 65%)`,
           }}
-          className={`pointer-events-none absolute inset-0 transition-opacity duration-240 ease-(--ease-out) motion-reduce:transition-none ${
+          className={`pointer-events-none absolute inset-0 transition-opacity duration-240 ease-out motion-reduce:transition-none ${
             layer.key === activeKey ? 'opacity-100' : 'opacity-0'
           }`}
         />
@@ -140,7 +140,7 @@ export default function MediaCard({ data }: Props) {
         <div
           role="group"
           aria-label="Media category"
-          className="flex gap-0.5 rounded-full bg-background/50 p-[3px]"
+          className="flex gap-0.5 rounded-full bg-background/50 p-0.75"
         >
           {CATEGORIES.map(({ id, label }) => {
             const selected = id === category;
@@ -150,7 +150,7 @@ export default function MediaCard({ data }: Props) {
                 type="button"
                 aria-pressed={selected}
                 onClick={() => setCategory(id)}
-                className={`rounded-full px-2.5 py-[5px] text-xs leading-4 transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
+                className={`rounded-full px-2.5 py-1.25 text-xs leading-4 transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${
                   selected
                     ? 'bg-(--theme-accent-ink,#7c8cff) px-3 font-semibold text-(--theme-accent-on,#07080a)'
                     : 'font-medium text-ink-muted hover:text-ink'

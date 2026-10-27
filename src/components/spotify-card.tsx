@@ -13,7 +13,7 @@ export default async function SpotifyCard() {
     <section
       aria-label="Top tracks"
       style={tileStyle(colors)}
-      className="flex flex-1 flex-col gap-3.5 rounded-tile bg-surface bg-linear-160/oklab from-(--tile-tint) from-0% to-surface to-60% p-[22px] lg:gap-4 lg:p-6"
+      className="flex flex-1 flex-col gap-3.5 rounded-tile bg-surface bg-linear-160 from-(--tile-tint) from-0% to-surface to-60% p-5.5 lg:gap-4 lg:p-6"
     >
       <h3 className="text-xs leading-4 font-medium text-(--tile-label)">
         Top tracks · 4 weeks
@@ -42,13 +42,13 @@ export default async function SpotifyCard() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={featured.name}
-                className="line-clamp-2 text-xl leading-[26px] font-bold tracking-[-0.01em] text-ink transition-colors group-hover:text-(--tile-label) after:absolute after:inset-0 after:content-[''] lg:text-[22px] lg:leading-7"
+                className="line-clamp-2 text-xl leading-6.5 font-bold tracking-[-0.01em] text-ink transition-colors group-hover:text-(--tile-label) after:absolute after:inset-0 after:content-[''] lg:text-[22px] lg:leading-7"
               >
                 {featured.name}
               </a>
               <p
                 title={featured.artists.join(', ')}
-                className="truncate text-[13px] leading-[18px] text-ink-muted select-none"
+                className="truncate text-[13px] leading-4.5 text-ink-muted select-none"
               >
                 {featured.artists.join(', ')}
               </p>
@@ -60,9 +60,9 @@ export default async function SpotifyCard() {
               {rest.map((track, index) => (
                 <li
                   key={track.id}
-                  className="group relative -mx-2.5 flex items-center gap-3 rounded-xl px-2.5 py-[5px] transition-[background-color,transform] duration-150 ease-out hover:bg-white/10 has-focus-visible:bg-white/10 active:scale-[0.99] lg:py-1.5"
+                  className="group relative -mx-2.5 flex items-center gap-3 rounded-xl px-2.5 py-1.25 transition-[background-color,transform] duration-150 ease-out hover:bg-white/10 active:scale-[0.99] has-focus-visible:bg-white/10 lg:py-1.5"
                 >
-                  <span className="w-[18px] shrink-0 text-xs leading-4 font-medium text-ink-dim tabular-nums">
+                  <span className="w-4.5 shrink-0 text-xs leading-4 font-medium text-ink-dim tabular-nums">
                     {String(index + 2).padStart(2, '0')}
                   </span>
                   {track.albumArtUrl ? (

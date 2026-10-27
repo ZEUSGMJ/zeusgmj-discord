@@ -85,7 +85,7 @@ function PresenceIdentityCompact({
   const hasStatus = hasCustomStatus(customStatus);
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
+    <div className="flex min-w-0 flex-1 flex-col gap-0.75">
       <div className="flex min-w-0 items-center gap-1.5 lg:gap-2">
         <h2 className="min-w-0 text-[22px] leading-8 font-bold tracking-[-0.02em] text-ink lg:text-xl lg:leading-7">
           <DisplayName
@@ -107,7 +107,7 @@ function PresenceIdentityCompact({
           {liveActivity && (
             <span
               title={carouselItemLabel(liveActivity)}
-              className="flex shrink-0 items-center rounded-[5px] bg-online/16 px-[5px] py-0.5 text-[#46d68c]"
+              className="flex shrink-0 items-center rounded-[5px] bg-online/16 px-1.25 py-0.5 text-[#46d68c]"
             >
               <ActivityGlyph
                 item={liveActivity}
@@ -147,7 +147,7 @@ function PresenceIdentityExpanded({
     <div className="flex flex-col gap-3 lg:gap-3.5">
       <div className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2 lg:gap-2.5">
-          <h2 className="max-w-full text-2xl leading-[30px] font-bold tracking-[-0.02em] text-(--cft-hi) lg:text-[22px] lg:leading-7">
+          <h2 className="max-w-full text-2xl leading-7.5 font-bold tracking-[-0.02em] text-(--cft-hi) lg:text-[22px] lg:leading-7">
             <DisplayName
               name={user.displayName}
               styles={user.displayNameStyles}
@@ -157,7 +157,7 @@ function PresenceIdentityExpanded({
             <GuildTag primaryGuild={primaryGuild} compact={false} />
           )}
           {badges.length > 0 ? (
-            <div className="flex flex-wrap gap-[5px] lg:gap-1.5">
+            <div className="flex flex-wrap gap-1.25 lg:gap-1.5">
               {badges.map((badge) => (
                 <DiscordBadge key={badge.id} badge={badge} className="size-5" />
               ))}
@@ -166,7 +166,7 @@ function PresenceIdentityExpanded({
             <UserFlagBadges publicFlags={user.publicFlags} />
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-x-2.5 text-sm leading-[18px] text-(--cft-mid)">
+        <div className="flex flex-wrap items-center gap-x-2.5 text-sm leading-4.5 text-(--cft-mid)">
           <span className="wrap-anywhere">@{user.username}</span>
           <Divider />
           <MemberSince userId={user.id} />

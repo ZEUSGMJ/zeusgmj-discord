@@ -7,7 +7,7 @@ function Skeleton({ className = '' }: { className?: string }) {
 export function ProfileCardSkeleton() {
   return (
     <div className={`h-full min-h-96 animate-pulse overflow-hidden ${TILE}`}>
-      <div className="h-[132px] bg-surface-raised lg:h-48" />
+      <div className="h-33 bg-surface-raised lg:h-48" />
     </div>
   );
 }
@@ -39,7 +39,7 @@ export function YearProgressCardSkeleton() {
 
 export function SpotifyCardSkeleton() {
   return (
-    <div className={`flex-1 p-[22px] lg:p-6 ${TILE}`}>
+    <div className={`flex-1 p-5.5 lg:p-6 ${TILE}`}>
       <Skeleton className="mb-4 h-3 w-32 rounded" />
       <div className="mb-4 flex items-center gap-3.5 lg:gap-4">
         <Skeleton className="size-24 shrink-0 rounded-xl lg:size-28" />
@@ -51,7 +51,7 @@ export function SpotifyCardSkeleton() {
       <ul className="space-y-2.5 lg:space-y-3">
         {[0, 1, 2, 3].map((item) => (
           <li key={item} className="flex items-center gap-3">
-            <Skeleton className="h-3 w-[18px] shrink-0 rounded" />
+            <Skeleton className="h-3 w-4.5 shrink-0 rounded" />
             <Skeleton className="size-10 shrink-0 rounded-md" />
             <Skeleton className="h-3 w-28 rounded" />
           </li>
@@ -63,12 +63,12 @@ export function SpotifyCardSkeleton() {
 
 export function SteamCardSkeleton() {
   return (
-    <div className={`h-full p-[22px] lg:min-h-[340px] lg:p-6 ${TILE}`}>
+    <div className={`h-full p-5.5 lg:min-h-85 lg:p-6 ${TILE}`}>
       <Skeleton className="mb-4 h-3 w-36 rounded" />
       <div className="flex items-end gap-3 lg:gap-4">
-        <Skeleton className="h-[195px] w-[130px] shrink-0 rounded-xl lg:h-[220px] lg:w-auto lg:max-w-[200px] lg:min-w-0 lg:flex-[1.35_1_0%] lg:rounded-[14px]" />
-        <Skeleton className="h-[120px] w-20 shrink-0 rounded-[10px] lg:h-[164px] lg:w-auto lg:max-w-[150px] lg:min-w-0 lg:flex-[1_1_0%] lg:rounded-xl" />
-        <Skeleton className="h-[120px] w-20 shrink-0 rounded-[10px] lg:h-[164px] lg:w-auto lg:max-w-[150px] lg:min-w-0 lg:flex-[1_1_0%] lg:rounded-xl" />
+        <Skeleton className="h-48.75 w-32.5 shrink-0 rounded-xl lg:h-55 lg:w-auto lg:max-w-50 lg:min-w-0 lg:flex-[1.35_1_0%] lg:rounded-[14px]" />
+        <Skeleton className="h-30 w-20 shrink-0 rounded-[10px] lg:h-41 lg:w-auto lg:max-w-37.5 lg:min-w-0 lg:flex-[1_1_0%] lg:rounded-xl" />
+        <Skeleton className="h-30 w-20 shrink-0 rounded-[10px] lg:h-41 lg:w-auto lg:max-w-37.5 lg:min-w-0 lg:flex-[1_1_0%] lg:rounded-xl" />
       </div>
     </div>
   );
@@ -76,7 +76,7 @@ export function SteamCardSkeleton() {
 
 export function MediaCardSkeleton() {
   return (
-    <div className={`h-full p-[22px] lg:min-h-[340px] lg:p-6 ${TILE}`}>
+    <div className={`h-full p-5.5 lg:min-h-85 lg:p-6 ${TILE}`}>
       <div className="mb-4 flex items-center justify-between">
         <Skeleton className="h-3 w-28 rounded" />
         <Skeleton className="h-8 w-40 rounded-full" />
@@ -85,7 +85,7 @@ export function MediaCardSkeleton() {
         {[0, 1, 2, 3].map((item) => (
           <Skeleton
             key={item}
-            className={`h-[150px] min-w-0 flex-1 rounded-[10px] lg:h-[196px] lg:rounded-xl ${
+            className={`h-37.5 min-w-0 flex-1 rounded-[10px] lg:h-49 lg:rounded-xl ${
               item === 3 ? 'hidden lg:block' : ''
             }`}
           />
@@ -98,7 +98,7 @@ export function MediaCardSkeleton() {
 export function HomePageLoadingGrid() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-[1040px]">
+      <div className="w-full max-w-260">
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4">
           <div className="lg:col-span-7">
             <ProfileCardSkeleton />

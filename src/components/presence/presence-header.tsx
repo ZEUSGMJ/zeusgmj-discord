@@ -31,7 +31,7 @@ export default function PresenceHeader({
       className={
         compact
           ? 'flex shrink-0 items-center'
-          : '-mt-[52px] flex items-start lg:-mt-16'
+          : '-mt-13 flex items-start lg:-mt-16'
       }
     >
       <motion.div
@@ -92,7 +92,7 @@ export default function PresenceHeader({
             className={
               compact
                 ? 'size-4 border-[3px]'
-                : 'size-[26px] border-[5px] lg:size-7'
+                : 'size-6.5 border-[5px] lg:size-7'
             }
           />
         </div>
@@ -107,7 +107,7 @@ export default function PresenceHeader({
             href={`https://discord.com/users/${discordUserId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-auto ml-auto shrink-0 rounded-[10px] px-3.5 py-2 text-[13px] leading-[18px] font-semibold text-white transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97] lg:px-4 lg:text-sm lg:leading-5"
+            className="mt-auto ml-auto shrink-0 rounded-[10px] px-3.5 py-2 text-[13px] leading-4.5 font-semibold text-white transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[0.97] lg:px-4 lg:text-sm lg:leading-5"
             style={{
               backgroundColor: accentColor ? `${accentColor}99` : '#27272a',
             }}

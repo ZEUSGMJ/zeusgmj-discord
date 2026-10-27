@@ -98,7 +98,7 @@ export default function BioMarkdown({ bio }: { bio: string }) {
             </a>
           ),
           p: ({ children }) => (
-            <p className="text-[15px] leading-[22px] wrap-break-word text-(--cft-hi) lg:text-base">
+            <p className="text-[15px] leading-5.5 wrap-break-word text-(--cft-hi) lg:text-base">
               {children}
             </p>
           ),

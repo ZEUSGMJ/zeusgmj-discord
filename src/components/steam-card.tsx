@@ -18,7 +18,7 @@ const PLACEHOLDER = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" 
 function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
   return (
     <li
-      className={`shrink-0 ${lead ? 'w-[130px] lg:w-auto lg:max-w-[200px] lg:min-w-0 lg:flex-[1.35_1_0%]' : 'w-20 lg:w-auto lg:max-w-[150px] lg:min-w-0 lg:flex-[1_1_0%]'}`}
+      className={`shrink-0 ${lead ? 'w-32.5 lg:w-auto lg:max-w-50 lg:min-w-0 lg:flex-[1.35_1_0%]' : 'w-20 lg:w-auto lg:max-w-37.5 lg:min-w-0 lg:flex-[1_1_0%]'}`}
     >
       <a
         href={game.storeUrl}
@@ -29,8 +29,8 @@ function GameItem({ game, lead }: { game: SteamGame; lead: boolean }) {
         <span
           className={`relative block overflow-hidden border border-white/10 bg-[#26282f] transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-active:translate-y-0 group-active:scale-[0.98] ${
             lead
-              ? 'h-[195px] rounded-xl border-white/12 lg:h-[220px] lg:rounded-[14px]'
-              : 'h-[120px] rounded-[10px] lg:h-[164px] lg:rounded-xl'
+              ? 'h-48.75 rounded-xl border-white/12 lg:h-55 lg:rounded-[14px]'
+              : 'h-30 rounded-[10px] lg:h-41 lg:rounded-xl'
           }`}
         >
           {game.iconUrl ? (
@@ -89,7 +89,7 @@ export default async function SteamCard() {
     <section
       aria-label="Recent games"
       style={tileStyle(colors)}
-      className="flex h-full flex-col gap-4 overflow-hidden rounded-tile bg-surface bg-linear-200/oklab from-(--tile-tint) from-0% to-surface to-65% p-[22px] lg:min-h-[340px] lg:justify-between lg:p-6"
+      className="flex h-full flex-col gap-4 overflow-hidden rounded-tile bg-surface bg-linear-200 from-(--tile-tint) from-0% to-surface to-65% p-5.5 lg:min-h-85 lg:justify-between lg:p-6"
     >
       <div className="flex items-baseline justify-between">
         <h3 className="text-xs leading-4 font-medium text-(--tile-label)">
